@@ -91,6 +91,24 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $added_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereUpdatedAt($value)
+ */
+	class Unit extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
  * @property string $password

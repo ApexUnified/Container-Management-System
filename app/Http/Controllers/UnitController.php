@@ -2,63 +2,106 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Unit;
+use Exception;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class UnitController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $units = Unit::latest()->paginate(10);
+
+        return Inertia::render('Setups/Units/index', compact('units'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $validated_req = $request->validate([
+            'name' => ['required'],
+        ]);
+
+        try {
+            if (Unit::create($validated_req)) {
+                return back()->with('success', 'Unit created successfully');
+            }
+
+            throw new Exception('Something went wrong While Creating Unit');
+        } catch (Exception $e) {
+            return back()->with('error', $e->getMessage())->withErrors(['name' => $e->getMessage()]);
+        }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        //
+        if (empty($id)) {
+            return back()->with('error', 'Unit does not exist')->withErrors(['name' => 'Unit does not exist']);
+        }
+
+        $validated_req = $request->validate([
+            'name' => ['required'],
+        ]);
+
+        try {
+            $unit = Unit::find($id);
+
+            if (empty($unit)) {
+                throw new Exception('Unit does not exist');
+            }
+
+            if ($unit->update($validated_req)) {
+                return back()->with('success', 'Unit updated successfully');
+            }
+
+            throw new Exception('Something went wrong While Updating Unit');
+        } catch (Exception $e) {
+            return back()->with('error', $e->getMessage())->withErrors(['name' => $e->getMessage()]);
+        }
+
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        //
+        if (empty($id)) {
+            return back()->with('error', 'Unit does not exist')->withErrors(['name' => 'Unit does not exist']);
+        }
+
+        try {
+            $unit = Unit::find($id);
+
+            if (empty($unit)) {
+                throw new Exception('Unit does not exist');
+            }
+
+            if ($unit->delete()) {
+                return back()->with('success', 'Unit deleted successfully');
+            }
+
+            throw new Exception('Something went wrong While Deleting Unit');
+        } catch (Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function destroyBySelection(Request $request)
+    {
+        $ids = $request->array('ids');
+
+        if (blank($ids)) {
+            return back()->with('error', 'Unit does not exist')->withErrors(['name' => 'Unit does not exist']);
+        }
+
+        try {
+            $deleted = Unit::destroy($ids);
+            if ($deleted != count($ids)) {
+                throw new Exception('Something went wrong While Deleting Unit');
+            }
+
+            return back()->with('success', 'Unit deleted successfully');
+
+        } catch (Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
     }
 }

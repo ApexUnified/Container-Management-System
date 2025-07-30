@@ -3,6 +3,7 @@
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SettingController;
+use App\Http\Controllers\UnitController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -17,6 +18,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Category Routes
     Route::resource('/category', CategoryController::class)->except(['show']);
     Route::delete('/category-delete-by-selectetion', [CategoryController::class, 'deleteBySelection'])->name('category.deletebyselection');
+
+    //    Setups Routes Group
+    Route::group(['prefix' => 'setups', 'as' => 'setups.'], function () {
+
+        // Unit Routes
+        Route::resource('/units', UnitController::class)->except(['show', 'create', 'edit']);
+        Route::delete('/units-destroy-by-selectetion', [UnitController::class, 'destroyBySelection'])->name('units.destroybyselection');
+
+    });
 
     // Profile Routes
     Route::controller(ProfileController::class)->group(function () {

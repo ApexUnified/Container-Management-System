@@ -221,7 +221,7 @@ export default function Sidebar({
                                                 setSelected('Setups');
                                             }
                                         }}
-                                        className={`menu-item group cursor-pointer ${route().current().includes('category.') || selected === 'Setups' ? 'menu-item-active' : 'menu-item-inactive'} `}
+                                        className={`menu-item group cursor-pointer ${route().current().includes('setups.') || selected === 'Setups' ? 'menu-item-active' : 'menu-item-inactive'} `}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -270,8 +270,8 @@ export default function Sidebar({
                                         >
                                             <li>
                                                 <Link
-                                                    href={route('category.index')}
-                                                    className={`menu-dropdown-item group ${route().current() === 'category.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                    href={route('setups.units.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'setups.units.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                 >
                                                     Units
                                                 </Link>
