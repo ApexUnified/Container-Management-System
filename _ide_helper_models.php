@@ -13,15 +13,6 @@
 
 namespace App\Models{
 /**
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
- */
-	class Category extends \Eloquent {}
-}
-
-namespace App\Models{
-/**
  * @property int $id
  * @property string $uuid
  * @property string $name
