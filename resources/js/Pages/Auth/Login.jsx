@@ -4,7 +4,7 @@ import GuestLayout from '@/Layouts/GuestLayout';
 import { Head, Link, useForm } from '@inertiajs/react';
 import { useState } from 'react';
 
-export default function Login({ canResetPassword }) {
+export default function Login() {
     // Toggle Show Password State
     const [ShowPasswordToggle, setShowPasswordToggle] = useState(false);
 
@@ -141,15 +141,6 @@ export default function Login({ canResetPassword }) {
                                                 Keep me logged in
                                             </label>
                                         </div>
-
-                                        {canResetPassword && (
-                                            <Link
-                                                href={route('password.request')}
-                                                className="text-sm text-blue-500 hover:text-blue-600"
-                                            >
-                                                Forgot password?
-                                            </Link>
-                                        )}
                                     </div>
 
                                     <div>
