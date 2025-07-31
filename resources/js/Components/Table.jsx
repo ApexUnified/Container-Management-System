@@ -1,7 +1,7 @@
 import { Link, router } from '@inertiajs/react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import debounce from 'lodash.debounce';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Input from './Input';
 
 export default function Table({
@@ -42,7 +42,8 @@ export default function Table({
     const searchInputRef = useRef(null);
 
     const getNestedValue = (obj, path) => {
-        return path.split('.').reduce((acc, part) => acc && acc[part], obj);
+        const value = path.split('.').reduce((acc, part) => acc && acc[part], obj);
+        return value == null ? 'N/A' : value;
     };
 
     const handleSelectAll = () => {
@@ -170,10 +171,10 @@ export default function Table({
                 <img
                     src={item.profile_url}
                     alt="Profile"
-                    className="w-full rounded-full object-cover sm:h-20 sm:w-20"
+                    className="object-cover w-full rounded-full sm:h-20 sm:w-20"
                 />
             ) : (
-                <span className="flex w-full items-center justify-center rounded-full bg-gray-500 text-2xl text-white sm:h-20 sm:w-20">
+                <span className="flex items-center justify-center w-full text-2xl text-white bg-blue-500 rounded-full sm:h-20 sm:w-20">
                     {item[column.default] ?? column.default}
                 </span>
             );
@@ -186,10 +187,10 @@ export default function Table({
                 <img
                     src={imageUrl}
                     alt="Image"
-                    className="w-full rounded-full object-cover sm:h-20 sm:w-20"
+                    className="object-cover w-full rounded-full sm:h-20 sm:w-20"
                 />
             ) : (
-                <span className="flex w-full items-center justify-center rounded-full bg-gray-800 text-2xl text-white sm:h-20 sm:w-20">
+                <span className="flex items-center justify-center w-full text-2xl text-white bg-gray-800 rounded-full sm:h-20 sm:w-20">
                     N/A
                 </span>
             );
@@ -200,14 +201,14 @@ export default function Table({
     };
 
     return (
-        <div className="rounded-2xl border border-gray-200 bg-white pt-4 dark:border-gray-900/10 dark:bg-gray-800/10">
+        <div className="pt-4 bg-white border border-gray-200 rounded-2xl dark:border-gray-900/10 dark:bg-gray-800/10">
             {/* Search and Bulk Actions (unchanged) */}
-            <div className="mb-4 flex flex-col gap-2 px-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div className="flex flex-col gap-2 px-5 mb-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                 <div ref={dropdownRefs.current['00000']}>
                     {BulkActionDropdown && (
                         <>
                             <div
-                                className="cursor-pointer p-3 text-white"
+                                className="p-3 text-white cursor-pointer"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     setOpenBulkActionDropdownOptions(
@@ -221,14 +222,14 @@ export default function Table({
                                 </p>
                             </div>
                             {openBulkActionDropdownOptions && (
-                                <div className="z-10 w-44 divide-y divide-gray-100 rounded-lg bg-white shadow-sm dark:bg-gray-700">
+                                <div className="z-10 bg-white divide-y divide-gray-100 rounded-lg shadow-sm w-44 dark:bg-gray-700">
                                     <ul className="py-2 text-sm text-gray-700 dark:text-gray-200">
                                         <li>
                                             <button
                                                 onClick={() =>
                                                     setDeleteSelectedBuilkConfirmationModal(true)
                                                 }
-                                                className="flex w-full items-center px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                className="flex items-center w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
                                             >
                                                 Delete
                                                 <svg
@@ -281,18 +282,18 @@ export default function Table({
 
             {/* Table */}
             <div className="relative z-0 px-5 sm:px-6">
-                <div className="custom-scrollbar overflow-x-auto">
+                <div className="overflow-x-auto custom-scrollbar">
                     <table className="min-h-[200px] min-w-full">
-                        <thead className="border-y border-gray-100 py-3 dark:border-gray-800">
+                        <thead className="py-3 border-gray-100 border-y dark:border-gray-800">
                             <tr>
                                 {BulkDeleteMethod && (
-                                    <th className="whitespace-nowrap py-3 pr-5 font-normal sm:pr-6">
-                                        <div className="me-4 flex items-center">
+                                    <th className="py-3 pr-5 font-normal whitespace-nowrap sm:pr-6">
+                                        <div className="flex items-center me-4">
                                             <input
                                                 onChange={() => handleSelectAll()}
                                                 type="checkbox"
                                                 value=""
-                                                className="mx-2 h-6 w-6 cursor-pointer rounded-lg border-slate-300 bg-slate-50 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-white"
+                                                className="w-6 h-6 mx-2 text-blue-600 rounded-lg cursor-pointer border-slate-300 bg-slate-50 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-white"
                                                 checked={
                                                     selectedIds.length === items.data.length &&
                                                     items.data.length !== 0
@@ -304,10 +305,10 @@ export default function Table({
                                 {columns?.map((column, index) => (
                                     <th
                                         key={index}
-                                        className="whitespace-nowrap py-3 pr-5 font-normal sm:pr-6"
+                                        className="py-3 pr-5 font-normal whitespace-nowrap sm:pr-6"
                                     >
                                         <div className="flex items-center">
-                                            <p className="text-theme-sm text-gray-500 dark:text-gray-400">
+                                            <p className="text-gray-500 text-theme-sm dark:text-gray-400">
                                                 {column.label}
                                             </p>
                                         </div>
@@ -315,9 +316,9 @@ export default function Table({
                                 ))}
 
                                 {(customActions.length > 0 || DeleteAction || EditRoute) && (
-                                    <th className="whitespace-nowrap px-5 py-3 font-normal sm:px-6">
+                                    <th className="px-5 py-3 font-normal whitespace-nowrap sm:px-6">
                                         <div className="flex items-center">
-                                            <p className="text-theme-sm text-gray-500 dark:text-gray-400">
+                                            <p className="text-gray-500 text-theme-sm dark:text-gray-400">
                                                 Action
                                             </p>
                                         </div>
@@ -329,13 +330,13 @@ export default function Table({
                             {items?.data?.map((item, index) => (
                                 <tr key={index}>
                                     {BulkDeleteMethod && (
-                                        <td className="whitespace-nowrap py-3 pr-5 sm:pr-5">
-                                            <div className="col-span-3 flex items-center">
-                                                <div className="me-4 flex items-center">
+                                        <td className="py-3 pr-5 whitespace-nowrap sm:pr-5">
+                                            <div className="flex items-center col-span-3">
+                                                <div className="flex items-center me-4">
                                                     <input
                                                         type="checkbox"
                                                         value={item.id}
-                                                        className="singleSelect mx-2 h-6 w-6 cursor-pointer rounded-lg border-slate-300 bg-slate-50 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-white"
+                                                        className="w-6 h-6 mx-2 text-blue-600 rounded-lg cursor-pointer singleSelect border-slate-300 bg-slate-50 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-white"
                                                         onChange={() => handleSelect(item.id)}
                                                         checked={selectedIds.includes(item.id)}
                                                     />
@@ -347,9 +348,9 @@ export default function Table({
                                     {columns.map((column, index) => (
                                         <td
                                             key={index}
-                                            className="whitespace-nowrap py-3 pr-5 sm:pr-5"
+                                            className="py-3 pr-5 whitespace-nowrap sm:pr-5"
                                         >
-                                            <div className="col-span-3 flex items-center">
+                                            <div className="flex items-center col-span-3">
                                                 <div className="flex items-center gap-3 text-sm font-medium text-gray-700 dark:text-gray-400">
                                                     {renderCell(item, column)}
                                                 </div>
@@ -358,7 +359,7 @@ export default function Table({
                                     ))}
 
                                     {(customActions.length > 0 || DeleteAction || EditRoute) && (
-                                        <td className="whitespace-nowrap px-5 py-3 sm:px-6">
+                                        <td className="px-5 py-3 whitespace-nowrap sm:px-6">
                                             <div className="flex items-center justify-start">
                                                 <div
                                                     ref={(el) =>
@@ -417,25 +418,6 @@ export default function Table({
                                                                     </li>
                                                                 )}
 
-                                                                {DeleteAction && (
-                                                                    <li>
-                                                                        <button
-                                                                            type="button"
-                                                                            className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
-                                                                            onClick={() => {
-                                                                                setSelectedIds([]);
-                                                                                setSelectedIds([
-                                                                                    item.id,
-                                                                                ]);
-                                                                                setDeleteSingleConfirmationModal(
-                                                                                    true,
-                                                                                );
-                                                                            }}
-                                                                        >
-                                                                            Delete
-                                                                        </button>
-                                                                    </li>
-                                                                )}
                                                                 {/* Custom Actions */}
                                                                 {customActions.map(
                                                                     (action, idx) => (
@@ -468,6 +450,26 @@ export default function Table({
                                                                         </li>
                                                                     ),
                                                                 )}
+
+                                                                {DeleteAction && (
+                                                                    <li>
+                                                                        <button
+                                                                            type="button"
+                                                                            className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white"
+                                                                            onClick={() => {
+                                                                                setSelectedIds([]);
+                                                                                setSelectedIds([
+                                                                                    item.id,
+                                                                                ]);
+                                                                                setDeleteSingleConfirmationModal(
+                                                                                    true,
+                                                                                );
+                                                                            }}
+                                                                        >
+                                                                            Delete
+                                                                        </button>
+                                                                    </li>
+                                                                )}
                                                             </ul>
                                                         </div>
                                                     )}
@@ -480,7 +482,7 @@ export default function Table({
                         </tbody>
                     </table>
                     {items?.data?.length === 0 && (
-                        <p className="align-center mb-20 flex justify-center bg-blue-200 p-5 text-center text-gray-900 dark:bg-white/5 dark:text-white">
+                        <p className="flex justify-center p-5 mb-20 text-center text-gray-900 bg-blue-200 align-center dark:bg-white/5 dark:text-white">
                             No data found
                         </p>
                     )}
@@ -489,7 +491,7 @@ export default function Table({
 
             {/* Pagination (unchanged) */}
             {items?.data?.length > 0 && (
-                <div className="border-t border-gray-200 px-6 py-4 dark:border-gray-800">
+                <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-800">
                     <div className="flex items-center justify-between">
                         <PrimaryButton
                             Text={
@@ -507,7 +509,7 @@ export default function Table({
                                             d="M2.58301 9.99868C2.58272 10.1909 2.65588 10.3833 2.80249 10.53L7.79915 15.5301C8.09194 15.8231 8.56682 15.8233 8.85981 15.5305C9.15281 15.2377 9.15297 14.7629 8.86018 14.4699L5.14009 10.7472L16.6675 10.7472C17.0817 10.7472 17.4175 10.4114 17.4175 9.99715C17.4175 9.58294 17.0817 9.24715 16.6675 9.24715L5.14554 9.24715L8.86017 5.53016C9.15297 5.23717 9.15282 4.7623 8.85983 4.4695C8.56684 4.1767 8.09197 4.17685 7.79917 4.46984L2.84167 9.43049C2.68321 9.568 2.58301 9.77087 2.58301 9.99715Z"
                                         />
                                     </svg>
-                                    <span className="mx-2 hidden sm:inline"> Previous </span>
+                                    <span className="hidden mx-2 sm:inline"> Previous </span>
                                 </>
                             }
                             Disabled={!items.links[0].url}
@@ -560,10 +562,9 @@ export default function Table({
                 </div>
             )}
 
-            {/* Modals (unchanged) */}
-            <div className="border-t border-gray-100 p-6 dark:border-gray-800">
+            <div className="p-6 border-t border-gray-100 dark:border-gray-800">
                 {DeleteSelectedBuilkConfirmationModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                         {/* Backdrop */}
                         <div
                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -574,7 +575,7 @@ export default function Table({
                         ></div>
 
                         {/* Modal content */}
-                        <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                        <div className="relative z-10 w-full max-w-lg max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                             <div className="text-center">
                                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
                                     Are You Sure?
@@ -582,21 +583,20 @@ export default function Table({
                                 <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                                     You won't be able to revert this action.
                                 </p>
+                            </div>
 
-                                <div className="mt-6 flex items-center justify-center gap-4">
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setDeleteBulkSelectedProcessing(false);
-                                            setDeleteSelectedBuilkConfirmationModal(false);
-                                        }}
-                                        disabled={DeleteBulkSelectedProcessing}
-                                        className={`inline-flex h-[50px] items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-white/10 ${DeleteBulkSelectedProcessing ? 'cursor-not-allowed opacity-50' : ''}`}
-                                    >
-                                        Close
+                            {/* Buttons */}
+                            <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
+                                <PrimaryButton
+                                    Action={() => {
+                                        setDeleteBulkSelectedProcessing(false);
+                                        setDeleteSelectedBuilkConfirmationModal(false);
+                                    }}
+                                    Disabled={DeleteBulkSelectedProcessing}
+                                    Icon={
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5"
+                                            className="w-5 h-5"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -607,39 +607,42 @@ export default function Table({
                                                 d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
                                             />
                                         </svg>
-                                    </button>
+                                    }
+                                    Type={'button'}
+                                    Text={'Close'}
+                                />
 
-                                    <PrimaryButton
-                                        Type="button"
-                                        Text="Yes Delete it!"
-                                        Spinner={DeleteBulkSelectedProcessing}
-                                        Disabled={DeleteBulkSelectedProcessing}
-                                        Action={deleteSelectedBulkMethod}
-                                        Icon={
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth="1.5"
-                                                stroke="currentColor"
-                                                className="size-6"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                                />
-                                            </svg>
-                                        }
-                                    />
-                                </div>
+                                <PrimaryButton
+                                    Type="button"
+                                    Text="Delete"
+                                    Spinner={DeleteBulkSelectedProcessing}
+                                    Disabled={DeleteBulkSelectedProcessing}
+                                    Action={deleteSelectedBulkMethod}
+                                    CustomClass={'bg-red-500 hover:bg-red-600 w-full '}
+                                    Icon={
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="1.5"
+                                            stroke="currentColor"
+                                            className="size-6"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                            />
+                                        </svg>
+                                    }
+                                />
                             </div>
                         </div>
                     </div>
                 )}
 
                 {DeleteSingleConfirmationModal && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                         {/* Backdrop */}
                         <div
                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -648,8 +651,8 @@ export default function Table({
                             }
                         ></div>
 
-                        {/* Modal Content */}
-                        <div className="relative z-10 w-full max-w-md rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                        {/* Modal content */}
+                        <div className="relative z-10 w-full max-w-lg max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                             <div className="text-center">
                                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
                                     Are You Sure?
@@ -657,25 +660,20 @@ export default function Table({
                                 <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
                                     You won't be able to revert this action.
                                 </p>
+                            </div>
 
-                                <div className="mt-6 flex items-center justify-center gap-4">
-                                    <button
-                                        onClick={() => {
-                                            setDeleteSingleProcessing(false);
-                                            setDeleteSingleConfirmationModal(false);
-                                        }}
-                                        type="button"
-                                        disabled={DeleteSingleProcessing}
-                                        className={`inline-flex h-[50px] items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm text-gray-700 transition hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:bg-white/10 ${
-                                            DeleteSingleProcessing
-                                                ? 'cursor-not-allowed opacity-50'
-                                                : ''
-                                        }`}
-                                    >
-                                        Close
+                            {/* Buttons */}
+                            <div className="flex items-center justify-center gap-4 mt-6">
+                                <PrimaryButton
+                                    Action={() => {
+                                        setDeleteSingleProcessing(false);
+                                        setDeleteSingleConfirmationModal(false);
+                                    }}
+                                    Disabled={DeleteSingleProcessing}
+                                    Icon={
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5"
+                                            className="w-5 h-5"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"
@@ -686,32 +684,35 @@ export default function Table({
                                                 d="M9 15L3 9m0 0l6-6M3 9h12a6 6 0 010 12h-3"
                                             />
                                         </svg>
-                                    </button>
+                                    }
+                                    Type={'button'}
+                                    Text={'Close'}
+                                />
 
-                                    <PrimaryButton
-                                        Type="button"
-                                        Text="Yes Delete it!"
-                                        Spinner={DeleteSingleProcessing}
-                                        Disabled={DeleteSingleProcessing}
-                                        Action={DeleteSingleRecord}
-                                        Icon={
-                                            <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                fill="none"
-                                                viewBox="0 0 24 24"
-                                                strokeWidth="1.5"
-                                                stroke="currentColor"
-                                                className="size-6"
-                                            >
-                                                <path
-                                                    strokeLinecap="round"
-                                                    strokeLinejoin="round"
-                                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                                />
-                                            </svg>
-                                        }
-                                    />
-                                </div>
+                                <PrimaryButton
+                                    Type="button"
+                                    Text="Delete"
+                                    Spinner={DeleteSingleProcessing}
+                                    Disabled={DeleteSingleProcessing}
+                                    Action={DeleteSingleRecord}
+                                    Icon={
+                                        <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="1.5"
+                                            stroke="currentColor"
+                                            className="size-6"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                            />
+                                        </svg>
+                                    }
+                                    CustomClass={'bg-red-500 hover:bg-red-600 w-full '}
+                                />
                             </div>
                         </div>
                     </div>

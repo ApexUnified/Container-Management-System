@@ -13,17 +13,9 @@
 
 namespace App\Models{
 /**
- * @property int $id
- * @property string $name
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Category query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Category whereUpdatedAt($value)
  */
 	class Category extends \Eloquent {}
 }
@@ -31,69 +23,126 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $app_name
- * @property string $contact_email
- * @property string $contact_number
- * @property string|null $app_main_logo_dark
- * @property string|null $app_main_logo_light
- * @property string|null $app_favicon
+ * @property string $uuid
+ * @property string $name
+ * @property string|null $email
+ * @property string|null $contact_person
+ * @property string|null $address
+ * @property string|null $tel_no
+ * @property string|null $mobile_no
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $app_favicon_url
- * @property-read mixed $app_main_logo_dark_url
- * @property-read mixed $app_main_logo_light_url
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting whereAppFavicon($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting whereAppMainLogoDark($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting whereAppMainLogoLight($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting whereAppName($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting whereContactEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting whereContactNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|GeneralSetting whereUpdatedAt($value)
+ * @property-read mixed $added_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereContactPerson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereMobileNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereTelNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereUuid($value)
  */
-	class GeneralSetting extends \Eloquent {}
+	class CustomClearance extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
  * @property int $id
- * @property string $smtp_mailer
- * @property string $smtp_scheme
- * @property string $smtp_host
- * @property string $smtp_port
- * @property string $smtp_username
- * @property string $smtp_password
- * @property string $smtp_mail_from_address
+ * @property string $uuid
+ * @property string $name
+ * @property int $unit_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereSmtpHost($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereSmtpMailFromAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereSmtpMailer($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereSmtpPassword($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereSmtpPort($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereSmtpScheme($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereSmtpUsername($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|SmtpSetting whereUpdatedAt($value)
+ * @property-read mixed $added_at
+ * @property-read \App\Models\Unit $unit
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUnitId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUuid($value)
  */
-	class SmtpSetting extends \Eloquent {}
+	class Product extends \Eloquent {}
 }
 
 namespace App\Models{
 /**
  * @property int $id
+ * @property string $uuid
+ * @property string $name
+ * @property string|null $email
+ * @property string|null $contact_person
+ * @property string|null $address
+ * @property string|null $tel_no
+ * @property string|null $mobile_no
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $added_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereContactPerson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereMobileNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereTelNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereUuid($value)
+ */
+	class ShippingLine extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $uuid
+ * @property string $name
+ * @property string|null $email
+ * @property string|null $contact_person
+ * @property string|null $address
+ * @property string|null $tel_no
+ * @property string|null $mobile_no
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $added_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereContactPerson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereMobileNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereTelNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereUuid($value)
+ */
+	class Transporter extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $uuid
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read mixed $added_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
+ * @property-read int|null $products_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit query()
@@ -101,6 +150,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereUuid($value)
  */
 	class Unit extends \Eloquent {}
 }
@@ -108,6 +158,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property string $uuid
  * @property string $name
  * @property string $email
  * @property \Illuminate\Support\Carbon|null $email_verified_at
@@ -115,6 +166,7 @@ namespace App\Models{
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $added_at
  * @property-read mixed $avatar
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
@@ -130,7 +182,38 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUuid($value)
  */
 	class User extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $uuid
+ * @property string $name
+ * @property string|null $email
+ * @property string|null $contact_person
+ * @property string|null $address
+ * @property string|null $tel_no
+ * @property string|null $mobile_no
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read mixed $added_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereContactPerson($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereMobileNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereTelNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereUuid($value)
+ */
+	class Vendor extends \Eloquent {}
 }
 

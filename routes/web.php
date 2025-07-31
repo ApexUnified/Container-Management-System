@@ -1,9 +1,12 @@
 <?php
 
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SettingController;
+use App\Http\Controllers\CustomClearanceController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ShippingLineController;
+use App\Http\Controllers\TransporterController;
 use App\Http\Controllers\UnitController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -15,10 +18,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
-    // Category Routes
-    Route::resource('/category', CategoryController::class)->except(['show']);
-    Route::delete('/category-delete-by-selectetion', [CategoryController::class, 'deleteBySelection'])->name('category.deletebyselection');
-
     //    Setups Routes Group
     Route::group(['prefix' => 'setups', 'as' => 'setups.'], function () {
 
@@ -26,28 +25,31 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('/units', UnitController::class)->except(['show', 'create', 'edit']);
         Route::delete('/units-destroy-by-selectetion', [UnitController::class, 'destroyBySelection'])->name('units.destroybyselection');
 
+        // Shipping Line Routes
+        Route::resource('/shipping-lines', ShippingLineController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/shipping-lines-destroy-by-selectetion', [ShippingLineController::class, 'destroyBySelection'])->name('shipping-lines.destroybyselection');
+
+        // Vendor Routes
+        Route::resource('/vendors', VendorController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/vendors-destroy-by-selectetion', [VendorController::class, 'destroyBySelection'])->name('vendors.destroybyselection');
+
+        // Transporter Routes
+        Route::resource('/transporters', TransporterController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/transporters-destroy-by-selectetion', [TransporterController::class, 'destroyBySelection'])->name('transporters.destroybyselection');
+
+        // Custom Clearance Routes
+        Route::resource('/custom-clearances', CustomClearanceController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/custom-clearances-destroy-by-selectetion', [CustomClearanceController::class, 'destroyBySelection'])->name('custom-clearances.destroybyselection');
+
+        // Custom Clearance Routes
+        Route::resource('/products', ProductController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/products-destroy-by-selectetion', [ProductController::class, 'destroyBySelection'])->name('products.destroybyselection');
     });
 
-    // Profile Routes
-    Route::controller(ProfileController::class)->group(function () {
-        Route::get('/profile', 'index')->name('profile.index');
-        Route::put('/profile-update', 'updateProfile')->name('profile.update');
-        Route::put('/profile-password-update', 'updatePassword')->name('profile.password.update');
-        Route::delete('/profile/account-destroy', 'destroyAccount')->name('profile.account.destroy');
-    });
+    // User Routes
+    Route::resource('/users', UserController::class)->except(['show', 'edit', 'create']);
+    Route::delete('/users-destroy-by-selectetion', [UserController::class, 'destroyBySelection'])->name('users.destroybyselection');
 
-    // Setting Routes
-    Route::controller(SettingController::class)->as('settings.')->group(function () {
-        Route::get('/settings', 'index')->name('index');
-
-        // General Setting Routess
-        Route::get('/settings/general-setting', 'generalSetting')->name('general.setting');
-        Route::put('/settings/general-setting-update', 'updateGeneralSetting')->name('general.setting.update');
-
-        // SMTP Setting Routes
-        Route::get('/settings/smtp-setting', 'smtpSetting')->name('smtp.setting');
-        Route::put('/settings/smtp-setting-update', 'updateSmtpSetting')->name('smtp.setting.update');
-    });
 });
 
 require __DIR__.'/auth.php';

@@ -37,7 +37,7 @@ class User extends Authenticatable // implements MustVerifyEmail
         'remember_token',
     ];
 
-    protected $appends = ['avatar'];
+    protected $appends = ['avatar', 'added_at'];
 
     /**
      * Get the attributes that should be cast.
@@ -74,5 +74,19 @@ class User extends Authenticatable // implements MustVerifyEmail
     public function sendEmailVerificationNotification()
     {
         $this->notify(new CustomVerifyEmailNotification);
+    }
+
+    protected static function booted()
+    {
+        static::creating(function ($user) {
+            do {
+                $user->uuid = 'USR-'.(string) mt_rand(1000000000, 9999999999);
+            } while (self::where('uuid', $user->uuid)->exists());
+        });
+    }
+
+    public function getAddedAtAttribute()
+    {
+        return $this->created_at->format('Y-m-d');
     }
 }

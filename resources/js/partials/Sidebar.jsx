@@ -58,7 +58,7 @@ export default function Sidebar({
                     </button>
                 </div>
 
-                <div className="no-scrollbar flex flex-1 flex-col overflow-y-auto duration-300 ease-linear">
+                <div className="flex flex-col flex-1 overflow-y-auto duration-300 ease-linear no-scrollbar">
                     <nav>
                         <div>
                             <h3 className="mb-4 text-xs uppercase leading-[20px] text-gray-400">
@@ -85,7 +85,7 @@ export default function Sidebar({
                                 </svg>
                             </h3>
 
-                            <ul className="mb-6 flex flex-col gap-4">
+                            <ul className="flex flex-col gap-4 mb-6">
                                 <li>
                                     <Link
                                         href={route('dashboard')}
@@ -134,87 +134,6 @@ export default function Sidebar({
                                 <li>
                                     <a
                                         onClick={() => {
-                                            if (selected === 'Categories') {
-                                                setSelected(null);
-                                            } else {
-                                                setSelected('Categories');
-                                            }
-                                        }}
-                                        className={`menu-item group cursor-pointer ${route().current().includes('category.') || selected === 'Categories' ? 'menu-item-active' : 'menu-item-inactive'} `}
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            strokeWidth={1.5}
-                                            stroke="currentColor"
-                                            className="size-6"
-                                        >
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
-                                            />
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M6 6h.008v.008H6V6Z"
-                                            />
-                                        </svg>
-
-                                        <span
-                                            className={`menu-item-text ${sidebarToggle ? 'lg:hidden' : ''}`}
-                                        >
-                                            Categories
-                                        </span>
-
-                                        <svg
-                                            className={`menu-item-arrow absolute right-2.5 top-1/2 -translate-y-1/2 stroke-current ${route().current().includes('category.') || (selected === 'Categories' && 'menu-item-arrow-active')} ${sidebarToggle ? 'lg:hidden' : ''}`}
-                                            width="20"
-                                            height="20"
-                                            viewBox="0 0 20 20"
-                                            fill="none"
-                                            xmlns="http://www.w3.org/2000/svg"
-                                        >
-                                            <path
-                                                d="M4.79175 7.39584L10.0001 12.6042L15.2084 7.39585"
-                                                stroke=""
-                                                strokeWidth="1.5"
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                            />
-                                        </svg>
-                                    </a>
-
-                                    <div
-                                        className={`translate transform overflow-hidden ${selected === 'Categories' ? 'block' : 'hidden'}`}
-                                    >
-                                        <ul
-                                            className={`menu-dropdown mt-2 flex flex-col gap-1 pl-9 ${sidebarToggle ? 'lg:hidden' : 'flex'} `}
-                                        >
-                                            <li>
-                                                <Link
-                                                    href={route('category.index')}
-                                                    className={`menu-dropdown-item group ${route().current() === 'category.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
-                                                >
-                                                    Category List
-                                                </Link>
-                                            </li>
-                                            <li>
-                                                <Link
-                                                    href={route('category.create')}
-                                                    className={`menu-dropdown-item group ${route().current() === 'category.create' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
-                                                >
-                                                    Create Category
-                                                </Link>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </li>
-
-                                <li>
-                                    <a
-                                        onClick={() => {
                                             if (selected === 'Setups') {
                                                 setSelected(null);
                                             } else {
@@ -245,7 +164,7 @@ export default function Sidebar({
                                         </span>
 
                                         <svg
-                                            className={`menu-item-arrow absolute right-2.5 top-1/2 -translate-y-1/2 stroke-current ${route().current().includes('category.') || (selected === 'Setups' && 'menu-item-arrow-active')} ${sidebarToggle ? 'lg:hidden' : ''}`}
+                                            className={`menu-item-arrow absolute right-2.5 top-1/2 -translate-y-1/2 stroke-current ${route().current().includes('setups.') || (selected === 'Setups' && 'menu-item-arrow-active')} ${sidebarToggle ? 'lg:hidden' : ''}`}
                                             width="20"
                                             height="20"
                                             viewBox="0 0 20 20"
@@ -279,8 +198,8 @@ export default function Sidebar({
 
                                             <li>
                                                 <Link
-                                                    href={route('category.index')}
-                                                    className={`menu-dropdown-item group ${route().current() === 'category.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                    href={route('setups.shipping-lines.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'setups.shipping-lines.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                 >
                                                     Shipping Lines
                                                 </Link>
@@ -288,8 +207,8 @@ export default function Sidebar({
 
                                             <li>
                                                 <Link
-                                                    href={route('category.index')}
-                                                    className={`menu-dropdown-item group ${route().current() === 'category.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                    href={route('setups.vendors.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'setups.vendors.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                 >
                                                     Vendors
                                                 </Link>
@@ -297,17 +216,8 @@ export default function Sidebar({
 
                                             <li>
                                                 <Link
-                                                    href={route('category.index')}
-                                                    className={`menu-dropdown-item group ${route().current() === 'category.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
-                                                >
-                                                    Products
-                                                </Link>
-                                            </li>
-
-                                            <li>
-                                                <Link
-                                                    href={route('category.index')}
-                                                    className={`menu-dropdown-item group ${route().current() === 'category.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                    href={route('setups.transporters.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'setups.transporters.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                 >
                                                     Transporters
                                                 </Link>
@@ -315,10 +225,19 @@ export default function Sidebar({
 
                                             <li>
                                                 <Link
-                                                    href={route('category.index')}
-                                                    className={`menu-dropdown-item group ${route().current() === 'category.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                    href={route('setups.custom-clearances.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'setups.custom-clearances.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                 >
                                                     Custom Clearances
+                                                </Link>
+                                            </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route('setups.products.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'setups.products.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    Products
                                                 </Link>
                                             </li>
                                         </ul>
@@ -327,8 +246,8 @@ export default function Sidebar({
 
                                 <li>
                                     <Link
-                                        href={route('settings.index')}
-                                        className={`menu-item group ${route().current().includes('settings') ? 'menu-item-active' : 'menu-item-inactive'}`}
+                                        href={route('users.index')}
+                                        className={`menu-item group ${route().current() === 'users.index' ? 'menu-item-active' : 'menu-item-inactive'}`}
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -336,24 +255,19 @@ export default function Sidebar({
                                             viewBox="0 0 24 24"
                                             strokeWidth={1.5}
                                             stroke="currentColor"
-                                            className={`size-6`}
+                                            className="size-6"
                                         >
                                             <path
                                                 strokeLinecap="round"
                                                 strokeLinejoin="round"
-                                                d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774c.39.389.44 1.002.12 1.45l-.527.737c-.25.35-.272.806-.107 1.204.165.397.505.71.93.78l.893.15c.543.09.94.559.94 1.109v1.094c0 .55-.397 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.929.78-.165.398-.143.854.107 1.204l.527.738c.32.447.269 1.06-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.272-1.203-.107-.398.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527c-.447.32-1.06.269-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.272-.806.108-1.204-.165-.397-.506-.71-.93-.78l-.894-.15c-.542-.09-.94-.56-.94-1.109v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.165-.398.143-.854-.108-1.204l-.526-.738a1.125 1.125 0 0 1 .12-1.45l.773-.773a1.125 1.125 0 0 1 1.45-.12l.737.527c.35.25.807.272 1.204.107.397-.165.71-.505.78-.929l.15-.894Z"
-                                            />
-                                            <path
-                                                strokeLinecap="round"
-                                                strokeLinejoin="round"
-                                                d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
+                                                d="M15 19.128a9.38 9.38 0 0 0 2.625.372 9.337 9.337 0 0 0 4.121-.952 4.125 4.125 0 0 0-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z"
                                             />
                                         </svg>
 
                                         <span
                                             className={`menu-item-text ${sidebarToggle ? 'lg:hidden' : ''}`}
                                         >
-                                            Settings
+                                            Users
                                         </span>
 
                                         <svg

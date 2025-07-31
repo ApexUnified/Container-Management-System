@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Input from '@/Components/Input';
 
-export default function index({ units }) {
+export default function index({ users }) {
     const { props } = usePage();
     const {
         data: BulkselectedIds,
@@ -27,35 +27,6 @@ export default function index({ units }) {
         id: null,
     });
 
-    const [columns, setColumns] = useState([]);
-    const [customActions, setCustomActions] = useState([]);
-
-    useEffect(() => {
-        const columns = [
-            { key: 'uuid', label: 'UUID' },
-            { key: 'name', label: 'Unit Name' },
-            { key: 'added_at', label: 'Created At' },
-        ];
-
-        const actions = [
-            {
-                label: 'Edit',
-                type: 'button',
-                onClick: (item) => {
-                    setEditModalOpen(true);
-                    setEditData('name', item.name);
-                    setEditData('id', item.id);
-                },
-            },
-        ];
-
-        setCustomActions(actions);
-        setColumns(columns);
-    }, []);
-
-    //   Unit Creation Modal  State
-    const [CreateModalOpen, setCreateModalOpen] = useState(false);
-
     // Create Request
     const {
         data: createData,
@@ -65,24 +36,12 @@ export default function index({ units }) {
         errors: createErrors,
     } = useForm({
         name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
     });
 
-    // CreateMethod
-    const CreateMethod = (e) => {
-        e.preventDefault();
-
-        createPost(route('setups.units.store'), {
-            onSuccess: () => {
-                setCreateModalOpen(false);
-                setCreateData('name', '');
-            },
-        });
-    };
-
-    // Unit  Modal State
-    const [EditModalOpen, setEditModalOpen] = useState(false);
-
-    // Edit  Form Data
+    // Edit Form Data
     const {
         data: editData,
         setData: setEditData,
@@ -92,16 +51,74 @@ export default function index({ units }) {
     } = useForm({
         id: '',
         name: '',
+        email: '',
+        password: '',
+        password_confirmation: '',
     });
+
+    const [columns, setColumns] = useState([]);
+    const [customActions, setCustomActions] = useState([]);
+
+    //    Create Modal  State
+    const [CreateModalOpen, setCreateModalOpen] = useState(false);
+
+    //  Edit Modal State
+    const [EditModalOpen, setEditModalOpen] = useState(false);
+
+    // Password Input Toggles
+    const [showPasswordToggle, setShowPasswordToggle] = useState(false);
+    const [showConfirmPasswordToggle, setShowConfirmPasswordToggle] = useState(false);
+
+    useEffect(() => {
+        const columns = [
+            { key: 'uuid', label: 'UUID' },
+            { key: 'name', label: 'Name' },
+            { key: 'email', label: 'Email' },
+
+            { key: 'added_at', label: 'Created At' },
+        ];
+
+        const actions = [
+            {
+                label: 'Edit',
+                type: 'button',
+                onClick: (item) => {
+                    setEditModalOpen(true);
+                    setEditData(item);
+                },
+            },
+        ];
+
+        setCustomActions(actions);
+        setColumns(columns);
+    }, []);
+
+    // CreateMethod
+    const CreateMethod = (e) => {
+        e.preventDefault();
+
+        createPost(route('users.store'), {
+            onSuccess: () => {
+                setCreateModalOpen(false);
+                setCreateData('name', '');
+                setCreateData('email', '');
+                setCreateData('password', '');
+                setCreateData('password_confirmation', '');
+            },
+        });
+    };
 
     // EditMethod
     const EditMethod = (e) => {
         e.preventDefault();
-        editPut(route('setups.units.update', editData.id), {
+        editPut(route('users.update', editData.id), {
             onSuccess: () => {
                 setEditModalOpen(false);
                 setEditData('id', '');
                 setEditData('name', '');
+                setEditData('email', '');
+                setEditData('password', '');
+                setEditData('password_confirmation', '');
             },
         });
     };
@@ -109,13 +126,13 @@ export default function index({ units }) {
     return (
         <>
             <AuthenticatedLayout>
-                <Head title="Setups - Units" />
+                <Head title="Users" />
 
                 <BreadCrumb
-                    header={'Setups - Units'}
+                    header={'Users'}
                     parent={'Dashboard'}
                     parent_link={route('dashboard')}
-                    child={'Setups - Units'}
+                    child={'Users'}
                 />
 
                 <Card
@@ -123,8 +140,8 @@ export default function index({ units }) {
                         <>
                             <div className="flex flex-wrap justify-end my-3">
                                 <PrimaryButton
-                                    CustomClass={'w-[200px]'}
-                                    Text={'Create Unit'}
+                                    CustomClass={'mix-w-[200px]'}
+                                    Text={'Create User'}
                                     Action={() => setCreateModalOpen(true)}
                                     Icon={
                                         <svg
@@ -153,9 +170,9 @@ export default function index({ units }) {
                                 resetSingleSelectedId={resetSingleSelectedId}
                                 BulkDeleteMethod={BulkDelete}
                                 SingleDeleteMethod={SingleDelete}
-                                BulkDeleteRoute={'setups.units.destroybyselection'}
-                                SingleDeleteRoute={'setups.units.destroy'}
-                                items={units}
+                                BulkDeleteRoute={'users.destroybyselection'}
+                                SingleDeleteRoute={'users.destroy'}
+                                items={users}
                                 props={props}
                                 columns={columns}
                                 Search={false}
@@ -175,14 +192,14 @@ export default function index({ units }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-2xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={CreateMethod}
-                                                className="grid items-start grid-cols-1 gap-6"
+                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Create Unit
+                                                        Create User
                                                     </h3>
                                                 </div>
 
@@ -198,7 +215,7 @@ export default function index({ units }) {
                                                     </div>
                                                 )}
 
-                                                <div className="col-span-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -212,6 +229,64 @@ export default function index({ units }) {
                                                             setCreateData('name', e.target.value)
                                                         }
                                                     />
+
+                                                    <Input
+                                                        InputName={'Email'}
+                                                        Id={'email'}
+                                                        Name={'email'}
+                                                        Type={'email'}
+                                                        Placeholder={'Enter Email'}
+                                                        Required={true}
+                                                        Error={createErrors.email}
+                                                        Value={createData.email}
+                                                        Action={(e) =>
+                                                            setCreateData('email', e.target.value)
+                                                        }
+                                                    />
+
+                                                    <Input
+                                                        InputName={'Password'}
+                                                        Id={'password'}
+                                                        Name={'password'}
+                                                        Type={'password'}
+                                                        Placeholder={'Enter Password'}
+                                                        Required={true}
+                                                        Error={createErrors.password}
+                                                        Value={createData.password}
+                                                        Action={(e) =>
+                                                            setCreateData(
+                                                                'password',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        ShowPasswordToggle={showPasswordToggle}
+                                                        setShowPasswordToggle={
+                                                            setShowPasswordToggle
+                                                        }
+                                                    />
+
+                                                    <Input
+                                                        InputName={'Confirm Password'}
+                                                        Id={'password_confirmation'}
+                                                        Name={'password_confirmation'}
+                                                        Type={'password'}
+                                                        Placeholder={'Enter Confirm Password'}
+                                                        Required={true}
+                                                        Error={createErrors.password_confirmation}
+                                                        Value={createData.password_confirmation}
+                                                        Action={(e) =>
+                                                            setCreateData(
+                                                                'password_confirmation',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        ShowPasswordToggle={
+                                                            showConfirmPasswordToggle
+                                                        }
+                                                        setShowPasswordToggle={
+                                                            setShowConfirmPasswordToggle
+                                                        }
+                                                    />
                                                 </div>
 
                                                 {/* Buttons */}
@@ -220,6 +295,12 @@ export default function index({ units }) {
                                                         Action={() => {
                                                             setCreateModalOpen(false);
                                                             setCreateData('name', '');
+                                                            setCreateData('email', '');
+                                                            setCreateData('password', '');
+                                                            setCreateData(
+                                                                'password_confirmation',
+                                                                '',
+                                                            );
                                                         }}
                                                         Disabled={createProcessing}
                                                         Icon={
@@ -240,17 +321,23 @@ export default function index({ units }) {
                                                         Type={'button'}
                                                         Text={'Close'}
                                                         CustomClass={
-                                                            'bg-red-500 hover:bg-red-600 w-full'
+                                                            'bg-red-500 hover:bg-red-600 w-full '
                                                         }
                                                     />
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Create Unit"
+                                                        Text="Create User"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
-                                                            createData.name === ''
+                                                            createData.name === '' ||
+                                                            createData.email === '' ||
+                                                            createData.password === '' ||
+                                                            createData.password_confirmation ===
+                                                                '' ||
+                                                            createData.password !==
+                                                                createData.password_confirmation
                                                         }
                                                         Icon={
                                                             <svg
@@ -286,14 +373,14 @@ export default function index({ units }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-2xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={EditMethod}
                                                 className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Edit Unit
+                                                        Edit User
                                                     </h3>
                                                 </div>
 
@@ -309,7 +396,7 @@ export default function index({ units }) {
                                                     </div>
                                                 )}
 
-                                                <div className="col-span-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -323,6 +410,61 @@ export default function index({ units }) {
                                                             setEditData('name', e.target.value)
                                                         }
                                                     />
+
+                                                    <Input
+                                                        InputName={'Email'}
+                                                        Id={'email'}
+                                                        Name={'email'}
+                                                        Type={'email'}
+                                                        Placeholder={'Enter Email'}
+                                                        Required={true}
+                                                        Error={editErrors.email}
+                                                        Value={editData.email}
+                                                        Action={(e) =>
+                                                            setEditData('email', e.target.value)
+                                                        }
+                                                    />
+
+                                                    <Input
+                                                        InputName={'Password'}
+                                                        Id={'password'}
+                                                        Name={'password'}
+                                                        Type={'password'}
+                                                        Placeholder={'Enter Password'}
+                                                        Required={false}
+                                                        Error={editErrors.password}
+                                                        Value={editData.password}
+                                                        Action={(e) =>
+                                                            setEditData('password', e.target.value)
+                                                        }
+                                                        ShowPasswordToggle={showPasswordToggle}
+                                                        setShowPasswordToggle={
+                                                            setShowPasswordToggle
+                                                        }
+                                                    />
+
+                                                    <Input
+                                                        InputName={'Confirm Password'}
+                                                        Id={'password_confirmation'}
+                                                        Name={'password_confirmation'}
+                                                        Type={'password'}
+                                                        Placeholder={'Enter Confirm Password'}
+                                                        Required={false}
+                                                        Error={editErrors.password_confirmation}
+                                                        Value={editData.password_confirmation}
+                                                        Action={(e) =>
+                                                            setEditData(
+                                                                'password_confirmation',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                        ShowPasswordToggle={
+                                                            showConfirmPasswordToggle
+                                                        }
+                                                        setShowPasswordToggle={
+                                                            setShowConfirmPasswordToggle
+                                                        }
+                                                    />
                                                 </div>
 
                                                 {/* Buttons */}
@@ -332,6 +474,12 @@ export default function index({ units }) {
                                                             setEditModalOpen(false);
                                                             setEditData('id', '');
                                                             setEditData('name', '');
+                                                            setEditData('email', '');
+                                                            setEditData('password', '');
+                                                            setEditData(
+                                                                'password_confirmation',
+                                                                '',
+                                                            );
                                                         }}
                                                         Disabled={editProcessing}
                                                         Icon={
@@ -351,17 +499,24 @@ export default function index({ units }) {
                                                         }
                                                         Type={'button'}
                                                         CustomClass={
-                                                            'bg-red-500 hover:bg-red-600 w-full '
+                                                            'bg-red-500 hover:bg-red-600 w-full'
                                                         }
                                                         Text={'Close'}
                                                     />
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Update Unit"
+                                                        Text="Update User"
                                                         Spinner={editProcessing}
                                                         Disabled={
-                                                            editProcessing || editData.name === ''
+                                                            editProcessing ||
+                                                            editData.name === '' ||
+                                                            editData.email === '' ||
+                                                            (editData.password != '' &&
+                                                                editData.password_confirmation ===
+                                                                    '') ||
+                                                            editData.password !=
+                                                                editData.password_confirmation
                                                         }
                                                         Icon={
                                                             <svg

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Unit;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 
 class UnitController extends Controller
@@ -29,14 +30,18 @@ class UnitController extends Controller
 
             throw new Exception('Something went wrong While Creating Unit');
         } catch (Exception $e) {
-            return back()->with('error', $e->getMessage())->withErrors(['name' => $e->getMessage()]);
+            throw ValidationException::withMessages([
+                'server' => $e->getMessage(),
+            ]);
         }
     }
 
     public function update(Request $request, string $id)
     {
         if (empty($id)) {
-            return back()->with('error', 'Unit does not exist')->withErrors(['name' => 'Unit does not exist']);
+            throw ValidationException::withMessages([
+                'server' => 'Unit ID is Missing',
+            ]);
         }
 
         $validated_req = $request->validate([
@@ -56,7 +61,9 @@ class UnitController extends Controller
 
             throw new Exception('Something went wrong While Updating Unit');
         } catch (Exception $e) {
-            return back()->with('error', $e->getMessage())->withErrors(['name' => $e->getMessage()]);
+            throw ValidationException::withMessages([
+                'server' => $e->getMessage(),
+            ]);
         }
 
     }
@@ -64,7 +71,7 @@ class UnitController extends Controller
     public function destroy(string $id)
     {
         if (empty($id)) {
-            return back()->with('error', 'Unit does not exist')->withErrors(['name' => 'Unit does not exist']);
+            return back()->with('error', 'Unit ID is Missing');
         }
 
         try {
@@ -89,7 +96,7 @@ class UnitController extends Controller
         $ids = $request->array('ids');
 
         if (blank($ids)) {
-            return back()->with('error', 'Unit does not exist')->withErrors(['name' => 'Unit does not exist']);
+            return back()->with('error', 'Unit ID is Missing');
         }
 
         try {

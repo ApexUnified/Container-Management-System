@@ -5,40 +5,22 @@ import Preloader from '@/Components/Preloader';
 import Toast from '@/Components/Toast';
 
 export default function GuestLayout({ children }) {
-
-
-
-    // Global General Setting Prop
-    const { generalSetting } = usePage().props;
-
     // Global Asset Prop To Get asset() path it uses Laravel Default asset() Method
     const { asset } = usePage().props;
 
     // Global Flash Messages Prop Can be Assessble Via (flash.success || flash.error)
     const { flash } = usePage().props;
 
-
     // Managing Dark Mode State
     const [darkMode, setDarkMode] = useState(false);
-
 
     // Managing Loader State
     const [loaded, setLoaded] = useState(true);
 
     // Application Logo Sate With Default Images
-    const [ApplicationLogo, setApplicationLogo] = useState(asset + "assets/images/Logo/ApplicationLogoDark.png");
-
-
-    // For Updating Application Logo
-    useEffect(() => {
-
-        // Assigning Application logos
-        if (generalSetting?.app_main_logo_light) {
-            setApplicationLogo(asset + "assets/images/Logo/" + generalSetting?.app_main_logo_dark);
-        }
-
-    }, []);
-
+    const [ApplicationLogo, setApplicationLogo] = useState(
+        asset + 'assets/images/Logo/ApplicationLogoDark.png',
+    );
 
     // Checking DarkMode Sesion And Toggle Mode
     useEffect(() => {
@@ -51,56 +33,41 @@ export default function GuestLayout({ children }) {
         } else {
             document.body.className = '';
         }
-
     }, [darkMode]);
-
-
-
 
     return (
         <>
-
-
-
             <Preloader loaded={loaded} setLoaded={setLoaded} />
 
-            <Toast
-                flash={flash}
-            />
+            <Toast flash={flash} />
 
-
-
-
-            <div className="relative p-6 bg-slate-50 z-1 dark:bg-gray-900 sm:p-0">
-                <div
-                    className="relative flex flex-col justify-center w-full h-screen dark:bg-gray-900 sm:p-0 lg:flex-row"
-                >
-
+            <div className="relative p-6 z-1 bg-slate-50 dark:bg-gray-900 sm:p-0">
+                <div className="relative flex flex-col justify-center w-full h-screen dark:bg-gray-900 sm:p-0 lg:flex-row">
                     {children}
 
-                    <div
-                        className="relative items-center hidden w-full h-full bg-blue-950 dark:bg-white/5 lg:grid lg:w-1/2"
-                    >
+                    <div className="relative items-center hidden w-full h-full bg-blue-950 dark:bg-white/5 lg:grid lg:w-1/2">
                         <div className="flex items-center justify-center z-1">
-
                             <CommonGridShape />
                             <div className="flex flex-col items-center max-w-xs">
-                                <a href={route("home")} className="block mb-4 rounded-2xl dark:none">
+                                <a
+                                    href={route('home')}
+                                    className="block mb-4 dark:none rounded-2xl"
+                                >
                                     <img src={ApplicationLogo} alt="Logo" />
                                 </a>
-
                             </div>
                         </div>
                     </div>
 
                     <div className="fixed z-50 hidden bottom-6 right-6 sm:block">
                         <button
-                            className="inline-flex items-center justify-center text-white transition-colors bg-blue-600 rounded-full size-14 hover:bg-brand-600"
+                            className="inline-flex items-center justify-center text-white transition-colors bg-blue-600 rounded-full hover:bg-brand-600 size-14"
                             onClick={() => {
-
-                                setDarkMode(!darkMode)
-                                localStorage.setItem('darkMode', JSON.stringify(darkMode == false ? true : false));
-
+                                setDarkMode(!darkMode);
+                                localStorage.setItem(
+                                    'darkMode',
+                                    JSON.stringify(darkMode == false ? true : false),
+                                );
                             }}
                         >
                             <svg
@@ -134,9 +101,7 @@ export default function GuestLayout({ children }) {
                         </button>
                     </div>
                 </div>
-            </div >
-
+            </div>
         </>
     );
 }
-

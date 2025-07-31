@@ -6,8 +6,9 @@ import Table from '@/Components/Table';
 import { useEffect, useState } from 'react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Input from '@/Components/Input';
+import SelectInput from '@/Components/SelectInput';
 
-export default function index({ units }) {
+export default function index({ products, units }) {
     const { props } = usePage();
     const {
         data: BulkselectedIds,
@@ -27,35 +28,6 @@ export default function index({ units }) {
         id: null,
     });
 
-    const [columns, setColumns] = useState([]);
-    const [customActions, setCustomActions] = useState([]);
-
-    useEffect(() => {
-        const columns = [
-            { key: 'uuid', label: 'UUID' },
-            { key: 'name', label: 'Unit Name' },
-            { key: 'added_at', label: 'Created At' },
-        ];
-
-        const actions = [
-            {
-                label: 'Edit',
-                type: 'button',
-                onClick: (item) => {
-                    setEditModalOpen(true);
-                    setEditData('name', item.name);
-                    setEditData('id', item.id);
-                },
-            },
-        ];
-
-        setCustomActions(actions);
-        setColumns(columns);
-    }, []);
-
-    //   Unit Creation Modal  State
-    const [CreateModalOpen, setCreateModalOpen] = useState(false);
-
     // Create Request
     const {
         data: createData,
@@ -65,24 +37,10 @@ export default function index({ units }) {
         errors: createErrors,
     } = useForm({
         name: '',
+        unit_id: '',
     });
 
-    // CreateMethod
-    const CreateMethod = (e) => {
-        e.preventDefault();
-
-        createPost(route('setups.units.store'), {
-            onSuccess: () => {
-                setCreateModalOpen(false);
-                setCreateData('name', '');
-            },
-        });
-    };
-
-    // Unit  Modal State
-    const [EditModalOpen, setEditModalOpen] = useState(false);
-
-    // Edit  Form Data
+    // Edit Form Data
     const {
         data: editData,
         setData: setEditData,
@@ -92,16 +50,62 @@ export default function index({ units }) {
     } = useForm({
         id: '',
         name: '',
+        unit_id: '',
     });
+
+    const [columns, setColumns] = useState([]);
+    const [customActions, setCustomActions] = useState([]);
+
+    //    Create Modal  State
+    const [CreateModalOpen, setCreateModalOpen] = useState(false);
+
+    //  Edit Modal State
+    const [EditModalOpen, setEditModalOpen] = useState(false);
+
+    useEffect(() => {
+        const columns = [
+            { key: 'uuid', label: 'UUID' },
+            { key: 'name', label: 'Name' },
+            { key: 'unit.name', label: 'Unit', badge: (value) => 'bg-blue-500 text-white p-3' },
+        ];
+
+        const actions = [
+            {
+                label: 'Edit',
+                type: 'button',
+                onClick: (item) => {
+                    setEditModalOpen(true);
+                    setEditData(item);
+                },
+            },
+        ];
+
+        setCustomActions(actions);
+        setColumns(columns);
+    }, []);
+
+    // CreateMethod
+    const CreateMethod = (e) => {
+        e.preventDefault();
+
+        createPost(route('setups.products.store'), {
+            onSuccess: () => {
+                setCreateModalOpen(false);
+                setCreateData('name', '');
+                setCreateData('unit_id', '');
+            },
+        });
+    };
 
     // EditMethod
     const EditMethod = (e) => {
         e.preventDefault();
-        editPut(route('setups.units.update', editData.id), {
+        editPut(route('setups.products.update', editData.id), {
             onSuccess: () => {
                 setEditModalOpen(false);
                 setEditData('id', '');
                 setEditData('name', '');
+                setEditData('unit_id', '');
             },
         });
     };
@@ -109,13 +113,13 @@ export default function index({ units }) {
     return (
         <>
             <AuthenticatedLayout>
-                <Head title="Setups - Units" />
+                <Head title="Setups - Products" />
 
                 <BreadCrumb
-                    header={'Setups - Units'}
+                    header={'Setups - Products'}
                     parent={'Dashboard'}
                     parent_link={route('dashboard')}
-                    child={'Setups - Units'}
+                    child={'Setups - Products'}
                 />
 
                 <Card
@@ -123,8 +127,8 @@ export default function index({ units }) {
                         <>
                             <div className="flex flex-wrap justify-end my-3">
                                 <PrimaryButton
-                                    CustomClass={'w-[200px]'}
-                                    Text={'Create Unit'}
+                                    CustomClass={'mix-w-[200px]'}
+                                    Text={'Create Product'}
                                     Action={() => setCreateModalOpen(true)}
                                     Icon={
                                         <svg
@@ -153,9 +157,9 @@ export default function index({ units }) {
                                 resetSingleSelectedId={resetSingleSelectedId}
                                 BulkDeleteMethod={BulkDelete}
                                 SingleDeleteMethod={SingleDelete}
-                                BulkDeleteRoute={'setups.units.destroybyselection'}
-                                SingleDeleteRoute={'setups.units.destroy'}
-                                items={units}
+                                BulkDeleteRoute={'setups.products.destroybyselection'}
+                                SingleDeleteRoute={'setups.products.destroy'}
+                                items={products}
                                 props={props}
                                 columns={columns}
                                 Search={false}
@@ -175,14 +179,14 @@ export default function index({ units }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-2xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={CreateMethod}
-                                                className="grid items-start grid-cols-1 gap-6"
+                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Create Unit
+                                                        Create Product
                                                     </h3>
                                                 </div>
 
@@ -198,7 +202,7 @@ export default function index({ units }) {
                                                     </div>
                                                 )}
 
-                                                <div className="col-span-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -212,6 +216,24 @@ export default function index({ units }) {
                                                             setCreateData('name', e.target.value)
                                                         }
                                                     />
+
+                                                    <SelectInput
+                                                        InputName={'Unit'}
+                                                        Id={'unit_id'}
+                                                        Name={'unit_id'}
+                                                        items={units}
+                                                        itemKey={'name'}
+                                                        Multiple={false}
+                                                        Required={true}
+                                                        Value={createData.unit_id}
+                                                        Error={createErrors.unit_id}
+                                                        Action={(selectedOption) => {
+                                                            setCreateData(
+                                                                'unit_id',
+                                                                selectedOption,
+                                                            );
+                                                        }}
+                                                    />
                                                 </div>
 
                                                 {/* Buttons */}
@@ -220,6 +242,7 @@ export default function index({ units }) {
                                                         Action={() => {
                                                             setCreateModalOpen(false);
                                                             setCreateData('name', '');
+                                                            setCreateData('unit_id', '');
                                                         }}
                                                         Disabled={createProcessing}
                                                         Icon={
@@ -240,17 +263,18 @@ export default function index({ units }) {
                                                         Type={'button'}
                                                         Text={'Close'}
                                                         CustomClass={
-                                                            'bg-red-500 hover:bg-red-600 w-full'
+                                                            'bg-red-500 hover:bg-red-600 w-full '
                                                         }
                                                     />
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Create Unit"
+                                                        Text="Create Product"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
-                                                            createData.name === ''
+                                                            createData.name === '' ||
+                                                            createData.unit_id === ''
                                                         }
                                                         Icon={
                                                             <svg
@@ -286,14 +310,14 @@ export default function index({ units }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-2xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={EditMethod}
                                                 className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Edit Unit
+                                                        Edit Product
                                                     </h3>
                                                 </div>
 
@@ -309,7 +333,7 @@ export default function index({ units }) {
                                                     </div>
                                                 )}
 
-                                                <div className="col-span-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -323,6 +347,21 @@ export default function index({ units }) {
                                                             setEditData('name', e.target.value)
                                                         }
                                                     />
+
+                                                    <SelectInput
+                                                        InputName={'Unit'}
+                                                        Id={'unit_id'}
+                                                        Name={'unit_id'}
+                                                        items={units}
+                                                        itemKey={'name'}
+                                                        Multiple={false}
+                                                        Required={true}
+                                                        Value={editData.unit_id}
+                                                        Error={editErrors.unit_id}
+                                                        Action={(selectedOption) => {
+                                                            setEditData('unit_id', selectedOption);
+                                                        }}
+                                                    />
                                                 </div>
 
                                                 {/* Buttons */}
@@ -332,6 +371,7 @@ export default function index({ units }) {
                                                             setEditModalOpen(false);
                                                             setEditData('id', '');
                                                             setEditData('name', '');
+                                                            setEditData('unit_id', '');
                                                         }}
                                                         Disabled={editProcessing}
                                                         Icon={
@@ -351,17 +391,19 @@ export default function index({ units }) {
                                                         }
                                                         Type={'button'}
                                                         CustomClass={
-                                                            'bg-red-500 hover:bg-red-600 w-full '
+                                                            'bg-red-500 hover:bg-red-600 w-full'
                                                         }
                                                         Text={'Close'}
                                                     />
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Update Unit"
+                                                        Text="Update Product"
                                                         Spinner={editProcessing}
                                                         Disabled={
-                                                            editProcessing || editData.name === ''
+                                                            editProcessing ||
+                                                            editData.name === '' ||
+                                                            editData.unit_id === ''
                                                         }
                                                         Icon={
                                                             <svg

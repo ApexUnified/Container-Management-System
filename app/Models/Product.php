@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Unit extends Model
+class Product extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'unit_id'];
 
     protected $appends = ['added_at'];
 
@@ -15,7 +15,7 @@ class Unit extends Model
     {
         static::creating(function ($unit) {
             do {
-                $unit->uuid = 'U-'.(string) mt_rand(1000000000, 9999999999);
+                $unit->uuid = 'PRO-'.(string) mt_rand(1000000000, 9999999999);
             } while (self::where('uuid', $unit->uuid)->exists());
         });
     }
@@ -25,8 +25,8 @@ class Unit extends Model
         return $this->created_at->format('Y-m-d');
     }
 
-    public function products(): HasMany
+    public function unit(): BelongsTo
     {
-        return $this->hasMany(Product::class, 'unit_id', 'id');
+        return $this->belongsTo(Unit::class, 'unit_id', 'id');
     }
 }

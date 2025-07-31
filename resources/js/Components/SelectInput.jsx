@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import Select from 'react-select';
 
 export default function SelectInput({
     Name,
@@ -13,6 +14,18 @@ export default function SelectInput({
     itemKey,
     Multiple = false,
 }) {
+    const [options, setOptions] = useState([]);
+
+    useEffect(() => {
+        const modified_options = items.map((item) => ({
+            value: item.id ?? item[itemKey],
+            label: item[itemKey].length > 50 ? item[itemKey].slice(0, 50) + '...' : item[itemKey],
+            uuid: item.uuid,
+        }));
+
+        setOptions(modified_options);
+    }, []);
+
     return (
         <>
             <div className={`${CustomCss} w-full`}>
@@ -25,26 +38,45 @@ export default function SelectInput({
                 </label>
 
                 <div className="relative">
-                    <select
+                    <Select
                         name={Name}
-                        id={Id}
-                        onChange={Action}
+                        inputId={Id}
+                        options={options}
+                        value={options.find((opt) => opt.value === Value)}
+                        onChange={(selectedOption) => {
+                            if (Multiple) {
+                                Action(selectedOption?.map((opt) => opt.value));
+                            } else {
+                                Action(selectedOption?.value);
+                            }
+                        }}
+                        isMulti={Multiple}
+                        isSearchable
                         required={Required}
-                        value={Value}
-                        className="dark:bg-dark-900 shadow-theme-xs focus:ring-3 focus:outline-hidden h-[42px] w-full min-w-[250px] rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-300 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800"
-                        {...(Multiple ? { multiple: true } : {})}
-                    >
-                        <option value="">Select {InputName}</option>
-                        {items.map((item, index) => {
-                            return (
-                                <option key={index} value={item.id ?? item[itemKey]}>
-                                    {item[itemKey].length > 50
-                                        ? item[itemKey].slice(0, 50) + '...'
-                                        : item[itemKey]}
-                                </option>
-                            );
-                        })}
-                    </select>
+                        placeholder={`Select ${InputName} Or Paste UUID To Search...`}
+                        classNamePrefix="react-select"
+                        className="react-select-container"
+                        filterOption={(option, inputValue) => {
+                            const name = option.data.name?.toLowerCase() || '';
+                            const uuid = option.data.uuid?.toLowerCase() || '';
+                            const input = inputValue.toLowerCase();
+                            return name.includes(input) || uuid.includes(input);
+                        }}
+                        styles={{
+                            control: (base) => ({
+                                ...base,
+                                minHeight: '42px',
+                                backgroundColor: 'transparent',
+                                borderColor: '#d1d5db',
+                                boxShadow: 'none',
+                                ':hover': { borderColor: '#93c5fd' },
+                            }),
+                            menu: (base) => ({
+                                ...base,
+                                zIndex: 9999,
+                            }),
+                        }}
+                    />
                 </div>
 
                 <div className="h-5">

@@ -1,40 +1,34 @@
-import React, { useEffect, useState } from 'react'
-import { FilePond, registerPlugin } from "react-filepond";
+import React, { useState } from 'react';
+import { FilePond, registerPlugin } from 'react-filepond';
 
-import "filepond/dist/filepond.min.css";
-import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css';
 
-
-import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
 import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import { usePage } from '@inertiajs/react';
-
 
 registerPlugin(
     FilePondPluginImagePreview,
     FilePondPluginFileValidateType,
     FilePondPluginImageExifOrientation,
-    FilePondPluginFileValidateSize
+    FilePondPluginFileValidateSize,
 );
-export default function FileUploaderInput(
-    { Multiple = false,
-        InputName,
-        CustomCss,
-        Id,
-        Required = false,
-        Label,
-        Error,
-        onUpdate,
-        DefaultFile,
-        acceptedFileTypes,
-        MaxFileSize
-    }
-) {
-
-
-
+export default function FileUploaderInput({
+    Multiple = false,
+    InputName,
+    CustomCss,
+    Id,
+    Required = false,
+    Label,
+    Error,
+    onUpdate,
+    DefaultFile,
+    acceptedFileTypes,
+    MaxFileSize,
+}) {
     const [files, setFiles] = useState(() => {
         if (!DefaultFile || !Array.isArray(DefaultFile)) return [];
 
@@ -46,30 +40,28 @@ export default function FileUploaderInput(
         return Multiple ? preloaded : preloaded.slice(0, 1);
     });
 
-
     return (
         <>
-            <div className={CustomCss || "w-full"}>
-
-                <label htmlFor={Id} className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400">
+            <div className={CustomCss || 'w-full'}>
+                <label
+                    htmlFor={Id}
+                    className="mb-1.5 block text-sm font-medium text-gray-700 dark:text-gray-400"
+                >
                     {InputName}
                     {Required && <span className="text-red-500 dark:text-white"> *</span>}
                 </label>
 
-
-                <div className="relative cursor-pointer ">
+                <div className="relative cursor-pointer">
                     <FilePond
                         allowMultiple={Multiple}
                         credits={false}
                         acceptedFileTypes={acceptedFileTypes ?? ['image/*']}
-
-                        labelIdle={Label ?? "Drag & Drop Your Files or <strong>Click</strong>"}
+                        labelIdle={Label ?? 'Drag & Drop Your Files or <strong>Click</strong>'}
                         onupdatefiles={(fileItems) => {
                             setFiles(fileItems);
 
-                            const updatedFiles = fileItems.map(item => {
+                            const updatedFiles = fileItems.map((item) => {
                                 if (item.file instanceof File) {
-
                                     return {
                                         file: item.file,
                                         isNew: true,
@@ -89,25 +81,14 @@ export default function FileUploaderInput(
                         allowDrop={true}
                         dropOnElement={true}
                         className="filepond--root"
-                        maxFileSize={MaxFileSize ?? "2MB"}
+                        maxFileSize={MaxFileSize ?? '2MB'}
                     />
-
-
                 </div>
 
                 <div className="h-5">
-                    {Error &&
-                        (
-                            <p className="text-red-500 dark:text-white mt-1.5">
-                                {Error}
-                            </p>
-                        )
-                    }
+                    {Error && <p className="mt-1.5 text-red-500 dark:text-white">{Error}</p>}
                 </div>
-
-
-
             </div>
         </>
-    )
+    );
 }
