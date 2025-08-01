@@ -135,7 +135,7 @@
 
 @media (min-width: 1023px) {
     .sidebar:hover {
-        width: 290px;
+        width: 270px;
     }
 
     .sidebar:hover .logo {

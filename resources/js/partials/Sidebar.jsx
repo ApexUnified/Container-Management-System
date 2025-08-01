@@ -1,5 +1,6 @@
+import useWindowSize from '@/Hooks/useWindowSize';
 import { Link } from '@inertiajs/react';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 export default function Sidebar({
     sidebarToggle,
@@ -10,15 +11,45 @@ export default function Sidebar({
     // For Managing Sidebar Navlinks Selection State
     const [selected, setSelected] = useState(null);
 
+    const { width } = useWindowSize();
+
+    const isLargeScreen = width >= 1025;
+    const prevIsLargeScreenRef = useRef(isLargeScreen);
+
+    useEffect(() => {
+        if (prevIsLargeScreenRef.current && !isLargeScreen && sidebarToggle) {
+            setSidebarToggle(false);
+        }
+        prevIsLargeScreenRef.current = isLargeScreen;
+    }, [isLargeScreen, sidebarToggle]);
+
+    useEffect(() => {
+        if (isLargeScreen) {
+            const saved = localStorage.getItem('sidebarToggle');
+            if (saved === null) {
+                setSidebarToggle(false);
+                localStorage.setItem('sidebarToggle', JSON.stringify(false));
+            } else {
+                setSidebarToggle(JSON.parse(saved));
+            }
+        }
+    }, [isLargeScreen]);
+
+    useEffect(() => {
+        if (isLargeScreen) {
+            localStorage.setItem('sidebarToggle', JSON.stringify(sidebarToggle));
+        }
+    }, [sidebarToggle, isLargeScreen]);
+
     return (
         <>
             <aside
                 className={`${
                     sidebarToggle ? 'translate-x-0 lg:w-[90px]' : '-translate-x-full'
-                } sidebar fixed left-0 top-0 z-[12] flex h-screen w-[290px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-gray-900 lg:static lg:translate-x-0`}
+                } sidebar fixed left-0 top-0 z-[12] flex h-screen w-[260px] flex-col overflow-y-hidden border-r border-gray-200 bg-white px-5 dark:border-gray-800 dark:bg-gray-900 lg:static lg:translate-x-0`}
             >
                 <div
-                    className={`flex items-center ${sidebarToggle ? 'justify-center' : 'justify-between'} sidebar-header gap-2 pb-7 pt-8`}
+                    className={`flex items-center ${sidebarToggle ? 'justify-center' : 'justify-between'} gap-2 pb-7 pt-8`}
                 >
                     <Link href={route('dashboard')}>
                         <span className={`logo ${sidebarToggle ? 'hidden' : ''}`}>
@@ -62,12 +93,6 @@ export default function Sidebar({
                     <nav>
                         <div>
                             <h3 className="mb-4 text-xs uppercase leading-[20px] text-gray-400">
-                                <span
-                                    className={`menu-group-title ${sidebarToggle ? 'lg:hidden' : ''}`}
-                                >
-                                    MENU
-                                </span>
-
                                 <svg
                                     className={`menu-group-icon mx-auto fill-current ${sidebarToggle ? 'hidden lg:block' : 'hidden'}`}
                                     width="24"

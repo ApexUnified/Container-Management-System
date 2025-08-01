@@ -77,7 +77,6 @@ export default function index({ vendors }) {
 
     useEffect(() => {
         const columns = [
-            { key: 'uuid', label: 'UUID' },
             {
                 label: 'Name',
                 render: (item) => {
@@ -101,7 +100,6 @@ export default function index({ vendors }) {
             { key: 'address', label: 'Address' },
             { key: 'tel_no', label: 'Tel No' },
             { key: 'mobile_no', label: 'Mobile No' },
-            { key: 'added_at', label: 'Created At' },
         ];
 
         const actions = [

@@ -36,7 +36,6 @@ export default function index({ users }) {
         errors: createErrors,
     } = useForm({
         name: '',
-        email: '',
         password: '',
         password_confirmation: '',
     });
@@ -51,7 +50,6 @@ export default function index({ users }) {
     } = useForm({
         id: '',
         name: '',
-        email: '',
         password: '',
         password_confirmation: '',
     });
@@ -70,13 +68,7 @@ export default function index({ users }) {
     const [showConfirmPasswordToggle, setShowConfirmPasswordToggle] = useState(false);
 
     useEffect(() => {
-        const columns = [
-            { key: 'uuid', label: 'UUID' },
-            { key: 'name', label: 'Name' },
-            { key: 'email', label: 'Email' },
-
-            { key: 'added_at', label: 'Created At' },
-        ];
+        const columns = [{ key: 'name', label: 'Name' }];
 
         const actions = [
             {
@@ -101,7 +93,6 @@ export default function index({ users }) {
             onSuccess: () => {
                 setCreateModalOpen(false);
                 setCreateData('name', '');
-                setCreateData('email', '');
                 setCreateData('password', '');
                 setCreateData('password_confirmation', '');
             },
@@ -116,7 +107,6 @@ export default function index({ users }) {
                 setEditModalOpen(false);
                 setEditData('id', '');
                 setEditData('name', '');
-                setEditData('email', '');
                 setEditData('password', '');
                 setEditData('password_confirmation', '');
             },
@@ -231,20 +221,6 @@ export default function index({ users }) {
                                                     />
 
                                                     <Input
-                                                        InputName={'Email'}
-                                                        Id={'email'}
-                                                        Name={'email'}
-                                                        Type={'email'}
-                                                        Placeholder={'Enter Email'}
-                                                        Required={true}
-                                                        Error={createErrors.email}
-                                                        Value={createData.email}
-                                                        Action={(e) =>
-                                                            setCreateData('email', e.target.value)
-                                                        }
-                                                    />
-
-                                                    <Input
                                                         InputName={'Password'}
                                                         Id={'password'}
                                                         Name={'password'}
@@ -295,7 +271,7 @@ export default function index({ users }) {
                                                         Action={() => {
                                                             setCreateModalOpen(false);
                                                             setCreateData('name', '');
-                                                            setCreateData('email', '');
+
                                                             setCreateData('password', '');
                                                             setCreateData(
                                                                 'password_confirmation',
@@ -332,7 +308,6 @@ export default function index({ users }) {
                                                         Disabled={
                                                             createProcessing ||
                                                             createData.name === '' ||
-                                                            createData.email === '' ||
                                                             createData.password === '' ||
                                                             createData.password_confirmation ===
                                                                 '' ||
@@ -412,20 +387,6 @@ export default function index({ users }) {
                                                     />
 
                                                     <Input
-                                                        InputName={'Email'}
-                                                        Id={'email'}
-                                                        Name={'email'}
-                                                        Type={'email'}
-                                                        Placeholder={'Enter Email'}
-                                                        Required={true}
-                                                        Error={editErrors.email}
-                                                        Value={editData.email}
-                                                        Action={(e) =>
-                                                            setEditData('email', e.target.value)
-                                                        }
-                                                    />
-
-                                                    <Input
                                                         InputName={'Password'}
                                                         Id={'password'}
                                                         Name={'password'}
@@ -474,7 +435,7 @@ export default function index({ users }) {
                                                             setEditModalOpen(false);
                                                             setEditData('id', '');
                                                             setEditData('name', '');
-                                                            setEditData('email', '');
+
                                                             setEditData('password', '');
                                                             setEditData(
                                                                 'password_confirmation',
@@ -511,7 +472,6 @@ export default function index({ users }) {
                                                         Disabled={
                                                             editProcessing ||
                                                             editData.name === '' ||
-                                                            editData.email === '' ||
                                                             (editData.password != '' &&
                                                                 editData.password_confirmation ===
                                                                     '') ||

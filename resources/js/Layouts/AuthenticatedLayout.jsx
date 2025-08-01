@@ -27,7 +27,23 @@ export default function AuthenticatedLayout({ children }) {
     const [loaded, setLoaded] = useState(true);
 
     // Managing SidebarToggle State
-    const [sidebarToggle, setSidebarToggle] = useState(false);
+    const [sidebarToggle, setSidebarToggle] = useState(() => {
+        const saved = localStorage.getItem('sidebarToggle');
+        if (saved === null) {
+            return false;
+        }
+        try {
+            const parsed = JSON.parse(saved);
+            if (typeof parsed === 'boolean') {
+                return parsed;
+            }
+            localStorage.removeItem('sidebarToggle');
+            return false;
+        } catch (error) {
+            localStorage.removeItem('sidebarToggle');
+            return false;
+        }
+    });
 
     // Managing Dark Mode State
     const [darkMode, setDarkMode] = useState(false);

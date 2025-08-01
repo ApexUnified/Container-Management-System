@@ -351,7 +351,7 @@ export default function Table({
                                             className="py-3 pr-5 whitespace-nowrap sm:pr-5"
                                         >
                                             <div className="flex items-center col-span-3">
-                                                <div className="flex items-center gap-3 text-sm font-medium text-gray-700 dark:text-gray-400">
+                                                <div className="flex items-center gap-3 text-sm font-medium text-gray-700 text-wrap dark:text-gray-400">
                                                     {renderCell(item, column)}
                                                 </div>
                                             </div>

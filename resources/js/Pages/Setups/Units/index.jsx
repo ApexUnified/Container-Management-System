@@ -31,11 +31,7 @@ export default function index({ units }) {
     const [customActions, setCustomActions] = useState([]);
 
     useEffect(() => {
-        const columns = [
-            { key: 'uuid', label: 'UUID' },
-            { key: 'name', label: 'Unit Name' },
-            { key: 'added_at', label: 'Created At' },
-        ];
+        const columns = [{ key: 'name', label: 'Unit Name' }];
 
         const actions = [
             {

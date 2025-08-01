@@ -21,20 +21,29 @@ export default function Header({
     const [profileDropdown, setProfileDropdown] = useState(false);
 
     // For Managing  References
-    const dropdownRef = useRef(null);
     const profileDropdownRef = useRef(null);
-    const searchInputRef = useRef(null);
 
     // Toggle Mode Dark + Light
     useEffect(() => {
-        const storedDarkMode = localStorage.getItem('darkMode');
-        if (storedDarkMode) {
-            setDarkMode(JSON.parse(storedDarkMode));
+        const saved = localStorage.getItem('darkMode');
+        if (saved === null) {
+            return false;
         }
-        if (darkMode) {
-            document.body.classList.add('dark', 'bg-gray-900');
-        } else {
-            document.body.classList = '';
+        try {
+            const parsed = JSON.parse(saved);
+            if (typeof parsed === 'boolean') {
+                setDarkMode(parsed);
+
+                if (darkMode) {
+                    document.body.classList.add('dark', 'bg-gray-900');
+                } else {
+                    document.body.classList = '';
+                }
+            } else {
+                localStorage.setItem('darkMode', false);
+            }
+        } catch (e) {
+            localStorage.setItem('darkMode', false);
         }
     }, [darkMode]);
 
@@ -52,9 +61,9 @@ export default function Header({
 
     return (
         <>
-            <header className="flex w-full border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 lg:border-b">
-                <div className="flex grow flex-col items-center justify-between lg:flex-row lg:px-6">
-                    <div className="flex w-full items-center justify-between gap-2 border-b border-gray-200 px-3 py-3 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
+            <header className="flex w-full bg-white border-gray-200 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
+                <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
+                    <div className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
                         <button
                             className={`${sidebarToggle ? 'bg-gray-100 dark:bg-gray-800 md:bg-transparent dark:lg:bg-transparent' : ''} z-99999 flex h-10 w-10 items-center justify-center rounded-lg border-gray-200 text-gray-500 dark:border-gray-800 dark:text-gray-400 lg:h-11 lg:w-11 lg:border`}
                             onClick={() => setSidebarToggle(!sidebarToggle)}
@@ -130,9 +139,9 @@ export default function Header({
                     <div
                         className={`${menuToggle ? 'flex' : 'hidden'} shadow-theme-md w-full items-center justify-between gap-4 px-5 py-4 lg:flex lg:justify-end lg:px-0 lg:shadow-none`}
                     >
-                        <div className="2xsm:gap-3 flex items-center gap-2">
+                        <div className="flex items-center gap-2 2xsm:gap-3">
                             <button
-                                className="hover:text-dark-900 relative flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                                className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
                                 onClick={() => {
                                     setDarkMode(!darkMode);
                                     localStorage.setItem('darkMode', !darkMode);
@@ -171,14 +180,14 @@ export default function Header({
 
                         <div className="relative z-[1]" ref={profileDropdownRef}>
                             <div
-                                className="flex cursor-pointer items-center text-gray-700 dark:text-gray-400"
+                                className="flex items-center text-gray-700 cursor-pointer dark:text-gray-400"
                                 onClick={() => setProfileDropdown(!profileDropdown)}
                             >
-                                <span className="hover:text-dark-900 mr-3 flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-gray-200 bg-white hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+                                <span className="flex items-center justify-center mr-3 overflow-hidden bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
                                     {user.avatar}
                                 </span>
 
-                                <span className="text-theme-sm mr-1 block font-medium">
+                                <span className="block mr-1 font-medium text-theme-sm">
                                     {' '}
                                     {user.name.length > 10
                                         ? user.name.slice(0, 10) + '...'
@@ -205,25 +214,11 @@ export default function Header({
 
                             {profileDropdown && (
                                 <div className="absolute right-0 mt-[17px] flex w-auto min-w-[300px] flex-col rounded-2xl border border-gray-200 bg-white p-3 shadow-2xl dark:border-gray-800 dark:bg-gray-900">
-                                    <div>
-                                        <span className="text-theme-sm block font-medium text-gray-700 dark:text-gray-400">
-                                            {user.name.length > 15
-                                                ? user.name.slice(0, 15) + '...'
-                                                : (user.name ?? 'User')}
-                                        </span>
-                                        <span className="text-theme-xs mt-0.5 block text-gray-500 dark:text-gray-400">
-                                            {user.email.length > 30
-                                                ? user.email.slice(0, 30) + '...'
-                                                : (user.email ?? 'info@gmail.com')}
-                                        </span>
-                                    </div>
-
-                                    <div className="flex flex-col gap-1 border-b border-gray-200 pb-3 pt-4 dark:border-gray-800"></div>
                                     <button
                                         onClick={() => {
                                             logout(route('logout'));
                                         }}
-                                        className="text-theme-sm group mt-3 flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                                        className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg text-theme-sm group hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                                     >
                                         {logoutProcessing ? (
                                             <Spinner />

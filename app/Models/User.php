@@ -22,7 +22,6 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
-        'email',
         'password',
     ];
 
@@ -36,7 +35,7 @@ class User extends Authenticatable
         'remember_token',
     ];
 
-    protected $appends = ['avatar', 'added_at'];
+    protected $appends = ['avatar'];
 
     /**
      * Get the attributes that should be cast.
@@ -46,7 +45,6 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
     }
@@ -73,19 +71,5 @@ class User extends Authenticatable
     public function sendEmailVerificationNotification()
     {
         $this->notify(new CustomVerifyEmailNotification);
-    }
-
-    protected static function booted()
-    {
-        static::creating(function ($user) {
-            do {
-                $user->uuid = 'USR-'.(string) mt_rand(1000000000, 9999999999);
-            } while (self::where('uuid', $user->uuid)->exists());
-        });
-    }
-
-    public function getAddedAtAttribute()
-    {
-        return $this->created_at->format('Y-m-d');
     }
 }

@@ -20,7 +20,6 @@ export default function SelectInput({
         const modified_options = items.map((item) => ({
             value: item.id ?? item[itemKey],
             label: item[itemKey].length > 50 ? item[itemKey].slice(0, 50) + '...' : item[itemKey],
-            uuid: item.uuid,
         }));
 
         setOptions(modified_options);
@@ -53,15 +52,9 @@ export default function SelectInput({
                         isMulti={Multiple}
                         isSearchable
                         required={Required}
-                        placeholder={`Select ${InputName} Or Paste UUID To Search...`}
+                        placeholder={`Select ${InputName} Or Search By its Name`}
                         classNamePrefix="react-select"
                         className="react-select-container"
-                        filterOption={(option, inputValue) => {
-                            const name = option.data.name?.toLowerCase() || '';
-                            const uuid = option.data.uuid?.toLowerCase() || '';
-                            const input = inputValue.toLowerCase();
-                            return name.includes(input) || uuid.includes(input);
-                        }}
                         styles={{
                             control: (base) => ({
                                 ...base,

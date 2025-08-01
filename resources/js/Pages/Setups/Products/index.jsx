@@ -64,7 +64,6 @@ export default function index({ products, units }) {
 
     useEffect(() => {
         const columns = [
-            { key: 'uuid', label: 'UUID' },
             { key: 'name', label: 'Name' },
             { key: 'unit.name', label: 'Unit', badge: (value) => 'bg-blue-500 text-white p-3' },
         ];

@@ -1,4 +1,5 @@
-import defaultTheme from 'tailwindcss/defaultTheme';
+
+import scrollbarHide from 'tailwind-scrollbar-hide';
 import forms from '@tailwindcss/forms';
 
 /** @type {import('tailwindcss').Config} */
@@ -20,5 +21,5 @@ export default {
         },
     },
 
-    plugins: [forms],
+    plugins: [forms,scrollbarHide],
 };

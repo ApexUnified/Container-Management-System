@@ -23,7 +23,6 @@ namespace App\Models{
  * @property string|null $mobile_no
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $added_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance query()
@@ -49,7 +48,6 @@ namespace App\Models{
  * @property int $unit_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $added_at
  * @property-read \App\Models\Unit $unit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
@@ -76,7 +74,6 @@ namespace App\Models{
  * @property string|null $mobile_no
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $added_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine query()
@@ -131,7 +128,6 @@ namespace App\Models{
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $added_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit newModelQuery()
@@ -152,12 +148,11 @@ namespace App\Models{
  * @property string $uuid
  * @property string $name
  * @property string $email
- * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property string|null $email_verified_at
  * @property string $password
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $added_at
  * @property-read mixed $avatar
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection<int, \Illuminate\Notifications\DatabaseNotification> $notifications
  * @property-read int|null $notifications_count
@@ -190,7 +185,6 @@ namespace App\Models{
  * @property string|null $mobile_no
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $added_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor query()
