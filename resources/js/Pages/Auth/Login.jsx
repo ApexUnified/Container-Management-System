@@ -19,10 +19,10 @@ export default function Login() {
 
     // Application Logo Sate With Default Images
     const [ApplicationLogoLight, setApplicationLogoLight] = useState(
-        asset + 'assets/images/Logo/ApplicationLogoLight.png',
+        asset + 'assets/images/Logo/Logo.png',
     );
     const [ApplicationLogoDark, setApplicationLogoDark] = useState(
-        asset + 'assets/images/Logo/ApplicationLogoDark.png',
+        asset + 'assets/images/Logo/Logo.png',
     );
 
     // Login User Form Request
@@ -39,9 +39,9 @@ export default function Login() {
             <Head title="Log in" />
 
             <div className="min-h-screen overflow-y-auto scrollbar-hide">
-                <div className="flex items-center justify-center min-h-screen">
+                <div className="flex min-h-screen items-center justify-center">
                     <div className="mx-auto w-full rounded-2xl border border-gray-200 bg-white p-5 pt-5 dark:border-gray-800 dark:bg-gray-800 sm:w-[400px]">
-                        <div className="flex items-center justify-center mb-5">
+                        <div className="mb-5 flex items-center justify-center">
                             <img
                                 src={ApplicationLogoDark}
                                 alt="Logo"
@@ -89,7 +89,7 @@ export default function Login() {
                                     <div>
                                         <label
                                             htmlFor="remember"
-                                            className="flex items-center text-sm font-normal text-gray-700 cursor-pointer select-none dark:text-white"
+                                            className="flex cursor-pointer select-none items-center text-sm font-normal text-gray-700 dark:text-white"
                                         >
                                             <div className="relative">
                                                 <input

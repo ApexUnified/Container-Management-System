@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CustomClearanceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShippingLineController;
 use App\Http\Controllers\TransporterController;
@@ -8,15 +9,12 @@ use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 Route::redirect('/', 'dashboard')->name('home');
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
 
     //    Setups Routes Group
     Route::group(['prefix' => 'setups', 'as' => 'setups.'], function () {

@@ -14,7 +14,6 @@
 namespace App\Models{
 /**
  * @property int $id
- * @property string $uuid
  * @property string $name
  * @property string|null $email
  * @property string|null $contact_person
@@ -35,7 +34,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereTelNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereUuid($value)
  */
 	class CustomClearance extends \Eloquent {}
 }
@@ -43,7 +41,6 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $uuid
  * @property string $name
  * @property int $unit_id
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -57,7 +54,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUnitId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUuid($value)
  */
 	class Product extends \Eloquent {}
 }
@@ -65,7 +61,6 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $uuid
  * @property string $name
  * @property string|null $email
  * @property string|null $contact_person
@@ -86,7 +81,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereTelNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine whereUuid($value)
  */
 	class ShippingLine extends \Eloquent {}
 }
@@ -94,7 +88,6 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $uuid
  * @property string $name
  * @property string|null $email
  * @property string|null $contact_person
@@ -116,7 +109,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereTelNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter whereUuid($value)
  */
 	class Transporter extends \Eloquent {}
 }
@@ -124,7 +116,6 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $uuid
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -137,7 +128,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit whereUuid($value)
  */
 	class Unit extends \Eloquent {}
 }
@@ -145,10 +135,8 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $uuid
  * @property string $name
- * @property string $email
- * @property string|null $email_verified_at
+ * @property string|null $email
  * @property string $password
  * @property string|null $remember_token
  * @property \Illuminate\Support\Carbon|null $created_at
@@ -162,13 +150,11 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmail($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereEmailVerifiedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User wherePassword($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereRememberToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|User whereUuid($value)
  */
 	class User extends \Eloquent {}
 }
@@ -176,7 +162,6 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $uuid
  * @property string $name
  * @property string|null $email
  * @property string|null $contact_person
@@ -197,7 +182,6 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereTelNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereUpdatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereUuid($value)
  */
 	class Vendor extends \Eloquent {}
 }
