@@ -35,7 +35,7 @@ export default function Dashboard({
                             <Card
                                 Content={
                                     <>
-                                        <div className="flex h-auto min-h-[200px] cursor-pointer flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
+                                        <div className="flex h-auto min-h-[200px] flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
                                             {/* Left Side: Title */}
                                             <div>
                                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -77,7 +77,7 @@ export default function Dashboard({
                             <Card
                                 Content={
                                     <>
-                                        <div className="flex h-auto min-h-[200px] cursor-pointer flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
+                                        <div className="flex h-auto min-h-[200px] flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
                                             {/* Left Side: Title */}
                                             <div>
                                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -120,7 +120,7 @@ export default function Dashboard({
                             <Card
                                 Content={
                                     <>
-                                        <div className="flex h-auto min-h-[200px] cursor-pointer flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
+                                        <div className="flex h-auto min-h-[200px] flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
                                             {/* Left Side: Title */}
                                             <div>
                                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -163,7 +163,7 @@ export default function Dashboard({
                             <Card
                                 Content={
                                     <>
-                                        <div className="flex h-auto min-h-[200px] cursor-pointer flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
+                                        <div className="flex h-auto min-h-[200px] flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
                                             {/* Left Side: Title */}
                                             <div>
                                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -206,7 +206,7 @@ export default function Dashboard({
                             <Card
                                 Content={
                                     <>
-                                        <div className="flex h-auto min-h-[200px] cursor-pointer flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
+                                        <div className="flex h-auto min-h-[200px] flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
                                             {/* Left Side: Title */}
                                             <div>
                                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -249,7 +249,7 @@ export default function Dashboard({
                             <Card
                                 Content={
                                     <>
-                                        <div className="flex h-auto min-h-[200px] cursor-pointer flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
+                                        <div className="flex h-auto min-h-[200px] flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
                                             {/* Left Side: Title */}
                                             <div>
                                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
@@ -292,7 +292,7 @@ export default function Dashboard({
                             <Card
                                 Content={
                                     <>
-                                        <div className="flex h-auto min-h-[200px] cursor-pointer flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
+                                        <div className="flex h-auto min-h-[200px] flex-wrap items-center justify-between rounded-2xl bg-slate-50 p-6 shadow-md transition-all duration-500 hover:scale-105 dark:bg-gray-800">
                                             {/* Left Side: Title */}
                                             <div>
                                                 <h3 className="text-lg font-semibold text-gray-800 dark:text-white">
