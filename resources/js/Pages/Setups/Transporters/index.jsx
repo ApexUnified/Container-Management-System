@@ -381,7 +381,7 @@ export default function index({ transporters }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Create Transporter"
+                                                        Text="Save Transporter"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||

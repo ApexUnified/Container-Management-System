@@ -381,7 +381,7 @@ export default function index({ custom_clearances }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Create Custom Clearance"
+                                                        Text="Save Custom Clearance"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||

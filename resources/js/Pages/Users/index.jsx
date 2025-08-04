@@ -131,7 +131,7 @@ export default function index({ users }) {
                 <Card
                     Content={
                         <>
-                            <div className="my-3 flex flex-wrap justify-end">
+                            <div className="flex flex-wrap justify-end my-3">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
                                     Text={'Create User'}
@@ -173,9 +173,9 @@ export default function index({ users }) {
                             />
 
                             {/* Create Modal */}
-                            <div className="border-t border-gray-100 p-6 dark:border-gray-800">
+                            <div className="p-6 border-t border-gray-100 dark:border-gray-800">
                                 {CreateModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -185,10 +185,10 @@ export default function index({ users }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={CreateMethod}
-                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
+                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -200,7 +200,7 @@ export default function index({ users }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {createErrors?.server && (
-                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
+                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -212,7 +212,7 @@ export default function index({ users }) {
                                                     createData.password_confirmation != '' &&
                                                     createData.password !=
                                                         createData.password_confirmation && (
-                                                        <div className="col-span-2 mb-2 w-full rounded-xl border border-blue-300 bg-blue-50 px-5 py-4 text-sm text-blue-800 shadow-sm">
+                                                        <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-blue-800 border border-blue-300 shadow-sm rounded-xl bg-blue-50">
                                                             <div className="mb-1 text-base font-bold text-blue-700">
                                                                 ℹ️ Info
                                                             </div>
@@ -223,7 +223,7 @@ export default function index({ users }) {
                                                         </div>
                                                     )}
 
-                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -284,7 +284,7 @@ export default function index({ users }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
+                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setCreateModalOpen(false);
@@ -300,7 +300,7 @@ export default function index({ users }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="h-5 w-5"
+                                                                className="w-5 h-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -315,13 +315,13 @@ export default function index({ users }) {
                                                         Type={'button'}
                                                         Text={'Close'}
                                                         CustomClass={
-                                                            'bg-red-500 hover:bg-red-600 w-full '
+                                                            'bg-red-500 hover:bg-red-600 w-full'
                                                         }
                                                     />
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Create User"
+                                                        Text="Save User"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
@@ -356,7 +356,7 @@ export default function index({ users }) {
                                 )}
 
                                 {EditModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -366,10 +366,10 @@ export default function index({ users }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={EditMethod}
-                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
+                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -381,7 +381,7 @@ export default function index({ users }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {editErrors?.server && (
-                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
+                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -393,7 +393,7 @@ export default function index({ users }) {
                                                     editData.password_confirmation != '' &&
                                                     editData.password !=
                                                         editData.password_confirmation && (
-                                                        <div className="col-span-2 mb-2 w-full rounded-xl border border-blue-300 bg-blue-50 px-5 py-4 text-sm text-blue-800 shadow-sm">
+                                                        <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-blue-800 border border-blue-300 shadow-sm rounded-xl bg-blue-50">
                                                             <div className="mb-1 text-base font-bold text-blue-700">
                                                                 ℹ️ Info
                                                             </div>
@@ -404,7 +404,7 @@ export default function index({ users }) {
                                                         </div>
                                                     )}
 
-                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -462,7 +462,7 @@ export default function index({ users }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
+                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setEditModalOpen(false);
@@ -479,7 +479,7 @@ export default function index({ users }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="h-5 w-5"
+                                                                className="w-5 h-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"

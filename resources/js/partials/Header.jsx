@@ -27,7 +27,7 @@ export default function Header({
     useEffect(() => {
         const saved = localStorage.getItem('darkMode');
         if (saved === null) {
-            return false;
+            return;
         }
         try {
             const parsed = JSON.parse(saved);

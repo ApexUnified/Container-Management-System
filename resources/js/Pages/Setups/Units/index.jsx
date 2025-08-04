@@ -242,7 +242,7 @@ export default function index({ units }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Create Unit"
+                                                        Text="Save Unit"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||

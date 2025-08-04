@@ -381,7 +381,7 @@ export default function index({ shipping_lines }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Create Shipping Line"
+                                                        Text="Save Shipping Line"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
