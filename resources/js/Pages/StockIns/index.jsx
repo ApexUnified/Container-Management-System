@@ -1446,47 +1446,41 @@ export default function index({
                                                 <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
                                                     <PrimaryButton
                                                         Action={() => {
-                                                            setCreateModalOpen(false);
-                                                            setCreateData('entry_date', '');
-                                                            setCreateData('container_no', '');
-                                                            setCreateData('vehicle_no', '');
-                                                            setCreateData('vendor_id', '');
-                                                            setCreateData('product_id', '');
-                                                            setCreateData('product_weight', '');
-                                                            setCreateData('product_unit_id', '');
-                                                            setCreateData(
+                                                            setEditModalOpen(false);
+                                                            setEditData('entry_date', '');
+                                                            setEditData('container_no', '');
+                                                            setEditData('vehicle_no', '');
+                                                            setEditData('vendor_id', '');
+                                                            setEditData('product_id', '');
+                                                            setEditData('product_weight', '');
+                                                            setEditData('product_unit_id', '');
+                                                            setEditData(
                                                                 'product_weight_in_man',
                                                                 '',
                                                             );
-                                                            setCreateData(
+                                                            setEditData(
                                                                 'product_no_of_bundles',
                                                                 '',
                                                             );
-                                                            setCreateData('product_rate', '');
-                                                            setCreateData(
-                                                                'product_total_amount',
-                                                                '',
-                                                            );
-                                                            setCreateData('transporter_id', '');
-                                                            setCreateData('transporter_rate', '');
-                                                            setCreateData(
-                                                                'custom_clearance_id',
-                                                                '',
-                                                            );
-                                                            setCreateData(
+                                                            setEditData('product_rate', '');
+                                                            setEditData('product_total_amount', '');
+                                                            setEditData('transporter_id', '');
+                                                            setEditData('transporter_rate', '');
+                                                            setEditData('custom_clearance_id', '');
+                                                            setEditData(
                                                                 'custom_clearance_rate',
                                                                 '',
                                                             );
-                                                            setCreateData('shipping_line_id', '');
-                                                            setCreateData('shipping_line_rate', '');
-                                                            setCreateData('fc_amount', '');
-                                                            setCreateData('exchange_rate', '');
-                                                            setCreateData('currency_id', '');
-                                                            setCreateData('all_in_one', false);
-                                                            setCreateData('total_amount', '');
-                                                            setCreateData('note', '');
+                                                            setEditData('shipping_line_id', '');
+                                                            setEditData('shipping_line_rate', '');
+                                                            setEditData('fc_amount', '');
+                                                            setEditData('exchange_rate', '');
+                                                            setEditData('currency_id', '');
+                                                            setEditData('all_in_one', false);
+                                                            setEditData('total_amount', '');
+                                                            setEditData('note', '');
                                                         }}
-                                                        Disabled={createProcessing}
+                                                        Disabled={editProcessing}
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
