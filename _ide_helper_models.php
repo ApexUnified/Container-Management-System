@@ -15,6 +15,25 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
+ * @property-read int|null $stock_in_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency whereUpdatedAt($value)
+ */
+	class Currency extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
  * @property string|null $email
  * @property string|null $contact_person
  * @property string|null $address
@@ -22,6 +41,8 @@ namespace App\Models{
  * @property string|null $mobile_no
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
+ * @property-read int|null $stock_in_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance query()
@@ -45,6 +66,8 @@ namespace App\Models{
  * @property int $unit_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
+ * @property-read int|null $stock_in_count
  * @property-read \App\Models\Unit $unit
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
@@ -69,6 +92,8 @@ namespace App\Models{
  * @property string|null $mobile_no
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
+ * @property-read int|null $stock_in_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|ShippingLine query()
@@ -88,6 +113,74 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property \Illuminate\Support\Carbon $entry_date
+ * @property string $container_no
+ * @property string $vehicle_no
+ * @property int|null $vendor_id
+ * @property int|null $product_id
+ * @property string $product_weight
+ * @property int|null $product_unit_id
+ * @property string $product_weight_in_man
+ * @property int $product_no_of_bundles
+ * @property string $product_rate
+ * @property string $product_total_amount
+ * @property int|null $transporter_id
+ * @property string|null $transporter_rate
+ * @property int|null $custom_clearance_id
+ * @property string|null $custom_clearance_rate
+ * @property int|null $shipping_line_id
+ * @property string $shipping_line_rate
+ * @property string $fc_amount
+ * @property string $exchange_rate
+ * @property int|null $currency_id
+ * @property int $all_in_one
+ * @property string $total_amount
+ * @property string|null $note
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Currency|null $currency
+ * @property-read \App\Models\CustomClearance|null $custom_clearance
+ * @property-read \App\Models\Product|null $product
+ * @property-read \App\Models\ShippingLine|null $shipping_line
+ * @property-read \App\Models\Transporter|null $transporter
+ * @property-read \App\Models\Unit|null $unit
+ * @property-read \App\Models\Vendor|null $vendor
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereAllInOne($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereContainerNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCurrencyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCustomClearanceId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCustomClearanceRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereEntryDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereExchangeRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereFcAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductNoOfBundles($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductUnitId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductWeight($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductWeightInMan($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereShippingLineId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereShippingLineRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereTransporterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereTransporterRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereVehicleNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereVendorId($value)
+ */
+	class StockIn extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property string $name
  * @property string|null $email
  * @property string|null $contact_person
@@ -96,7 +189,8 @@ namespace App\Models{
  * @property string|null $mobile_no
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read mixed $added_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
+ * @property-read int|null $stock_in_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Transporter query()
@@ -121,6 +215,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Product> $products
  * @property-read int|null $products_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
+ * @property-read int|null $stock_in_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Unit query()
@@ -170,6 +266,8 @@ namespace App\Models{
  * @property string|null $mobile_no
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
+ * @property-read int|null $stock_in_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor query()

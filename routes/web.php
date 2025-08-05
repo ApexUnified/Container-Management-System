@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\CustomClearanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShippingLineController;
+use App\Http\Controllers\StockInController;
 use App\Http\Controllers\TransporterController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
@@ -42,12 +44,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Custom Clearance Routes
         Route::resource('/products', ProductController::class)->except(['show', 'edit', 'create']);
         Route::delete('/products-destroy-by-selectetion', [ProductController::class, 'destroyBySelection'])->name('products.destroybyselection');
+
+    });
+
+    Route::prefix('/transactions')->name('transactions.')->group(function () {
+        Route::resource('/stock-ins', StockInController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/stock-ins-destroy-by-selectetion', [StockInController::class, 'destroyBySelection'])->name('stock-ins.destroybyselection');
     });
 
     // User Routes
     Route::resource('/users', UserController::class)->except(['show', 'edit', 'create']);
     Route::delete('/users-destroy-by-selectetion', [UserController::class, 'destroyBySelection'])->name('users.destroybyselection');
 
+    // Currency Routes
+    Route::resource('/currencies', CurrencyController::class)->except(['show', 'edit', 'create']);
+    Route::delete('/currencies-destroy-by-selectetion', [CurrencyController::class, 'destroyBySelection'])->name('currencies.destroybyselection');
 });
 
 require __DIR__.'/auth.php';
