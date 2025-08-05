@@ -423,10 +423,6 @@ export default function index({
         });
     };
 
-    useEffect(() => {
-        console.log(editData);
-    }, [editData]);
-
     return (
         <>
             <AuthenticatedLayout>
