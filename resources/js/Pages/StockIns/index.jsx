@@ -21,6 +21,7 @@ export default function index({
     currencies,
 }) {
     const { props } = usePage();
+    console.log(stock_ins);
     const {
         data: BulkselectedIds,
         setData: setBulkSelectedIds,
@@ -182,16 +183,16 @@ export default function index({
 
     // Product total:
     useEffect(() => {
-        const bundles = Number(createData.product_no_of_bundles);
+        const man = Number(createData.product_weight_in_man);
         const rate = Number(createData.product_rate);
 
-        if (!isNaN(bundles) && !isNaN(rate)) {
-            const total = bundles * rate;
+        if (!isNaN(man) && !isNaN(rate)) {
+            const total = man * rate;
             setCreateData('product_total_amount', total);
         } else {
             setCreateData('product_total_amount', 0);
         }
-    }, [createData.product_no_of_bundles, createData.product_rate]);
+    }, [createData.product_weight_in_man, createData.product_rate]);
 
     // Shipping line rate:
     useEffect(() => {
@@ -253,16 +254,16 @@ export default function index({
 
     // Product total:
     useEffect(() => {
-        const bundles = Number(editData.product_no_of_bundles);
+        const man = Number(editData.product_weight_in_man);
         const rate = Number(editData.product_rate);
 
-        if (!isNaN(bundles) && !isNaN(rate)) {
-            const total = bundles * rate;
+        if (!isNaN(man) && !isNaN(rate)) {
+            const total = man * rate;
             setEditData('product_total_amount', total);
         } else {
             setEditData('product_total_amount', 0);
         }
-    }, [editData.product_no_of_bundles, editData.product_rate]);
+    }, [editData.product_weight_in_man, editData.product_rate]);
 
     // Shipping line rate:
     useEffect(() => {
@@ -324,9 +325,19 @@ export default function index({
             { key: 'product.name', label: 'Product Name' },
             { key: 'unit.name', label: 'Product Unit' },
             { key: 'product_weight', label: 'Product Weight' },
-            { key: 'product_weight_in_man ', label: 'Product Weight (Man)' },
+            { key: 'product_weight_in_man', label: 'Product Weight (Man)' },
             { key: 'product_rate', label: 'Product Rate' },
             { key: 'product_total_amount', label: 'Product Total Amount' },
+            {
+                label: 'All in One Package',
+                render: (item) => {
+                    if (item.all_in_one) {
+                        return <span className="p-2 text-white bg-blue-500 rounded-lg">Yes</span>;
+                    }
+
+                    return <span className="p-2 text-white bg-red-500 rounded-lg">No</span>;
+                },
+            },
         ];
 
         const actions = [

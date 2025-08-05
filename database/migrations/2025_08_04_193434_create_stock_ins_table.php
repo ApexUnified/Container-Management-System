@@ -40,7 +40,7 @@ return new class extends Migration
 
             $table->boolean('all_in_one')->default(false);
 
-            $table->decimal('total_amount');
+            $table->decimal('total_amount', 20, 2);
             $table->text('note')->nullable();
             $table->timestamps();
         });
