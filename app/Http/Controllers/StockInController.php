@@ -40,7 +40,7 @@ class StockInController extends Controller
         $validated_req = $request->validate([
             'entry_date' => ['required', 'date'],
             'container_no' => ['required', 'max:255'],
-            'vehicle_no' => ['required', 'max:255'],
+            'vehicle_no' => ['nullable', 'max:255'],
             'vendor_id' => ['required', 'exists:vendors,id'],
             'product_id' => ['required', 'exists:products,id'],
             'product_weight' => ['required', 'numeric'],
@@ -85,7 +85,7 @@ class StockInController extends Controller
         $validated_req = $request->validate([
             'entry_date' => ['required', 'date'],
             'container_no' => ['required', 'max:255'],
-            'vehicle_no' => ['required', 'max:255'],
+            'vehicle_no' => ['nullable', 'max:255'],
             'vendor_id' => ['required', 'exists:vendors,id'],
             'product_id' => ['required', 'exists:products,id'],
             'product_weight' => ['required', 'numeric'],

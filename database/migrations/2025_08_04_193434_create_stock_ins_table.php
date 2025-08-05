@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamp('entry_date');
             $table->string('container_no');
-            $table->string('vehicle_no');
+            $table->string('vehicle_no')->nullable();
 
             $table->foreignId('vendor_id')->nullable()->constrained('vendors')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete()->cascadeOnUpdate();

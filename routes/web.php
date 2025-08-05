@@ -45,20 +45,21 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('/products', ProductController::class)->except(['show', 'edit', 'create']);
         Route::delete('/products-destroy-by-selectetion', [ProductController::class, 'destroyBySelection'])->name('products.destroybyselection');
 
+        // Currency Routes
+        Route::resource('/currency', CurrencyController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/currency-destroy-by-selectetion', [CurrencyController::class, 'destroyBySelection'])->name('currency.destroybyselection');
+
     });
 
     Route::prefix('/transactions')->name('transactions.')->group(function () {
-        Route::resource('/stock-ins', StockInController::class)->except(['show', 'edit', 'create']);
-        Route::delete('/stock-ins-destroy-by-selectetion', [StockInController::class, 'destroyBySelection'])->name('stock-ins.destroybyselection');
+        Route::resource('/stock-in', StockInController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/stock-in-destroy-by-selectetion', [StockInController::class, 'destroyBySelection'])->name('stock-in.destroybyselection');
     });
 
     // User Routes
     Route::resource('/users', UserController::class)->except(['show', 'edit', 'create']);
     Route::delete('/users-destroy-by-selectetion', [UserController::class, 'destroyBySelection'])->name('users.destroybyselection');
 
-    // Currency Routes
-    Route::resource('/currencies', CurrencyController::class)->except(['show', 'edit', 'create']);
-    Route::delete('/currencies-destroy-by-selectetion', [CurrencyController::class, 'destroyBySelection'])->name('currencies.destroybyselection');
 });
 
 require __DIR__.'/auth.php';
