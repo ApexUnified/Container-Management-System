@@ -103,7 +103,7 @@ export default function Table({
                     ...(searchPropsRef.current || {}),
                 }),
             );
-        }, 1000);
+        }, 200);
     }, [SearchRoute]);
 
     useEffect(() => {
