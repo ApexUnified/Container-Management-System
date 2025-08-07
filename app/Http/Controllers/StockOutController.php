@@ -12,9 +12,28 @@ use Inertia\Inertia;
 
 class StockOutController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $stock_outs = StockOut::latest()->paginate(10);
+        //     dd($request->all());
+        $request->validate([
+            'bl_date' => ['nullable', 'date'],
+            'bl_no' => ['nullable', 'max:255', 'string', 'exists:stock_outs,bl_no'],
+        ], [
+            'bl_no.exists' => 'The B/L No You Searched is Not Exists',
+
+        ]);
+
+        $stock_outs = StockOut::query()->latest();
+
+        $stock_outs = $stock_outs
+            ->when(! empty($request->input('bl_date')), function ($query) use ($request) {
+                $query->whereDate('bl_date', $request->input('bl_date'));
+            })
+            ->when(! empty($request->input('bl_no')), function ($query) use ($request) {
+                $query->where('bl_no', $request->input('bl_no'));
+            });
+
+        $stock_outs = $stock_outs->paginate(10);
 
         // For Checking If Already Exists Or Not In The Stock Out Table
         $all_stock_outs = StockOut::latest()->get();
@@ -30,7 +49,14 @@ class StockOutController extends Controller
 
         $currencies = Currency::all();
 
-        return Inertia::render('Transactions/StockOuts/index', compact('stock_outs', 'stock_ins', 'currencies', 'container_collection'));
+        return Inertia::render('Transactions/StockOuts/index', [
+            'stock_outs' => $stock_outs,
+            'stock_ins' => $stock_ins,
+            'currencies' => $currencies,
+            'container_collection' => $container_collection,
+            'bl_date' => old('bl_date') ?? $request->input('bl_date'),
+            'bl_no' => old('bl_no') ?? $request->input('bl_no'),
+        ]);
     }
 
     public function store(Request $request)
@@ -38,7 +64,7 @@ class StockOutController extends Controller
 
         $validated_req = $request->validate([
             'bl_date' => ['required', 'date'],
-            'bl_no' => ['required'],
+            'bl_no' => ['required', 'unique:stock_outs,bl_no'],
             'exchange_rate' => ['required', 'numeric'],
             'containers' => ['required', 'array'],
             'currency_id' => ['required', 'exists:currencies,id'],
@@ -88,7 +114,7 @@ class StockOutController extends Controller
 
         $validated_req = $request->validate([
             'bl_date' => ['required', 'date'],
-            'bl_no' => ['required'],
+            'bl_no' => ['required', 'unique:stock_outs,bl_no,'.$id],
             'exchange_rate' => ['required', 'numeric'],
             'containers' => ['required', 'array'],
             'currency_id' => ['required', 'exists:currencies,id'],

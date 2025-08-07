@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stock_outs', function (Blueprint $table) {
             $table->id();
             $table->timestamp('bl_date');
-            $table->string('bl_no');
+            $table->string('bl_no')->unique();
             $table->foreignId('currency_id')->nullable()->constrained('currencies')->nullOnDelete()->cascadeOnUpdate();
             $table->decimal('exchange_rate', 20, 4);
             $table->json('containers');

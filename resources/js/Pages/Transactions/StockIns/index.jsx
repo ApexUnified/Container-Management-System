@@ -9,6 +9,7 @@ import Input from '@/Components/Input';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import SelectInput from '@/Components/SelectInput';
+import Toast from '@/Components/Toast';
 
 export default function index({
     stock_ins,
@@ -21,6 +22,26 @@ export default function index({
     currencies,
 }) {
     const { props } = usePage();
+
+    const [searchErrors, setSearchErrors] = useState({});
+
+    useEffect(() => {
+        const errors = props.errors;
+
+        if (errors.container_no || errors.entry_date) {
+            setSearchErrors({
+                container_no: errors?.container_no ?? '',
+                entry_date: errors?.entry_date ?? '',
+            });
+        }
+
+        const timeout = setTimeout(() => {
+            setSearchErrors({});
+        }, 3000);
+
+        return () => clearTimeout(timeout);
+    }, [props.errors.container_no, props.errors.entry_date]);
+
     const {
         data: BulkselectedIds,
         setData: setBulkSelectedIds,
@@ -124,6 +145,11 @@ export default function index({
     // Flatpicker Ref
     const flatpickerForCreateForm = useRef(null);
     const flatpickerForEditForm = useRef(null);
+    const flatpickerForEntryDateSearch = useRef(null);
+
+    const [container_no, setContainerNo] = useState(props.container_no ?? '');
+    const [entry_date, setEntryDate] = useState(props.entry_date ?? '');
+    const [parent_searched, setParentSearched] = useState(false);
 
     // flatpicker init useEffect
     useEffect(() => {
@@ -153,6 +179,27 @@ export default function index({
             }
         }, 500);
     }, [CreateModalOpen, EditModalOpen]);
+
+    // Init Flatpicker For Entry Date Search Input
+    useEffect(() => {
+        setTimeout(() => {
+            if (flatpickerForEntryDateSearch.current) {
+                flatpickr(flatpickerForEntryDateSearch.current, {
+                    dateFormat: 'Y-m-d',
+                    disableMobile: true,
+                    onChange: function (selectedDates, dateStr) {
+                        if (selectedDates.length > 0) {
+                            setEntryDate(dateStr);
+                            setParentSearched(true);
+                        } else {
+                            setEntryDate('');
+                            setParentSearched(true);
+                        }
+                    },
+                });
+            }
+        }, 500);
+    }, []);
 
     // Create Data Changes Tracker
     // Calculating Weight In Man If Weight Is Not Empty Or Null
@@ -319,12 +366,13 @@ export default function index({
                     );
                 },
             },
+            { key: 'entry_date', label: 'Entry Date' },
             { key: 'vehicle_no', label: 'Vehicle No' },
             { key: 'vendor.name', label: 'Vendor Name' },
             { key: 'product.name', label: 'Product Name' },
             { key: 'unit.name', label: 'Product Unit' },
             { key: 'product_weight', label: 'Product Weight' },
-            { key: 'product_weight_in_man', label: 'Product Weight (Man)' },
+            { key: 'product_weight_in_man', label: 'Product Weight (Mann)' },
             { key: 'product_rate', label: 'Product Rate' },
             { key: 'product_total_amount', label: 'Product Total Amount' },
             {
@@ -443,6 +491,14 @@ export default function index({
                     child={'Transactions - Stock In'}
                 />
 
+                {searchErrors &&
+                    typeof searchErrors === 'object' &&
+                    Object.keys(searchErrors).length > 0 && (
+                        <Toast
+                            flash={{ error: Object.values(searchErrors).map((error) => error) }}
+                        />
+                    )}
+
                 <Card
                     Content={
                         <>
@@ -480,11 +536,46 @@ export default function index({
                                 SingleDeleteMethod={SingleDelete}
                                 BulkDeleteRoute={'transactions.stock-in.destroybyselection'}
                                 SingleDeleteRoute={'transactions.stock-in.destroy'}
+                                SearchRoute={'transactions.stock-in.index'}
                                 items={stock_ins}
                                 props={props}
                                 columns={columns}
-                                Search={false}
+                                Search={true}
                                 customActions={customActions}
+                                ParentSearched={parent_searched}
+                                DefaultSearchInput={false}
+                                searchProps={{ entry_date: entry_date, container_no: container_no }}
+                                customSearch={
+                                    <>
+                                        <div className="relative">
+                                            <Input
+                                                InputName={'Entry Date'}
+                                                InputRef={flatpickerForEntryDateSearch}
+                                                Id={'entry_date'}
+                                                Name={'entry_date'}
+                                                Type={'text'}
+                                                Value={entry_date}
+                                                Placeholder={'Add Entry Date To Search'}
+                                            />
+                                        </div>
+
+                                        <div className="relative">
+                                            <Input
+                                                InputName={'Container No'}
+                                                Id={'container_no'}
+                                                Name={'container_no'}
+                                                Type={'text'}
+                                                Value={container_no}
+                                                Placeholder={'Add Container No To Search'}
+                                                Action={(e) => {
+                                                    const value = e.target.value;
+                                                    setContainerNo(value);
+                                                    setParentSearched(true);
+                                                }}
+                                            />
+                                        </div>
+                                    </>
+                                }
                             />
 
                             {/* { Modal} */}
@@ -635,11 +726,11 @@ export default function index({
                                                         }}
                                                     />
                                                     <Input
-                                                        InputName={'Product Weight In Man'}
+                                                        InputName={'Product Weight In Mann'}
                                                         Id={'product_weight_in_man'}
                                                         Name={'product_weight_in_man'}
                                                         Type={'number'}
-                                                        Placeholder={'Product Weight in Man'}
+                                                        Placeholder={'Product Weight in Mann'}
                                                         CustomCss={'pointer-events-none'}
                                                         Required={true}
                                                         Error={createErrors.product_weight_in_man}
@@ -1173,11 +1264,11 @@ export default function index({
                                                         }}
                                                     />
                                                     <Input
-                                                        InputName={'Product Weight In Man'}
+                                                        InputName={'Product Weight In Mann'}
                                                         Id={'product_weight_in_man'}
                                                         Name={'product_weight_in_man'}
                                                         Type={'number'}
-                                                        Placeholder={'Product Weight in Man'}
+                                                        Placeholder={'Product Weight in Mann'}
                                                         CustomCss={'pointer-events-none'}
                                                         Required={true}
                                                         Error={editErrors.product_weight_in_man}

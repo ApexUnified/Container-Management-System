@@ -9,9 +9,30 @@ import Input from '@/Components/Input';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import SelectInput from '@/Components/SelectInput';
+import Toast from '@/Components/Toast';
 
 export default function index({ stock_ins, stock_outs, currencies, container_collection }) {
     const { props } = usePage();
+
+    const [searchErrors, setSearchErrors] = useState({});
+
+    useEffect(() => {
+        const errors = props.errors;
+
+        if (errors.bl_no || errors.bl_date) {
+            setSearchErrors({
+                bl_no: errors?.bl_no ?? '',
+                bl_date: errors?.bl_date ?? '',
+            });
+        }
+
+        const timeout = setTimeout(() => {
+            setSearchErrors({});
+        }, 3000);
+
+        return () => clearTimeout(timeout);
+    }, [props.errors.bl_no, props.errors.bl_date]);
+
     const {
         data: BulkselectedIds,
         setData: setBulkSelectedIds,
@@ -82,11 +103,16 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
         containers: [],
     });
 
+    const [bl_no, setBlNo] = useState(props.bl_no ?? '');
+    const [bl_date, setBlDate] = useState(props.bl_date ?? '');
+    const [parent_searched, setParentSearched] = useState(false);
+
     const [ActualData, setActualData] = useState(null);
 
     // Flatpicker Ref
     const flatpickerForCreateForm = useRef(null);
     const flatpickerForEditForm = useRef(null);
+    const flatpickerForEntryDateSearch = useRef(null);
 
     // flatpicker init useEffect
     useEffect(() => {
@@ -117,11 +143,32 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
         }, 500);
     }, [CreateModalOpen, EditModalOpen]);
 
+    // Init Flatpicker For Entry Date Search Input
+    useEffect(() => {
+        setTimeout(() => {
+            if (flatpickerForEntryDateSearch.current) {
+                flatpickr(flatpickerForEntryDateSearch.current, {
+                    dateFormat: 'Y-m-d',
+                    disableMobile: true,
+                    onChange: function (selectedDates, dateStr) {
+                        if (selectedDates.length > 0) {
+                            setBlDate(dateStr);
+                            setParentSearched(true);
+                        } else {
+                            setBlDate('');
+                            setParentSearched(true);
+                        }
+                    },
+                });
+            }
+        }, 500);
+    }, []);
+
     // Columns
     useEffect(() => {
         const columns = [
             {
-                label: 'Container No',
+                label: "Container No's",
                 render: (item) => {
                     return (
                         <div
@@ -154,6 +201,22 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                 badge: (value) => 'bg-blue-500 text-white p-3',
             },
             { key: 'exchange_rate', label: 'Exchange Rate' },
+            {
+                label: 'Amount In FC',
+                render: (item) => {
+                    return (
+                        <div>
+                            {item.containers.map((item, index) => {
+                                return (
+                                    <p key={index} className="text-sm font-semibold">
+                                        {item.total_amount}
+                                    </p>
+                                );
+                            })}
+                        </div>
+                    );
+                },
+            },
         ];
 
         const actions = [
@@ -373,6 +436,14 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                     child={'Transactions - Stock Out'}
                 />
 
+                {searchErrors &&
+                    typeof searchErrors === 'object' &&
+                    Object.keys(searchErrors).length > 0 && (
+                        <Toast
+                            flash={{ error: Object.values(searchErrors).map((error) => error) }}
+                        />
+                    )}
+
                 <Card
                     Content={
                         <>
@@ -413,8 +484,43 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                                 items={stock_outs}
                                 props={props}
                                 columns={columns}
-                                Search={false}
+                                Search={true}
+                                SearchRoute={'transactions.stock-out.index'}
                                 customActions={customActions}
+                                ParentSearched={parent_searched}
+                                DefaultSearchInput={false}
+                                searchProps={{ bl_date: bl_date, bl_no: bl_no }}
+                                customSearch={
+                                    <>
+                                        <div className="relative">
+                                            <Input
+                                                InputName={'B/L Date'}
+                                                InputRef={flatpickerForEntryDateSearch}
+                                                Id={'bl_date'}
+                                                Name={'bl_date'}
+                                                Type={'text'}
+                                                Value={bl_date}
+                                                Placeholder={'Add B/L Date To Search'}
+                                            />
+                                        </div>
+
+                                        <div className="relative">
+                                            <Input
+                                                InputName={'B/L No'}
+                                                Id={'bl_no'}
+                                                Name={'bl_no'}
+                                                Type={'text'}
+                                                Value={bl_no}
+                                                Placeholder={'Add B/L No To Search'}
+                                                Action={(e) => {
+                                                    const value = e.target.value;
+                                                    setBlNo(value);
+                                                    setParentSearched(true);
+                                                }}
+                                            />
+                                        </div>
+                                    </>
+                                }
                             />
 
                             {/* { Modal} */}
@@ -620,7 +726,8 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                                                                                     Container No
                                                                                 </th>
                                                                                 <th className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-white">
-                                                                                    Total Amount
+                                                                                    Total Amount In
+                                                                                    FC
                                                                                 </th>
                                                                             </tr>
                                                                         </thead>
@@ -947,7 +1054,7 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                                                                         Container No
                                                                     </th>
                                                                     <th className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-white">
-                                                                        Total Amount
+                                                                        Total Amount In FC
                                                                     </th>
                                                                 </tr>
                                                             </thead>
@@ -1111,7 +1218,7 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                                                             </th>
 
                                                             <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
-                                                                Total Amount
+                                                                Total Amount In FC
                                                             </th>
                                                         </tr>
                                                     </thead>

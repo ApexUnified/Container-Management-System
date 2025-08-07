@@ -17,9 +17,27 @@ use Inertia\Inertia;
 
 class StockInController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $stock_ins = StockIn::with(['currency', 'vendor', 'product', 'unit', 'transporter', 'custom_clearance', 'shipping_line'])->latest()->paginate(10);
+
+        $request->validate([
+            'container_no' => ['nullable', 'max:255', 'string', 'exists:stock_ins,container_no'],
+            'entry_date' => ['nullable', 'date'],
+        ], [
+            'container_no.exists' => 'The Container You Searched is Not Exists',
+
+        ]);
+
+        $stock_ins = StockIn::query()->with(['currency', 'vendor', 'product', 'unit', 'transporter', 'custom_clearance', 'shipping_line'])
+            ->latest();
+
+        $stock_ins = $stock_ins->when(! empty($request->input('entry_date')), function ($query) use ($request) {
+            $query->whereDate('entry_date', $request->input('entry_date'));
+        })->when(! empty($request->input('container_no')), function ($query) use ($request) {
+            $query->where('container_no', $request->input('container_no'));
+        });
+
+        $stock_ins = $stock_ins->paginate(10);
 
         $vendors = Vendor::all();
         $products = Product::all();
@@ -29,9 +47,18 @@ class StockInController extends Controller
         $shipping_lines = ShippingLine::all();
         $currencies = Currency::all();
 
-        return Inertia::render('Transactions/StockIns/index',
-            compact(
-                'stock_ins', 'vendors', 'products', 'units', 'transporters', 'custom_clearances', 'shipping_lines', 'currencies', 'stock_ins'));
+        return Inertia::render('Transactions/StockIns/index', [
+            'stock_ins' => $stock_ins,
+            'vendors' => $vendors,
+            'products' => $products,
+            'transporters' => $transporters,
+            'custom_clearances' => $custom_clearances,
+            'shipping_lines' => $shipping_lines,
+            'units' => $units,
+            'currencies' => $currencies,
+            'container_no' => old('container_no') ?? $request->input('container_no'),
+            'entry_date' => old('entry_date') ?? $request->input('entry_date'),
+        ]);
     }
 
     public function store(Request $request)
