@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('stock_ins', function (Blueprint $table) {
             $table->id();
             $table->timestamp('entry_date');
-            $table->string('container_no');
+            $table->string('container_no')->unique();
             $table->string('vehicle_no')->nullable();
 
             $table->foreignId('vendor_id')->nullable()->constrained('vendors')->nullOnDelete()->cascadeOnUpdate();
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->decimal('product_weight_in_man', 20, 2);
             $table->integer('product_no_of_bundles');
             $table->decimal('product_rate', 20, 2);
-            $table->decimal('product_total_amount');
+            $table->decimal('product_total_amount', 20, 2);
 
             $table->foreignId('transporter_id')->nullable()->constrained('transporters')->nullOnDelete()->cascadeOnUpdate();
             $table->decimal('transporter_rate', 20, 2)->nullable();

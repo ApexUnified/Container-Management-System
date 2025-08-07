@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+class StockOut extends Model
+{
+    protected $fillable = [
+        'bl_date',
+        'bl_no',
+        'currency_id',
+        'exchange_rate',
+        'containers',
+    ];
+
+    protected $appends = ['containers_collection'];
+
+    protected $with = ['currency'];
+
+    public function getContainersCollectionAttribute()
+    {
+        $container_ids = collect(json_decode($this->attributes['containers'], true))->pluck('container_id')->toArray();
+
+        return StockIn::whereIn('id', $container_ids)->get();
+    }
+
+    public function currency(): BelongsTo
+    {
+        return $this->belongsTo(Currency::class, 'currency_id', 'id');
+    }
+
+    protected $casts = [
+        'bl_date' => 'date:Y-m-d',
+        'containers' => 'array',
+    ];
+}

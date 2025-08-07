@@ -29,7 +29,7 @@ class StockInController extends Controller
         $shipping_lines = ShippingLine::all();
         $currencies = Currency::all();
 
-        return Inertia::render('StockIns/index',
+        return Inertia::render('Transactions/StockIns/index',
             compact(
                 'stock_ins', 'vendors', 'products', 'units', 'transporters', 'custom_clearances', 'shipping_lines', 'currencies', 'stock_ins'));
     }
@@ -39,7 +39,7 @@ class StockInController extends Controller
 
         $validated_req = $request->validate([
             'entry_date' => ['required', 'date'],
-            'container_no' => ['required', 'max:255'],
+            'container_no' => ['required', 'max:255', 'unique:stock_ins,container_no'],
             'vehicle_no' => ['nullable', 'max:255'],
             'vendor_id' => ['required', 'exists:vendors,id'],
             'product_id' => ['required', 'exists:products,id'],
@@ -84,7 +84,7 @@ class StockInController extends Controller
 
         $validated_req = $request->validate([
             'entry_date' => ['required', 'date'],
-            'container_no' => ['required', 'max:255'],
+            'container_no' => ['required', 'max:255', 'unique:stock_ins,container_no,'.$id],
             'vehicle_no' => ['nullable', 'max:255'],
             'vendor_id' => ['required', 'exists:vendors,id'],
             'product_id' => ['required', 'exists:products,id'],

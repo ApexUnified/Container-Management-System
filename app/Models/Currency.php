@@ -13,4 +13,9 @@ class Currency extends Model
     {
         return $this->hasMany(StockIn::class, 'currency_id', 'id');
     }
+
+    public function stock_out(): HasMany
+    {
+        return $this->hasMany(StockOut::class, 'currency_id', 'id');
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShippingLineController;
 use App\Http\Controllers\StockInController;
+use App\Http\Controllers\StockOutController;
 use App\Http\Controllers\TransporterController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
@@ -54,6 +55,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::prefix('/transactions')->name('transactions.')->group(function () {
         Route::resource('/stock-in', StockInController::class)->except(['show', 'edit', 'create']);
         Route::delete('/stock-in-destroy-by-selectetion', [StockInController::class, 'destroyBySelection'])->name('stock-in.destroybyselection');
+
+        Route::resource('/stock-out', StockOutController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/stock-out-destroy-by-selectetion', [StockOutController::class, 'destroyBySelection'])->name('stock-out.destroybyselection');
     });
 
     // User Routes

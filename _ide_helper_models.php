@@ -19,6 +19,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
  * @property-read int|null $stock_in_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockOut> $stock_out
+ * @property-read int|null $stock_out_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Currency query()
@@ -115,7 +117,7 @@ namespace App\Models{
  * @property int $id
  * @property \Illuminate\Support\Carbon $entry_date
  * @property string $container_no
- * @property string $vehicle_no
+ * @property string|null $vehicle_no
  * @property int|null $vendor_id
  * @property int|null $product_id
  * @property string $product_weight
@@ -176,6 +178,33 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereVendorId($value)
  */
 	class StockIn extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property \Illuminate\Support\Carbon $bl_date
+ * @property string $bl_no
+ * @property int|null $currency_id
+ * @property string $exchange_rate
+ * @property array<array-key, mixed> $containers
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Currency|null $currency
+ * @property-read mixed $containers_collection
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereBlDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereBlNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereContainers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereCurrencyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereExchangeRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereUpdatedAt($value)
+ */
+	class StockOut extends \Eloquent {}
 }
 
 namespace App\Models{
