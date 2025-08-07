@@ -273,7 +273,7 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                     const fullContainer = container_collection.find(
                         (c) => c.id === containerRef.container_id,
                     );
-                    if (fullContainer) {
+                    if (fullContainer && !stock_ins.some((c) => c.id === fullContainer.id)) {
                         stock_ins.push(fullContainer);
                     }
                 });
