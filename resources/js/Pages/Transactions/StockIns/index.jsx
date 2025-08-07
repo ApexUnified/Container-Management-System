@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Input from '@/Components/Input';
 import flatpickr from 'flatpickr';
+
 import 'flatpickr/dist/flatpickr.min.css';
 import SelectInput from '@/Components/SelectInput';
 import Toast from '@/Components/Toast';
@@ -185,12 +186,18 @@ export default function index({
         setTimeout(() => {
             if (flatpickerForEntryDateSearch.current) {
                 flatpickr(flatpickerForEntryDateSearch.current, {
+                    mode: 'range',
                     dateFormat: 'Y-m-d',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
-                        if (selectedDates.length > 0) {
-                            setEntryDate(dateStr);
+                        if (selectedDates.length === 2) {
+                            const fromDate = this.formatDate(selectedDates[0], 'Y-m-d');
+                            const toDate = this.formatDate(selectedDates[1], 'Y-m-d');
+                            setEntryDate(`${fromDate} to ${toDate}`);
                             setParentSearched(true);
+                        } else if (selectedDates.length === 1) {
+                            setEntryDate('');
+                            setParentSearched(false);
                         } else {
                             setEntryDate('');
                             setParentSearched(true);

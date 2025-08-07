@@ -22,17 +22,32 @@ class StockInController extends Controller
 
         $request->validate([
             'container_no' => ['nullable', 'max:255', 'string', 'exists:stock_ins,container_no'],
-            'entry_date' => ['nullable', 'date'],
         ], [
             'container_no.exists' => 'The Container You Searched is Not Exists',
 
         ]);
 
+        $entry_date = $request->input('entry_date');
+        $dates = [];
+
+        if (! empty($entry_date)) {
+            $dates = explode(' to ', $entry_date);
+
+            if (count($dates) !== 2 || empty($dates[0]) || empty($dates[1])) {
+                return back()->with('error', 'Please A Valid Select Date Range');
+            }
+
+            if (strtotime($dates[0]) > strtotime($dates[1])) {
+                return back()->with('error', 'Start date must be before end date.');
+            }
+
+        }
+
         $stock_ins = StockIn::query()->with(['currency', 'vendor', 'product', 'unit', 'transporter', 'custom_clearance', 'shipping_line'])
             ->latest();
 
-        $stock_ins = $stock_ins->when(! empty($request->input('entry_date')), function ($query) use ($request) {
-            $query->whereDate('entry_date', $request->input('entry_date'));
+        $stock_ins = $stock_ins->when(! empty($request->input('entry_date')), function ($query) use ($dates) {
+            $query->whereBetween('entry_date', [$dates[0], $dates[1]]);
         })->when(! empty($request->input('container_no')), function ($query) use ($request) {
             $query->where('container_no', $request->input('container_no'));
         });
