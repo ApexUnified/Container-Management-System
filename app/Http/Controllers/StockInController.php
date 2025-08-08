@@ -19,11 +19,13 @@ class StockInController extends Controller
 {
     public function index(Request $request)
     {
-
+        // dd($request->all());
         $request->validate([
             'container_no' => ['nullable', 'max:255', 'string', 'exists:stock_ins,container_no'],
+            's_cro_no' => ['nullable', 'max:255', 'string', 'exists:stock_ins,cro_no'],
         ], [
             'container_no.exists' => 'The Container You Searched is Not Exists',
+            's_cro_no.exists' => 'The CRO No You Searched is Not Exists',
 
         ]);
 
@@ -50,9 +52,12 @@ class StockInController extends Controller
             $query->whereBetween('entry_date', [$dates[0], $dates[1]]);
         })->when(! empty($request->input('container_no')), function ($query) use ($request) {
             $query->where('container_no', $request->input('container_no'));
-        });
+        })
+            ->when(! empty($request->input('s_cro_no')), function ($query) use ($request) {
+                $query->where('cro_no', $request->input('s_cro_no'));
+            });
 
-        $stock_ins = $stock_ins->paginate(10);
+        $stock_ins = $stock_ins->paginate(10)->withQueryString();
 
         $vendors = Vendor::all();
         $products = Product::all();
@@ -73,6 +78,7 @@ class StockInController extends Controller
             'currencies' => $currencies,
             'container_no' => old('container_no') ?? $request->input('container_no'),
             'entry_date' => old('entry_date') ?? $request->input('entry_date'),
+            's_cro_no' => old('s_cro_no') ?? $request->input('s_cro_no'),
         ]);
     }
 
@@ -83,6 +89,8 @@ class StockInController extends Controller
             'entry_date' => ['required', 'date'],
             'container_no' => ['required', 'max:255', 'unique:stock_ins,container_no'],
             'vehicle_no' => ['nullable', 'max:255'],
+            'cro_no' => ['required', 'max:255'],
+            'port_location' => ['required', 'in:KICT,KTGL'],
             'vendor_id' => ['required', 'exists:vendors,id'],
             'product_id' => ['required', 'exists:products,id'],
             'product_weight' => ['required', 'numeric'],
@@ -128,6 +136,8 @@ class StockInController extends Controller
             'entry_date' => ['required', 'date'],
             'container_no' => ['required', 'max:255', 'unique:stock_ins,container_no,'.$id],
             'vehicle_no' => ['nullable', 'max:255'],
+            'port_location' => ['required', 'in:KICT,KTGL'],
+            'cro_no' => ['required', 'max:255'],
             'vendor_id' => ['required', 'exists:vendors,id'],
             'product_id' => ['required', 'exists:products,id'],
             'product_weight' => ['required', 'numeric'],

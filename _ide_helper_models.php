@@ -118,6 +118,8 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $entry_date
  * @property string $container_no
  * @property string|null $vehicle_no
+ * @property string|null $cro_no
+ * @property string|null $port_location
  * @property int|null $vendor_id
  * @property int|null $product_id
  * @property string $product_weight
@@ -153,6 +155,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereAllInOne($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereContainerNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCroNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCustomClearanceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCustomClearanceRate($value)
@@ -161,6 +164,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereFcAmount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereNote($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn wherePortLocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductNoOfBundles($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductRate($value)

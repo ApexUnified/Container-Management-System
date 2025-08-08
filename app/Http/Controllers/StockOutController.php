@@ -33,7 +33,7 @@ class StockOutController extends Controller
                 $query->where('bl_no', $request->input('bl_no'));
             });
 
-        $stock_outs = $stock_outs->paginate(10);
+        $stock_outs = $stock_outs->paginate(10)->withQueryString();
 
         // For Checking If Already Exists Or Not In The Stock Out Table
         $all_stock_outs = StockOut::latest()->get();

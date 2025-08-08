@@ -11,6 +11,8 @@ class StockIn extends Model
         'entry_date',
         'container_no',
         'vehicle_no',
+        'cro_no',
+        'port_location',
         'vendor_id',
         'product_id',
         'product_weight',
