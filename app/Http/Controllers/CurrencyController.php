@@ -14,7 +14,7 @@ class CurrencyController extends Controller
     {
         $currencies = Currency::latest()->paginate(10);
 
-        return Inertia::render('Currencies/index', compact('currencies'));
+        return Inertia::render('Setups/Currencies/index', compact('currencies'));
     }
 
     public function store(Request $request)

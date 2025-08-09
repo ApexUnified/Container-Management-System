@@ -1,12 +1,15 @@
 <?php
 
+use App\Http\Controllers\ControlController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\CustomClearanceController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DetailController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ShippingLineController;
 use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockOutController;
+use App\Http\Controllers\SubsidaryController;
 use App\Http\Controllers\TransporterController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
@@ -63,6 +66,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // User Routes
     Route::resource('/users', UserController::class)->except(['show', 'edit', 'create']);
     Route::delete('/users-destroy-by-selectetion', [UserController::class, 'destroyBySelection'])->name('users.destroybyselection');
+
+    Route::prefix('/accounts')->name('accounts.')->group(function () {
+        Route::resource('/controls', ControlController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/controls-destroy-by-selectetion', [ControlController::class, 'destroyBySelection'])->name('controls.destroybyselection');
+
+        Route::resource('/subsidaries', SubsidaryController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/subsidaries-destroy-by-selectetion', [SubsidaryController::class, 'destroyBySelection'])->name('subsidaries.destroybyselection');
+
+        Route::resource('/details', DetailController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/details-destroy-by-selectetion', [DetailController::class, 'destroyBySelection'])->name('details.destroybyselection');
+    });
 
 });
 

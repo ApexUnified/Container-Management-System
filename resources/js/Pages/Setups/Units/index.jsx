@@ -117,7 +117,7 @@ export default function index({ units }) {
                 <Card
                     Content={
                         <>
-                            <div className="flex flex-wrap justify-end my-3">
+                            <div className="my-3 flex flex-wrap justify-end">
                                 <PrimaryButton
                                     CustomClass={'w-[200px]'}
                                     Text={'Create Unit'}
@@ -159,9 +159,9 @@ export default function index({ units }) {
                             />
 
                             {/* Create Modal */}
-                            <div className="p-6 border-t border-gray-100 dark:border-gray-800">
+                            <div className="border-t border-gray-100 p-6 dark:border-gray-800">
                                 {CreateModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -171,10 +171,10 @@ export default function index({ units }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-2xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={CreateMethod}
-                                                className="grid items-start grid-cols-1 gap-6"
+                                                className="grid grid-cols-1 items-start gap-6"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -186,7 +186,7 @@ export default function index({ units }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {createErrors?.server && (
-                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
+                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -211,7 +211,7 @@ export default function index({ units }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
+                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setCreateModalOpen(false);
@@ -221,7 +221,7 @@ export default function index({ units }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="w-5 h-5"
+                                                                className="h-5 w-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -246,7 +246,7 @@ export default function index({ units }) {
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
-                                                            createData.name === ''
+                                                            createData.name.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg
@@ -272,7 +272,7 @@ export default function index({ units }) {
                                 )}
 
                                 {EditModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -282,10 +282,10 @@ export default function index({ units }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-2xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={EditMethod}
-                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
+                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -297,7 +297,7 @@ export default function index({ units }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {editErrors?.server && (
-                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
+                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -322,7 +322,7 @@ export default function index({ units }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
+                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setEditModalOpen(false);
@@ -333,7 +333,7 @@ export default function index({ units }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="w-5 h-5"
+                                                                className="h-5 w-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -357,7 +357,8 @@ export default function index({ units }) {
                                                         Text="Update Unit"
                                                         Spinner={editProcessing}
                                                         Disabled={
-                                                            editProcessing || editData.name === ''
+                                                            editProcessing ||
+                                                            editData.name.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg

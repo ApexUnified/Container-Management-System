@@ -17,6 +17,28 @@ namespace App\Models{
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Detail> $details
+ * @property-read int|null $details_count
+ * @property-read mixed $added_at
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subsidary> $subsidaries
+ * @property-read int|null $subsidaries_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Control newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Control newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Control query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Control whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Control whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Control whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Control whereUpdatedAt($value)
+ */
+	class Control extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
  * @property-read int|null $stock_in_count
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockOut> $stock_out
@@ -59,6 +81,38 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|CustomClearance whereUpdatedAt($value)
  */
 	class CustomClearance extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $control_id
+ * @property int $subsidary_id
+ * @property string $code
+ * @property string $account_code
+ * @property string $title
+ * @property string $payment_method
+ * @property string|null $other_details
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Control $control
+ * @property-read mixed $added_at
+ * @property-read \App\Models\Subsidary $subsidary
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereAccountCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereControlId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereOtherDetails($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail wherePaymentMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereSubsidaryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereTitle($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereUpdatedAt($value)
+ */
+	class Detail extends \Eloquent {}
 }
 
 namespace App\Models{
@@ -209,6 +263,31 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereUpdatedAt($value)
  */
 	class StockOut extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $control_id
+ * @property string $name
+ * @property string $code
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Control $control
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Detail> $details
+ * @property-read int|null $details_count
+ * @property-read mixed $added_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereControlId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereUpdatedAt($value)
+ */
+	class Subsidary extends \Eloquent {}
 }
 
 namespace App\Models{

@@ -843,7 +843,7 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                                                         Disabled={
                                                             createProcessing ||
                                                             createData.bl_date == '' ||
-                                                            createData.bl_no == '' ||
+                                                            createData.bl_no.trim() == '' ||
                                                             createData.exchange_rate == 0 ||
                                                             createData.exchange_rate == '' ||
                                                             createData.currency_id == '' ||
@@ -1169,7 +1169,7 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                                                             editProcessing ||
                                                             editData.id == '' ||
                                                             editData.bl_date == '' ||
-                                                            editData.bl_no == '' ||
+                                                            editData.bl_no.trim() == '' ||
                                                             editData.exchange_rate == 0 ||
                                                             editData.exchange_rate == '' ||
                                                             editData.currency_id == '' ||

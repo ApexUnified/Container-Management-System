@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Input from '@/Components/Input';
 
-export default function index({ users }) {
+export default function index({ currencies }) {
     const { props } = usePage();
     const {
         data: BulkselectedIds,
@@ -36,8 +36,6 @@ export default function index({ users }) {
         errors: createErrors,
     } = useForm({
         name: '',
-        password: '',
-        password_confirmation: '',
     });
 
     // Edit Form Data
@@ -50,8 +48,6 @@ export default function index({ users }) {
     } = useForm({
         id: '',
         name: '',
-        password: '',
-        password_confirmation: '',
     });
 
     const [columns, setColumns] = useState([]);
@@ -63,12 +59,8 @@ export default function index({ users }) {
     //  Edit Modal State
     const [EditModalOpen, setEditModalOpen] = useState(false);
 
-    // Password Input Toggles
-    const [showPasswordToggle, setShowPasswordToggle] = useState(false);
-    const [showConfirmPasswordToggle, setShowConfirmPasswordToggle] = useState(false);
-
     useEffect(() => {
-        const columns = [{ key: 'name', label: 'Name' }];
+        const columns = [{ key: 'name', label: 'Currency Name' }];
 
         const actions = [
             {
@@ -76,10 +68,7 @@ export default function index({ users }) {
                 type: 'button',
                 onClick: (item) => {
                     setEditModalOpen(true);
-                    setEditData('id', item.id);
-                    setEditData('name', item.name);
-                    setEditData('password', '');
-                    setEditData('password_confirmation', '');
+                    setEditData(item);
                 },
             },
         ];
@@ -92,12 +81,10 @@ export default function index({ users }) {
     const CreateMethod = (e) => {
         e.preventDefault();
 
-        createPost(route('users.store'), {
+        createPost(route('setups.currency.store'), {
             onSuccess: () => {
                 setCreateModalOpen(false);
                 setCreateData('name', '');
-                setCreateData('password', '');
-                setCreateData('password_confirmation', '');
             },
         });
     };
@@ -105,13 +92,11 @@ export default function index({ users }) {
     // EditMethod
     const EditMethod = (e) => {
         e.preventDefault();
-        editPut(route('users.update', editData.id), {
+        editPut(route('setups.currency.update', editData.id), {
             onSuccess: () => {
                 setEditModalOpen(false);
                 setEditData('id', '');
                 setEditData('name', '');
-                setEditData('password', '');
-                setEditData('password_confirmation', '');
             },
         });
     };
@@ -119,13 +104,13 @@ export default function index({ users }) {
     return (
         <>
             <AuthenticatedLayout>
-                <Head title="Users" />
+                <Head title="Setups - Currency" />
 
                 <BreadCrumb
-                    header={'Users'}
+                    header={'Setups - Currency'}
                     parent={'Dashboard'}
                     parent_link={route('dashboard')}
-                    child={'Users'}
+                    child={'Setups - Currency'}
                 />
 
                 <Card
@@ -134,7 +119,7 @@ export default function index({ users }) {
                             <div className="my-3 flex flex-wrap justify-end">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
-                                    Text={'Create User'}
+                                    Text={'Create Currency'}
                                     Action={() => setCreateModalOpen(true)}
                                     Icon={
                                         <svg
@@ -163,9 +148,9 @@ export default function index({ users }) {
                                 resetSingleSelectedId={resetSingleSelectedId}
                                 BulkDeleteMethod={BulkDelete}
                                 SingleDeleteMethod={SingleDelete}
-                                BulkDeleteRoute={'users.destroybyselection'}
-                                SingleDeleteRoute={'users.destroy'}
-                                items={users}
+                                BulkDeleteRoute={'setups.currency.destroybyselection'}
+                                SingleDeleteRoute={'setups.currency.destroy'}
+                                items={currencies}
                                 props={props}
                                 columns={columns}
                                 Search={false}
@@ -192,7 +177,7 @@ export default function index({ users }) {
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Create User
+                                                        Create Currency
                                                     </h3>
                                                 </div>
 
@@ -208,24 +193,9 @@ export default function index({ users }) {
                                                     </div>
                                                 )}
 
-                                                {createData.password != '' &&
-                                                    createData.password_confirmation != '' &&
-                                                    createData.password !=
-                                                        createData.password_confirmation && (
-                                                        <div className="col-span-2 mb-2 w-full rounded-xl border border-blue-300 bg-blue-50 px-5 py-4 text-sm text-blue-800 shadow-sm">
-                                                            <div className="mb-1 text-base font-bold text-blue-700">
-                                                                ℹ️ Info
-                                                            </div>
-                                                            <p>
-                                                                Password And Confirm Password Does
-                                                                Not Match
-                                                            </p>
-                                                        </div>
-                                                    )}
-
-                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-1">
                                                     <Input
-                                                        InputName={'Name'}
+                                                        InputName={'Currency Name'}
                                                         Id={'name'}
                                                         Name={'name'}
                                                         Type={'text'}
@@ -237,50 +207,6 @@ export default function index({ users }) {
                                                             setCreateData('name', e.target.value)
                                                         }
                                                     />
-
-                                                    <Input
-                                                        InputName={'Password'}
-                                                        Id={'password'}
-                                                        Name={'password'}
-                                                        Type={'password'}
-                                                        Placeholder={'Enter Password'}
-                                                        Required={true}
-                                                        Error={createErrors.password}
-                                                        Value={createData.password}
-                                                        Action={(e) =>
-                                                            setCreateData(
-                                                                'password',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        ShowPasswordToggle={showPasswordToggle}
-                                                        setShowPasswordToggle={
-                                                            setShowPasswordToggle
-                                                        }
-                                                    />
-
-                                                    <Input
-                                                        InputName={'Confirm Password'}
-                                                        Id={'password_confirmation'}
-                                                        Name={'password_confirmation'}
-                                                        Type={'password'}
-                                                        Placeholder={'Enter Confirm Password'}
-                                                        Required={true}
-                                                        Error={createErrors.password_confirmation}
-                                                        Value={createData.password_confirmation}
-                                                        Action={(e) =>
-                                                            setCreateData(
-                                                                'password_confirmation',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        ShowPasswordToggle={
-                                                            showConfirmPasswordToggle
-                                                        }
-                                                        setShowPasswordToggle={
-                                                            setShowConfirmPasswordToggle
-                                                        }
-                                                    />
                                                 </div>
 
                                                 {/* Buttons */}
@@ -289,12 +215,6 @@ export default function index({ users }) {
                                                         Action={() => {
                                                             setCreateModalOpen(false);
                                                             setCreateData('name', '');
-
-                                                            setCreateData('password', '');
-                                                            setCreateData(
-                                                                'password_confirmation',
-                                                                '',
-                                                            );
                                                         }}
                                                         Disabled={createProcessing}
                                                         Icon={
@@ -315,22 +235,17 @@ export default function index({ users }) {
                                                         Type={'button'}
                                                         Text={'Close'}
                                                         CustomClass={
-                                                            'bg-red-500 hover:bg-red-600 w-full'
+                                                            'bg-red-500 hover:bg-red-600 w-full '
                                                         }
                                                     />
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Save User"
+                                                        Text="Save Currency"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
-                                                            createData.name.trim() === '' ||
-                                                            createData.password.trim() === '' ||
-                                                            createData.password_confirmation.trim() ===
-                                                                '' ||
-                                                            createData.password.trim() !==
-                                                                createData.password_confirmation.trim()
+                                                            createData.name.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg
@@ -373,7 +288,7 @@ export default function index({ users }) {
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Edit User
+                                                        Edit Currencies
                                                     </h3>
                                                 </div>
 
@@ -389,74 +304,18 @@ export default function index({ users }) {
                                                     </div>
                                                 )}
 
-                                                {editData.password != '' &&
-                                                    editData.password_confirmation != '' &&
-                                                    editData.password !=
-                                                        editData.password_confirmation && (
-                                                        <div className="col-span-2 mb-2 w-full rounded-xl border border-blue-300 bg-blue-50 px-5 py-4 text-sm text-blue-800 shadow-sm">
-                                                            <div className="mb-1 text-base font-bold text-blue-700">
-                                                                ℹ️ Info
-                                                            </div>
-                                                            <p>
-                                                                Password And Confirm Password Does
-                                                                Not Match
-                                                            </p>
-                                                        </div>
-                                                    )}
-
-                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-1">
                                                     <Input
-                                                        InputName={'Name'}
+                                                        InputName={'Currency Name'}
                                                         Id={'name'}
                                                         Name={'name'}
                                                         Type={'text'}
-                                                        Placeholder={'Enter Name'}
+                                                        Placeholder={'Enter Currency Name'}
                                                         Required={true}
                                                         Error={editErrors.name}
                                                         Value={editData.name}
                                                         Action={(e) =>
                                                             setEditData('name', e.target.value)
-                                                        }
-                                                    />
-
-                                                    <Input
-                                                        InputName={'Password'}
-                                                        Id={'password'}
-                                                        Name={'password'}
-                                                        Type={'password'}
-                                                        Placeholder={'Enter Password'}
-                                                        Required={false}
-                                                        Error={editErrors.password}
-                                                        Value={editData.password}
-                                                        Action={(e) =>
-                                                            setEditData('password', e.target.value)
-                                                        }
-                                                        ShowPasswordToggle={showPasswordToggle}
-                                                        setShowPasswordToggle={
-                                                            setShowPasswordToggle
-                                                        }
-                                                    />
-
-                                                    <Input
-                                                        InputName={'Confirm Password'}
-                                                        Id={'password_confirmation'}
-                                                        Name={'password_confirmation'}
-                                                        Type={'password'}
-                                                        Placeholder={'Enter Confirm Password'}
-                                                        Required={false}
-                                                        Error={editErrors.password_confirmation}
-                                                        Value={editData.password_confirmation}
-                                                        Action={(e) =>
-                                                            setEditData(
-                                                                'password_confirmation',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                        ShowPasswordToggle={
-                                                            showConfirmPasswordToggle
-                                                        }
-                                                        setShowPasswordToggle={
-                                                            setShowConfirmPasswordToggle
                                                         }
                                                     />
                                                 </div>
@@ -468,12 +327,6 @@ export default function index({ users }) {
                                                             setEditModalOpen(false);
                                                             setEditData('id', '');
                                                             setEditData('name', '');
-
-                                                            setEditData('password', '');
-                                                            setEditData(
-                                                                'password_confirmation',
-                                                                '',
-                                                            );
                                                         }}
                                                         Disabled={editProcessing}
                                                         Icon={
@@ -500,16 +353,11 @@ export default function index({ users }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Update User"
+                                                        Text="Update Currency"
                                                         Spinner={editProcessing}
                                                         Disabled={
                                                             editProcessing ||
-                                                            editData.name.trim() === '' ||
-                                                            (editData.password.trim() != '' &&
-                                                                editData.password_confirmation.trim() ===
-                                                                    '') ||
-                                                            editData.password.trim() !=
-                                                                editData.password_confirmation.trim()
+                                                            editData.name.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg

@@ -385,7 +385,7 @@ export default function index({ shipping_lines }) {
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
-                                                            createData.name === ''
+                                                            createData.name.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg
@@ -574,7 +574,8 @@ export default function index({ shipping_lines }) {
                                                         Text="Update Shipping Line"
                                                         Spinner={editProcessing}
                                                         Disabled={
-                                                            editProcessing || editData.name === ''
+                                                            editProcessing ||
+                                                            editData.name.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg

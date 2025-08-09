@@ -6,8 +6,9 @@ import Table from '@/Components/Table';
 import { useEffect, useState } from 'react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Input from '@/Components/Input';
+import SelectInput from '@/Components/SelectInput';
 
-export default function index({ users }) {
+export default function index({ subsidaries, controls, details }) {
     const { props } = usePage();
     const {
         data: BulkselectedIds,
@@ -35,9 +36,11 @@ export default function index({ users }) {
         processing: createProcessing,
         errors: createErrors,
     } = useForm({
-        name: '',
-        password: '',
-        password_confirmation: '',
+        title: '',
+        control_id: '',
+        subsidary_id: '',
+        other_details: '',
+        payment_method: '',
     });
 
     // Edit Form Data
@@ -48,10 +51,11 @@ export default function index({ users }) {
         processing: editProcessing,
         errors: editErrors,
     } = useForm({
-        id: '',
-        name: '',
-        password: '',
-        password_confirmation: '',
+        title: '',
+        control_id: '',
+        subsidary_id: '',
+        other_details: '',
+        payment_method: '',
     });
 
     const [columns, setColumns] = useState([]);
@@ -63,12 +67,23 @@ export default function index({ users }) {
     //  Edit Modal State
     const [EditModalOpen, setEditModalOpen] = useState(false);
 
-    // Password Input Toggles
-    const [showPasswordToggle, setShowPasswordToggle] = useState(false);
-    const [showConfirmPasswordToggle, setShowConfirmPasswordToggle] = useState(false);
-
     useEffect(() => {
-        const columns = [{ key: 'name', label: 'Name' }];
+        const columns = [
+            { key: 'title', label: 'Title' },
+            { key: 'control.name', label: 'Control Name' },
+            { key: 'subsidary.name', label: 'Subsidary Name' },
+            {
+                key: 'account_code',
+                label: 'Code',
+                badge: (value) => 'bg-blue-500 text-white p-3',
+            },
+
+            {
+                key: 'payment_method',
+                label: 'Payment Method',
+                badge: (value) => 'bg-blue-500 text-white p-3',
+            },
+        ];
 
         const actions = [
             {
@@ -77,9 +92,9 @@ export default function index({ users }) {
                 onClick: (item) => {
                     setEditModalOpen(true);
                     setEditData('id', item.id);
-                    setEditData('name', item.name);
-                    setEditData('password', '');
-                    setEditData('password_confirmation', '');
+                    setEditData('title', item.title);
+                    setEditData('payment_method', item.payment_method);
+                    setEditData('other_details', item.other_details);
                 },
             },
         ];
@@ -92,12 +107,14 @@ export default function index({ users }) {
     const CreateMethod = (e) => {
         e.preventDefault();
 
-        createPost(route('users.store'), {
+        createPost(route('accounts.details.store'), {
             onSuccess: () => {
                 setCreateModalOpen(false);
-                setCreateData('name', '');
-                setCreateData('password', '');
-                setCreateData('password_confirmation', '');
+                setCreateData('control_id', '');
+                setCreateData('subsidary_id', '');
+                setCreateData('title', '');
+                setCreateData('payment_method', '');
+                setCreateData('other_details', '');
             },
         });
     };
@@ -105,13 +122,13 @@ export default function index({ users }) {
     // EditMethod
     const EditMethod = (e) => {
         e.preventDefault();
-        editPut(route('users.update', editData.id), {
+        editPut(route('accounts.details.update', editData.id), {
             onSuccess: () => {
                 setEditModalOpen(false);
                 setEditData('id', '');
-                setEditData('name', '');
-                setEditData('password', '');
-                setEditData('password_confirmation', '');
+                setEditData('title', '');
+                setEditData('payment_method', '');
+                setEditData('other_details', '');
             },
         });
     };
@@ -119,13 +136,13 @@ export default function index({ users }) {
     return (
         <>
             <AuthenticatedLayout>
-                <Head title="Users" />
+                <Head title="Details" />
 
                 <BreadCrumb
-                    header={'Users'}
+                    header={'Details'}
                     parent={'Dashboard'}
                     parent_link={route('dashboard')}
-                    child={'Users'}
+                    child={'Details'}
                 />
 
                 <Card
@@ -134,7 +151,7 @@ export default function index({ users }) {
                             <div className="my-3 flex flex-wrap justify-end">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
-                                    Text={'Create User'}
+                                    Text={'Create Detail'}
                                     Action={() => setCreateModalOpen(true)}
                                     Icon={
                                         <svg
@@ -163,9 +180,9 @@ export default function index({ users }) {
                                 resetSingleSelectedId={resetSingleSelectedId}
                                 BulkDeleteMethod={BulkDelete}
                                 SingleDeleteMethod={SingleDelete}
-                                BulkDeleteRoute={'users.destroybyselection'}
-                                SingleDeleteRoute={'users.destroy'}
-                                items={users}
+                                BulkDeleteRoute={'accounts.details.destroybyselection'}
+                                SingleDeleteRoute={'accounts.details.destroy'}
+                                items={details}
                                 props={props}
                                 columns={columns}
                                 Search={false}
@@ -192,7 +209,7 @@ export default function index({ users }) {
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Create User
+                                                        Create Detail
                                                     </h3>
                                                 </div>
 
@@ -208,77 +225,80 @@ export default function index({ users }) {
                                                     </div>
                                                 )}
 
-                                                {createData.password != '' &&
-                                                    createData.password_confirmation != '' &&
-                                                    createData.password !=
-                                                        createData.password_confirmation && (
-                                                        <div className="col-span-2 mb-2 w-full rounded-xl border border-blue-300 bg-blue-50 px-5 py-4 text-sm text-blue-800 shadow-sm">
-                                                            <div className="mb-1 text-base font-bold text-blue-700">
-                                                                ℹ️ Info
-                                                            </div>
-                                                            <p>
-                                                                Password And Confirm Password Does
-                                                                Not Match
-                                                            </p>
-                                                        </div>
-                                                    )}
-
                                                 <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
                                                     <Input
-                                                        InputName={'Name'}
-                                                        Id={'name'}
-                                                        Name={'name'}
+                                                        InputName={'Detail Title'}
+                                                        Id={'title'}
+                                                        Name={'title'}
                                                         Type={'text'}
-                                                        Placeholder={'Enter Name'}
+                                                        Placeholder={'Enter Detail Title'}
                                                         Required={true}
-                                                        Error={createErrors.name}
-                                                        Value={createData.name}
+                                                        Error={createErrors.title}
+                                                        Value={createData.title}
                                                         Action={(e) =>
-                                                            setCreateData('name', e.target.value)
+                                                            setCreateData('title', e.target.value)
                                                         }
                                                     />
 
                                                     <Input
-                                                        InputName={'Password'}
-                                                        Id={'password'}
-                                                        Name={'password'}
-                                                        Type={'password'}
-                                                        Placeholder={'Enter Password'}
-                                                        Required={true}
-                                                        Error={createErrors.password}
-                                                        Value={createData.password}
+                                                        InputName={'Other Details'}
+                                                        Id={'other_details'}
+                                                        Name={'other_details'}
+                                                        Type={'text'}
+                                                        Placeholder={'Enter Other Details'}
+                                                        Required={false}
+                                                        Error={createErrors.other_details}
+                                                        Value={createData.other_details}
                                                         Action={(e) =>
                                                             setCreateData(
-                                                                'password',
+                                                                'other_details',
                                                                 e.target.value,
                                                             )
-                                                        }
-                                                        ShowPasswordToggle={showPasswordToggle}
-                                                        setShowPasswordToggle={
-                                                            setShowPasswordToggle
                                                         }
                                                     />
 
-                                                    <Input
-                                                        InputName={'Confirm Password'}
-                                                        Id={'password_confirmation'}
-                                                        Name={'password_confirmation'}
-                                                        Type={'password'}
-                                                        Placeholder={'Enter Confirm Password'}
+                                                    <SelectInput
+                                                        InputName={'Payment Method'}
+                                                        Name={'payment_method'}
+                                                        Error={createErrors.payment_method}
+                                                        Id={'payment_method'}
+                                                        Value={createData.payment_method}
+                                                        items={[{ name: 'cash' }, { name: 'bank' }]}
+                                                        itemKey={'name'}
+                                                        Placeholder={'Select Payment Method'}
                                                         Required={true}
-                                                        Error={createErrors.password_confirmation}
-                                                        Value={createData.password_confirmation}
-                                                        Action={(e) =>
-                                                            setCreateData(
-                                                                'password_confirmation',
-                                                                e.target.value,
-                                                            )
+                                                        Action={(value) =>
+                                                            setCreateData('payment_method', value)
                                                         }
-                                                        ShowPasswordToggle={
-                                                            showConfirmPasswordToggle
+                                                    />
+
+                                                    <SelectInput
+                                                        InputName={'Control'}
+                                                        Name={'control_id'}
+                                                        Error={createErrors.control_id}
+                                                        Id={'control_id'}
+                                                        Value={createData.control_id}
+                                                        items={controls}
+                                                        itemKey={'name'}
+                                                        Placeholder={'Select Detail Control'}
+                                                        Required={true}
+                                                        Action={(value) =>
+                                                            setCreateData('control_id', value)
                                                         }
-                                                        setShowPasswordToggle={
-                                                            setShowConfirmPasswordToggle
+                                                    />
+
+                                                    <SelectInput
+                                                        InputName={'Subsidary'}
+                                                        Name={'subsidary_id'}
+                                                        Error={createErrors.subsidary_id}
+                                                        Id={'subsidary_id'}
+                                                        Value={createData.subsidary_id}
+                                                        items={subsidaries}
+                                                        itemKey={'name'}
+                                                        Placeholder={'Select Detail Subsidary'}
+                                                        Required={true}
+                                                        Action={(value) =>
+                                                            setCreateData('subsidary_id', value)
                                                         }
                                                     />
                                                 </div>
@@ -288,13 +308,11 @@ export default function index({ users }) {
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setCreateModalOpen(false);
-                                                            setCreateData('name', '');
-
-                                                            setCreateData('password', '');
-                                                            setCreateData(
-                                                                'password_confirmation',
-                                                                '',
-                                                            );
+                                                            setCreateData('title', '');
+                                                            setCreateData('control_id', '');
+                                                            setCreateData('subsidary_id', '');
+                                                            setCreateData('payment_method', '');
+                                                            setCreateData('other_details', '');
                                                         }}
                                                         Disabled={createProcessing}
                                                         Icon={
@@ -321,16 +339,16 @@ export default function index({ users }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Save User"
+                                                        Text="Save Detail"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
-                                                            createData.name.trim() === '' ||
-                                                            createData.password.trim() === '' ||
-                                                            createData.password_confirmation.trim() ===
+                                                            createData.title.trim() === '' ||
+                                                            createData.payment_method.trim() ===
                                                                 '' ||
-                                                            createData.password.trim() !==
-                                                                createData.password_confirmation.trim()
+                                                            createData.control_id === '' ||
+                                                            createData.subsidary_id === '' ||
+                                                            createData.other_details.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg
@@ -373,7 +391,7 @@ export default function index({ users }) {
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Edit User
+                                                        Edit Detail
                                                     </h3>
                                                 </div>
 
@@ -389,74 +407,50 @@ export default function index({ users }) {
                                                     </div>
                                                 )}
 
-                                                {editData.password != '' &&
-                                                    editData.password_confirmation != '' &&
-                                                    editData.password !=
-                                                        editData.password_confirmation && (
-                                                        <div className="col-span-2 mb-2 w-full rounded-xl border border-blue-300 bg-blue-50 px-5 py-4 text-sm text-blue-800 shadow-sm">
-                                                            <div className="mb-1 text-base font-bold text-blue-700">
-                                                                ℹ️ Info
-                                                            </div>
-                                                            <p>
-                                                                Password And Confirm Password Does
-                                                                Not Match
-                                                            </p>
-                                                        </div>
-                                                    )}
-
                                                 <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
                                                     <Input
-                                                        InputName={'Name'}
-                                                        Id={'name'}
-                                                        Name={'name'}
+                                                        InputName={'Detail Title'}
+                                                        Id={'title'}
+                                                        Name={'title'}
                                                         Type={'text'}
-                                                        Placeholder={'Enter Name'}
+                                                        Placeholder={'Enter Detail title'}
                                                         Required={true}
-                                                        Error={editErrors.name}
-                                                        Value={editData.name}
+                                                        Error={editErrors.title}
+                                                        Value={editData.title}
                                                         Action={(e) =>
-                                                            setEditData('name', e.target.value)
+                                                            setEditData('title', e.target.value)
                                                         }
                                                     />
 
                                                     <Input
-                                                        InputName={'Password'}
-                                                        Id={'password'}
-                                                        Name={'password'}
-                                                        Type={'password'}
-                                                        Placeholder={'Enter Password'}
+                                                        InputName={'Other Details'}
+                                                        Id={'other_details'}
+                                                        Name={'other_details'}
+                                                        Type={'text'}
+                                                        Placeholder={'Enter Other Details'}
                                                         Required={false}
-                                                        Error={editErrors.password}
-                                                        Value={editData.password}
-                                                        Action={(e) =>
-                                                            setEditData('password', e.target.value)
-                                                        }
-                                                        ShowPasswordToggle={showPasswordToggle}
-                                                        setShowPasswordToggle={
-                                                            setShowPasswordToggle
-                                                        }
-                                                    />
-
-                                                    <Input
-                                                        InputName={'Confirm Password'}
-                                                        Id={'password_confirmation'}
-                                                        Name={'password_confirmation'}
-                                                        Type={'password'}
-                                                        Placeholder={'Enter Confirm Password'}
-                                                        Required={false}
-                                                        Error={editErrors.password_confirmation}
-                                                        Value={editData.password_confirmation}
+                                                        Error={editErrors.other_details}
+                                                        Value={editData.other_details}
                                                         Action={(e) =>
                                                             setEditData(
-                                                                'password_confirmation',
+                                                                'other_details',
                                                                 e.target.value,
                                                             )
                                                         }
-                                                        ShowPasswordToggle={
-                                                            showConfirmPasswordToggle
-                                                        }
-                                                        setShowPasswordToggle={
-                                                            setShowConfirmPasswordToggle
+                                                    />
+
+                                                    <SelectInput
+                                                        InputName={'Payment Method'}
+                                                        Name={'payment_method'}
+                                                        Error={editErrors.payment_method}
+                                                        Id={'payment_method'}
+                                                        Value={editData.payment_method}
+                                                        items={[{ name: 'cash' }, { name: 'bank' }]}
+                                                        itemKey={'name'}
+                                                        Placeholder={'Select Payment Method'}
+                                                        Required={true}
+                                                        Action={(value) =>
+                                                            setEditData('payment_method', value)
                                                         }
                                                     />
                                                 </div>
@@ -467,13 +461,9 @@ export default function index({ users }) {
                                                         Action={() => {
                                                             setEditModalOpen(false);
                                                             setEditData('id', '');
-                                                            setEditData('name', '');
-
-                                                            setEditData('password', '');
-                                                            setEditData(
-                                                                'password_confirmation',
-                                                                '',
-                                                            );
+                                                            setEditData('title', '');
+                                                            setEditData('other_details', '');
+                                                            setEditData('payment_method', '');
                                                         }}
                                                         Disabled={editProcessing}
                                                         Icon={
@@ -500,16 +490,13 @@ export default function index({ users }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Update User"
+                                                        Text="Update Detail"
                                                         Spinner={editProcessing}
                                                         Disabled={
                                                             editProcessing ||
-                                                            editData.name.trim() === '' ||
-                                                            (editData.password.trim() != '' &&
-                                                                editData.password_confirmation.trim() ===
-                                                                    '') ||
-                                                            editData.password.trim() !=
-                                                                editData.password_confirmation.trim()
+                                                            editData.title.trim() === '' ||
+                                                            editData.payment_method.trim() === '' ||
+                                                            editData.other_details.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg
