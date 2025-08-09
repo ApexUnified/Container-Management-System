@@ -72,6 +72,7 @@ export default function index({ subsidaries, controls, details }) {
             { key: 'title', label: 'Title' },
             { key: 'control.name', label: 'Control Name' },
             { key: 'subsidary.name', label: 'Subsidary Name' },
+            { key: 'other_details', label: 'Other Details' },
             {
                 key: 'account_code',
                 label: 'Code',
@@ -347,8 +348,7 @@ export default function index({ subsidaries, controls, details }) {
                                                             createData.payment_method.trim() ===
                                                                 '' ||
                                                             createData.control_id === '' ||
-                                                            createData.subsidary_id === '' ||
-                                                            createData.other_details.trim() === ''
+                                                            createData.subsidary_id === ''
                                                         }
                                                         Icon={
                                                             <svg
@@ -495,8 +495,7 @@ export default function index({ subsidaries, controls, details }) {
                                                         Disabled={
                                                             editProcessing ||
                                                             editData.title.trim() === '' ||
-                                                            editData.payment_method.trim() === '' ||
-                                                            editData.other_details.trim() === ''
+                                                            editData.payment_method.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg
