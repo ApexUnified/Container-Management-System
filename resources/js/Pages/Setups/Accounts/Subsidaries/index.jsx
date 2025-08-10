@@ -8,7 +8,7 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import Input from '@/Components/Input';
 import SelectInput from '@/Components/SelectInput';
 
-export default function index({ subsidaries, controls, details }) {
+export default function index({ subsidaries, controls }) {
     const { props } = usePage();
     const {
         data: BulkselectedIds,
@@ -36,11 +36,8 @@ export default function index({ subsidaries, controls, details }) {
         processing: createProcessing,
         errors: createErrors,
     } = useForm({
-        title: '',
+        name: '',
         control_id: '',
-        subsidary_id: '',
-        other_details: '',
-        payment_method: '',
     });
 
     // Edit Form Data
@@ -51,11 +48,8 @@ export default function index({ subsidaries, controls, details }) {
         processing: editProcessing,
         errors: editErrors,
     } = useForm({
-        title: '',
+        name: '',
         control_id: '',
-        subsidary_id: '',
-        other_details: '',
-        payment_method: '',
     });
 
     const [columns, setColumns] = useState([]);
@@ -69,21 +63,13 @@ export default function index({ subsidaries, controls, details }) {
 
     useEffect(() => {
         const columns = [
-            { key: 'title', label: 'Title' },
-            { key: 'control.name', label: 'Control Name' },
-            { key: 'subsidary.name', label: 'Subsidary Name' },
-            { key: 'other_details', label: 'Other Details' },
+            { key: 'control.name', label: 'Control Account Name' },
             {
                 key: 'account_code',
-                label: 'Code',
+                label: 'Subsidary Account Code',
                 badge: (value) => 'bg-blue-500 text-white p-3',
             },
-
-            {
-                key: 'payment_method',
-                label: 'Payment Method',
-                badge: (value) => 'bg-blue-500 text-white p-3',
-            },
+            { key: 'name', label: 'Subsidary Account Name' },
         ];
 
         const actions = [
@@ -93,9 +79,7 @@ export default function index({ subsidaries, controls, details }) {
                 onClick: (item) => {
                     setEditModalOpen(true);
                     setEditData('id', item.id);
-                    setEditData('title', item.title);
-                    setEditData('payment_method', item.payment_method);
-                    setEditData('other_details', item.other_details);
+                    setEditData('name', item.name);
                 },
             },
         ];
@@ -108,14 +92,11 @@ export default function index({ subsidaries, controls, details }) {
     const CreateMethod = (e) => {
         e.preventDefault();
 
-        createPost(route('accounts.details.store'), {
+        createPost(route('setups.accounts.subsidaries.store'), {
             onSuccess: () => {
                 setCreateModalOpen(false);
+                setCreateData('name', '');
                 setCreateData('control_id', '');
-                setCreateData('subsidary_id', '');
-                setCreateData('title', '');
-                setCreateData('payment_method', '');
-                setCreateData('other_details', '');
             },
         });
     };
@@ -123,13 +104,11 @@ export default function index({ subsidaries, controls, details }) {
     // EditMethod
     const EditMethod = (e) => {
         e.preventDefault();
-        editPut(route('accounts.details.update', editData.id), {
+        editPut(route('setups.accounts.subsidaries.update', editData.id), {
             onSuccess: () => {
                 setEditModalOpen(false);
                 setEditData('id', '');
-                setEditData('title', '');
-                setEditData('payment_method', '');
-                setEditData('other_details', '');
+                setEditData('name', '');
             },
         });
     };
@@ -137,13 +116,13 @@ export default function index({ subsidaries, controls, details }) {
     return (
         <>
             <AuthenticatedLayout>
-                <Head title="Details" />
+                <Head title="Setups - Subsidary Account Setup" />
 
                 <BreadCrumb
-                    header={'Details'}
+                    header={'Setups - Subsidary Account Setup'}
                     parent={'Dashboard'}
                     parent_link={route('dashboard')}
-                    child={'Details'}
+                    child={'Setups - Subsidary Account Setup'}
                 />
 
                 <Card
@@ -152,7 +131,7 @@ export default function index({ subsidaries, controls, details }) {
                             <div className="my-3 flex flex-wrap justify-end">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
-                                    Text={'Create Detail'}
+                                    Text={'Create Subsidary Account'}
                                     Action={() => setCreateModalOpen(true)}
                                     Icon={
                                         <svg
@@ -181,9 +160,9 @@ export default function index({ subsidaries, controls, details }) {
                                 resetSingleSelectedId={resetSingleSelectedId}
                                 BulkDeleteMethod={BulkDelete}
                                 SingleDeleteMethod={SingleDelete}
-                                BulkDeleteRoute={'accounts.details.destroybyselection'}
-                                SingleDeleteRoute={'accounts.details.destroy'}
-                                items={details}
+                                BulkDeleteRoute={'setups.accounts.subsidaries.destroybyselection'}
+                                SingleDeleteRoute={'setups.accounts.subsidaries.destroy'}
+                                items={subsidaries}
                                 props={props}
                                 columns={columns}
                                 Search={false}
@@ -210,7 +189,7 @@ export default function index({ subsidaries, controls, details }) {
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Create Detail
+                                                        Create Subsidary Account
                                                     </h3>
                                                 </div>
 
@@ -228,78 +207,33 @@ export default function index({ subsidaries, controls, details }) {
 
                                                 <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
                                                     <Input
-                                                        InputName={'Detail Title'}
-                                                        Id={'title'}
-                                                        Name={'title'}
+                                                        InputName={'Subsidary Account Name'}
+                                                        Id={'name'}
+                                                        Name={'name'}
                                                         Type={'text'}
-                                                        Placeholder={'Enter Detail Title'}
+                                                        Placeholder={'Enter Subsidary Account Name'}
                                                         Required={true}
-                                                        Error={createErrors.title}
-                                                        Value={createData.title}
+                                                        Error={createErrors.name}
+                                                        Value={createData.name}
                                                         Action={(e) =>
-                                                            setCreateData('title', e.target.value)
-                                                        }
-                                                    />
-
-                                                    <Input
-                                                        InputName={'Other Details'}
-                                                        Id={'other_details'}
-                                                        Name={'other_details'}
-                                                        Type={'text'}
-                                                        Placeholder={'Enter Other Details'}
-                                                        Required={false}
-                                                        Error={createErrors.other_details}
-                                                        Value={createData.other_details}
-                                                        Action={(e) =>
-                                                            setCreateData(
-                                                                'other_details',
-                                                                e.target.value,
-                                                            )
+                                                            setCreateData('name', e.target.value)
                                                         }
                                                     />
 
                                                     <SelectInput
-                                                        InputName={'Payment Method'}
-                                                        Name={'payment_method'}
-                                                        Error={createErrors.payment_method}
-                                                        Id={'payment_method'}
-                                                        Value={createData.payment_method}
-                                                        items={[{ name: 'cash' }, { name: 'bank' }]}
-                                                        itemKey={'name'}
-                                                        Placeholder={'Select Payment Method'}
-                                                        Required={true}
-                                                        Action={(value) =>
-                                                            setCreateData('payment_method', value)
-                                                        }
-                                                    />
-
-                                                    <SelectInput
-                                                        InputName={'Control'}
+                                                        InputName={'Subsidary Control Account'}
                                                         Name={'control_id'}
                                                         Error={createErrors.control_id}
                                                         Id={'control_id'}
                                                         Value={createData.control_id}
                                                         items={controls}
                                                         itemKey={'name'}
-                                                        Placeholder={'Select Detail Control'}
+                                                        Placeholder={
+                                                            'Select Subsidary Control Account'
+                                                        }
                                                         Required={true}
                                                         Action={(value) =>
                                                             setCreateData('control_id', value)
-                                                        }
-                                                    />
-
-                                                    <SelectInput
-                                                        InputName={'Subsidary'}
-                                                        Name={'subsidary_id'}
-                                                        Error={createErrors.subsidary_id}
-                                                        Id={'subsidary_id'}
-                                                        Value={createData.subsidary_id}
-                                                        items={subsidaries}
-                                                        itemKey={'name'}
-                                                        Placeholder={'Select Detail Subsidary'}
-                                                        Required={true}
-                                                        Action={(value) =>
-                                                            setCreateData('subsidary_id', value)
                                                         }
                                                     />
                                                 </div>
@@ -309,11 +243,8 @@ export default function index({ subsidaries, controls, details }) {
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setCreateModalOpen(false);
-                                                            setCreateData('title', '');
+                                                            setCreateData('name', '');
                                                             setCreateData('control_id', '');
-                                                            setCreateData('subsidary_id', '');
-                                                            setCreateData('payment_method', '');
-                                                            setCreateData('other_details', '');
                                                         }}
                                                         Disabled={createProcessing}
                                                         Icon={
@@ -340,15 +271,12 @@ export default function index({ subsidaries, controls, details }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Save Detail"
+                                                        Text="Save Subsidary Account"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
-                                                            createData.title.trim() === '' ||
-                                                            createData.payment_method.trim() ===
-                                                                '' ||
-                                                            createData.control_id === '' ||
-                                                            createData.subsidary_id === ''
+                                                            createData.name.trim() === '' ||
+                                                            createData.control_id === ''
                                                         }
                                                         Icon={
                                                             <svg
@@ -391,7 +319,7 @@ export default function index({ subsidaries, controls, details }) {
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Edit Detail
+                                                        Edit Subsidary Account
                                                     </h3>
                                                 </div>
 
@@ -407,50 +335,18 @@ export default function index({ subsidaries, controls, details }) {
                                                     </div>
                                                 )}
 
-                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-1">
                                                     <Input
-                                                        InputName={'Detail Title'}
-                                                        Id={'title'}
-                                                        Name={'title'}
+                                                        InputName={'Subsidary Account Name'}
+                                                        Id={'name'}
+                                                        Name={'name'}
                                                         Type={'text'}
-                                                        Placeholder={'Enter Detail title'}
+                                                        Placeholder={'Enter Subsidary Account Name'}
                                                         Required={true}
-                                                        Error={editErrors.title}
-                                                        Value={editData.title}
+                                                        Error={editErrors.name}
+                                                        Value={editData.name}
                                                         Action={(e) =>
-                                                            setEditData('title', e.target.value)
-                                                        }
-                                                    />
-
-                                                    <Input
-                                                        InputName={'Other Details'}
-                                                        Id={'other_details'}
-                                                        Name={'other_details'}
-                                                        Type={'text'}
-                                                        Placeholder={'Enter Other Details'}
-                                                        Required={false}
-                                                        Error={editErrors.other_details}
-                                                        Value={editData.other_details}
-                                                        Action={(e) =>
-                                                            setEditData(
-                                                                'other_details',
-                                                                e.target.value,
-                                                            )
-                                                        }
-                                                    />
-
-                                                    <SelectInput
-                                                        InputName={'Payment Method'}
-                                                        Name={'payment_method'}
-                                                        Error={editErrors.payment_method}
-                                                        Id={'payment_method'}
-                                                        Value={editData.payment_method}
-                                                        items={[{ name: 'cash' }, { name: 'bank' }]}
-                                                        itemKey={'name'}
-                                                        Placeholder={'Select Payment Method'}
-                                                        Required={true}
-                                                        Action={(value) =>
-                                                            setEditData('payment_method', value)
+                                                            setEditData('name', e.target.value)
                                                         }
                                                     />
                                                 </div>
@@ -461,9 +357,7 @@ export default function index({ subsidaries, controls, details }) {
                                                         Action={() => {
                                                             setEditModalOpen(false);
                                                             setEditData('id', '');
-                                                            setEditData('title', '');
-                                                            setEditData('other_details', '');
-                                                            setEditData('payment_method', '');
+                                                            setEditData('name', '');
                                                         }}
                                                         Disabled={editProcessing}
                                                         Icon={
@@ -490,12 +384,11 @@ export default function index({ subsidaries, controls, details }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Update Detail"
+                                                        Text="Update Subsidary Account"
                                                         Spinner={editProcessing}
                                                         Disabled={
                                                             editProcessing ||
-                                                            editData.title.trim() === '' ||
-                                                            editData.payment_method.trim() === ''
+                                                            editData.name.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg

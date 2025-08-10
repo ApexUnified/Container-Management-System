@@ -91,8 +91,14 @@ namespace App\Models{
  * @property string $code
  * @property string $account_code
  * @property string $title
- * @property string $payment_method
+ * @property string|null $bank_cash
  * @property string|null $other_details
+ * @property string|null $address
+ * @property string|null $ntn_no
+ * @property string|null $strn_no
+ * @property string|null $email
+ * @property string|null $mobile_no
+ * @property string|null $cnic_no
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Control $control
@@ -102,12 +108,18 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereAccountCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereBankCash($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereCnicNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereControlId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereEmail($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereMobileNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereNtnNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereOtherDetails($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail wherePaymentMethod($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereStrnNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereSubsidaryId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereTitle($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail whereUpdatedAt($value)
@@ -271,6 +283,7 @@ namespace App\Models{
  * @property int $control_id
  * @property string $name
  * @property string $code
+ * @property string $account_code
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Control $control
@@ -280,6 +293,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereAccountCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereControlId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary whereCreatedAt($value)

@@ -61,9 +61,9 @@ export default function Header({
 
     return (
         <>
-            <header className="flex w-full bg-white border-gray-200 dark:border-gray-800 dark:bg-gray-900 lg:border-b">
-                <div className="flex flex-col items-center justify-between grow lg:flex-row lg:px-6">
-                    <div className="flex items-center justify-between w-full gap-2 px-3 py-3 border-b border-gray-200 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
+            <header className="flex w-full border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 lg:border-b">
+                <div className="flex grow flex-col items-center justify-between lg:flex-row lg:px-6">
+                    <div className="flex w-full items-center justify-between gap-2 border-b border-gray-200 px-3 py-3 dark:border-gray-800 sm:gap-4 lg:justify-normal lg:border-b-0 lg:px-0 lg:py-4">
                         <button
                             className={`${sidebarToggle ? 'bg-gray-100 dark:bg-gray-800 md:bg-transparent dark:lg:bg-transparent' : ''} z-99999 flex h-10 w-10 items-center justify-center rounded-lg border-gray-200 text-gray-500 dark:border-gray-800 dark:text-gray-400 lg:h-11 lg:w-11 lg:border`}
                             onClick={() => setSidebarToggle(!sidebarToggle)}
@@ -103,12 +103,12 @@ export default function Header({
 
                         <Link href={route('dashboard')} className="lg:hidden">
                             <img
-                                className="h-[140px] w-auto dark:hidden"
+                                className="h-[80px] w-auto dark:hidden"
                                 src={ApplicationLogoLight}
                                 alt="Logo"
                             />
                             <img
-                                className="hidden h-[140px] w-auto dark:block"
+                                className="hidden h-[80px] w-auto dark:block"
                                 src={ApplicationLogoDark}
                                 alt="Logo"
                             />
@@ -139,9 +139,9 @@ export default function Header({
                     <div
                         className={`${menuToggle ? 'flex' : 'hidden'} shadow-theme-md w-full items-center justify-between gap-4 px-5 py-4 lg:flex lg:justify-end lg:px-0 lg:shadow-none`}
                     >
-                        <div className="flex items-center gap-2 2xsm:gap-3">
+                        <div className="2xsm:gap-3 flex items-center gap-2">
                             <button
-                                className="relative flex items-center justify-center text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
+                                className="hover:text-dark-900 relative flex h-11 w-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white"
                                 onClick={() => {
                                     setDarkMode(!darkMode);
                                     localStorage.setItem('darkMode', !darkMode);
@@ -180,14 +180,14 @@ export default function Header({
 
                         <div className="relative z-[1]" ref={profileDropdownRef}>
                             <div
-                                className="flex items-center text-gray-700 cursor-pointer dark:text-gray-400"
+                                className="flex cursor-pointer items-center text-gray-700 dark:text-gray-400"
                                 onClick={() => setProfileDropdown(!profileDropdown)}
                             >
-                                <span className="flex items-center justify-center mr-3 overflow-hidden bg-white border border-gray-200 rounded-full hover:text-dark-900 h-11 w-11 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+                                <span className="hover:text-dark-900 mr-3 flex h-11 w-11 items-center justify-center overflow-hidden rounded-full border border-gray-200 bg-white hover:bg-gray-100 hover:text-gray-700 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
                                     {user.avatar}
                                 </span>
 
-                                <span className="block mr-1 font-medium text-theme-sm">
+                                <span className="text-theme-sm mr-1 block font-medium">
                                     {' '}
                                     {user.name.length > 10
                                         ? user.name.slice(0, 10) + '...'
@@ -218,7 +218,7 @@ export default function Header({
                                         onClick={() => {
                                             logout(route('logout'));
                                         }}
-                                        className="flex items-center gap-3 px-3 py-2 mt-3 font-medium text-gray-700 rounded-lg text-theme-sm group hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
+                                        className="text-theme-sm group mt-3 flex items-center gap-3 rounded-lg px-3 py-2 font-medium text-gray-700 hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-gray-300"
                                     >
                                         {logoutProcessing ? (
                                             <Spinner />

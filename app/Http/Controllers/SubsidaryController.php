@@ -13,10 +13,10 @@ class SubsidaryController extends Controller
 {
     public function index()
     {
-        $subsidaries = Subsidary::with(['control'])->latest()->paginate(10);
+        $subsidaries = Subsidary::with(['control'])->orderBy('code', 'asc')->paginate(10);
         $controls = Control::all();
 
-        return Inertia::render('Accounts/Subsidaries/index', compact('subsidaries', 'controls'));
+        return Inertia::render('Setups/Accounts/Subsidaries/index', compact('subsidaries', 'controls'));
     }
 
     public function store(Request $request)

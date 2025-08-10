@@ -126,17 +126,18 @@ export default function SelectInput({
                             if (Multiple) {
                                 Action(selectedOption?.map((opt) => opt.value));
                             } else {
-                                Action(selectedOption?.value);
+                                Action(selectedOption?.value ?? '');
                             }
                         }}
                         isMulti={Multiple}
+                        isClearable={!Multiple}
                         isSearchable
                         required={Required}
                         {...(Placeholder && {
                             placeholder: `Select ${InputName} Or Search By its Name`,
                         })}
                         styles={isDarkMode ? darkStyles : lightStyles}
-                        className="react-select-container"
+                        className={`react-select-container ${isDisabled && 'opacity-30'}`}
                         classNamePrefix="react-select"
                     />
                 </div>

@@ -12,9 +12,9 @@ class ControlController extends Controller
 {
     public function index()
     {
-        $controls = Control::latest()->paginate(10);
+        $controls = Control::orderBy('id', 'asc')->paginate(10);
 
-        return Inertia::render('Accounts/Controls/index', compact('controls'));
+        return Inertia::render('Setups/Accounts/Controls/index', compact('controls'));
     }
 
     public function store(Request $request)

@@ -6,9 +6,8 @@ import Table from '@/Components/Table';
 import { useEffect, useState } from 'react';
 import PrimaryButton from '@/Components/PrimaryButton';
 import Input from '@/Components/Input';
-import SelectInput from '@/Components/SelectInput';
 
-export default function index({ subsidaries, controls }) {
+export default function index({ controls }) {
     const { props } = usePage();
     const {
         data: BulkselectedIds,
@@ -37,7 +36,6 @@ export default function index({ subsidaries, controls }) {
         errors: createErrors,
     } = useForm({
         name: '',
-        control_id: '',
     });
 
     // Edit Form Data
@@ -49,7 +47,6 @@ export default function index({ subsidaries, controls }) {
         errors: editErrors,
     } = useForm({
         name: '',
-        control_id: '',
     });
 
     const [columns, setColumns] = useState([]);
@@ -62,16 +59,7 @@ export default function index({ subsidaries, controls }) {
     const [EditModalOpen, setEditModalOpen] = useState(false);
 
     useEffect(() => {
-        const columns = [
-            { key: 'name', label: 'Subsidary Name' },
-            {
-                key: 'account_code',
-                label: 'Subsidary Code',
-                badge: (value) => 'bg-blue-500 text-white p-3',
-            },
-
-            { key: 'control.name', label: 'Control Name' },
-        ];
+        const columns = [{ key: 'name', label: 'Control Account Name' }];
 
         const actions = [
             {
@@ -93,11 +81,10 @@ export default function index({ subsidaries, controls }) {
     const CreateMethod = (e) => {
         e.preventDefault();
 
-        createPost(route('accounts.subsidaries.store'), {
+        createPost(route('setups.accounts.controls.store'), {
             onSuccess: () => {
                 setCreateModalOpen(false);
                 setCreateData('name', '');
-                setCreateData('control_id', '');
             },
         });
     };
@@ -105,7 +92,7 @@ export default function index({ subsidaries, controls }) {
     // EditMethod
     const EditMethod = (e) => {
         e.preventDefault();
-        editPut(route('accounts.subsidaries.update', editData.id), {
+        editPut(route('setups.accounts.controls.update', editData.id), {
             onSuccess: () => {
                 setEditModalOpen(false);
                 setEditData('id', '');
@@ -117,13 +104,13 @@ export default function index({ subsidaries, controls }) {
     return (
         <>
             <AuthenticatedLayout>
-                <Head title="Subsidaries" />
+                <Head title="Setups - Control Setup" />
 
                 <BreadCrumb
-                    header={'Subsidaries'}
+                    header={'Setups - Control Account Setup'}
                     parent={'Dashboard'}
                     parent_link={route('dashboard')}
-                    child={'Subsidaries'}
+                    child={'Setups - Control Account Setup'}
                 />
 
                 <Card
@@ -132,7 +119,7 @@ export default function index({ subsidaries, controls }) {
                             <div className="my-3 flex flex-wrap justify-end">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
-                                    Text={'Create Subsidary'}
+                                    Text={'Create Control Account'}
                                     Action={() => setCreateModalOpen(true)}
                                     Icon={
                                         <svg
@@ -161,9 +148,9 @@ export default function index({ subsidaries, controls }) {
                                 resetSingleSelectedId={resetSingleSelectedId}
                                 BulkDeleteMethod={BulkDelete}
                                 SingleDeleteMethod={SingleDelete}
-                                BulkDeleteRoute={'accounts.subsidaries.destroybyselection'}
-                                SingleDeleteRoute={'accounts.subsidaries.destroy'}
-                                items={subsidaries}
+                                BulkDeleteRoute={'setups.accounts.controls.destroybyselection'}
+                                SingleDeleteRoute={'setups.accounts.controls.destroy'}
+                                items={controls}
                                 props={props}
                                 columns={columns}
                                 Search={false}
@@ -190,7 +177,7 @@ export default function index({ subsidaries, controls }) {
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Create Subsidary
+                                                        Create Control Account
                                                     </h3>
                                                 </div>
 
@@ -208,31 +195,16 @@ export default function index({ subsidaries, controls }) {
 
                                                 <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-1">
                                                     <Input
-                                                        InputName={'Subsidary Name'}
+                                                        InputName={'Account Name'}
                                                         Id={'name'}
                                                         Name={'name'}
                                                         Type={'text'}
-                                                        Placeholder={'Enter Subsidary Name'}
+                                                        Placeholder={'Enter Account Name'}
                                                         Required={true}
                                                         Error={createErrors.name}
                                                         Value={createData.name}
                                                         Action={(e) =>
                                                             setCreateData('name', e.target.value)
-                                                        }
-                                                    />
-
-                                                    <SelectInput
-                                                        InputName={'Control'}
-                                                        Name={'control_id'}
-                                                        Error={createErrors.control_id}
-                                                        Id={'control_id'}
-                                                        Value={createData.control_id}
-                                                        items={controls}
-                                                        itemKey={'name'}
-                                                        Placeholder={'Select Subsidary Control'}
-                                                        Required={true}
-                                                        Action={(value) =>
-                                                            setCreateData('control_id', value)
                                                         }
                                                     />
                                                 </div>
@@ -243,7 +215,6 @@ export default function index({ subsidaries, controls }) {
                                                         Action={() => {
                                                             setCreateModalOpen(false);
                                                             setCreateData('name', '');
-                                                            setCreateData('control_id', '');
                                                         }}
                                                         Disabled={createProcessing}
                                                         Icon={
@@ -270,12 +241,11 @@ export default function index({ subsidaries, controls }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Save Control"
+                                                        Text="Save Control Account"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
-                                                            createData.name.trim() === '' ||
-                                                            createData.control_id === ''
+                                                            createData.name.trim() === ''
                                                         }
                                                         Icon={
                                                             <svg
@@ -318,7 +288,7 @@ export default function index({ subsidaries, controls }) {
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Edit Control
+                                                        Edit Control Account
                                                     </h3>
                                                 </div>
 
@@ -336,11 +306,11 @@ export default function index({ subsidaries, controls }) {
 
                                                 <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-1">
                                                     <Input
-                                                        InputName={'Subsidary Name'}
+                                                        InputName={'Account Name'}
                                                         Id={'name'}
                                                         Name={'name'}
                                                         Type={'text'}
-                                                        Placeholder={'Enter Subsidary Name'}
+                                                        Placeholder={'Enter Account Name'}
                                                         Required={true}
                                                         Error={editErrors.name}
                                                         Value={editData.name}
@@ -383,7 +353,7 @@ export default function index({ subsidaries, controls }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Update Subsidary"
+                                                        Text="Update Control Account "
                                                         Spinner={editProcessing}
                                                         Disabled={
                                                             editProcessing ||

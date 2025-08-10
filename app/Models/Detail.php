@@ -13,8 +13,14 @@ class Detail extends Model
         'code',
         'account_code',
         'title',
-        'payment_method',
+        'bank_cash',
         'other_details',
+        'address',
+        'ntn_no',
+        'strn_no',
+        'email',
+        'mobile_no',
+        'cnic_no',
     ];
 
     protected $appends = [

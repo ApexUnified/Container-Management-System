@@ -14,11 +14,10 @@ class DetailController extends Controller
 {
     public function index()
     {
-        $details = Detail::with(['control', 'subsidary'])->latest()->paginate(10);
-        $subsidaries = Subsidary::all();
+        $details = Detail::with(['control', 'subsidary'])->orderBy('code', 'asc')->paginate(10);
         $controls = Control::all();
 
-        return Inertia::render('Accounts/Details/index', compact('details', 'subsidaries', 'controls'));
+        return Inertia::render('Setups/Accounts/Details/index', compact('details', 'controls'));
     }
 
     public function store(Request $request)
@@ -27,8 +26,14 @@ class DetailController extends Controller
             'control_id' => ['required', 'exists:controls,id'],
             'subsidary_id' => ['required', 'exists:subsidaries,id'],
             'title' => ['required', 'max:255'],
-            'payment_method' => ['required', 'in:cash,bank'],
+            'bank_cash' => ['nullable', 'in:cash,bank'],
             'other_details' => ['nullable', 'max:500'],
+            'address' => ['nullable', 'max:500'],
+            'ntn_no' => ['nullable', 'max:255'],
+            'strn_no' => ['nullable', 'max:255'],
+            'email' => ['nullable', 'max:255', 'email'],
+            'mobile_no' => ['nullable', 'max:255'],
+            'cnic_no' => ['nullable', 'max:255'],
         ]);
 
         try {
@@ -54,14 +59,14 @@ class DetailController extends Controller
                 ->first();
 
             if (empty($lastDetail)) {
-                $validated_req['code'] = $control->id.$subsidary->id.'001';
-                $validated_req['account_code'] = $control->id.'-'.$subsidary->id.'-001';
+                $validated_req['code'] = $control->id.$subsidary->code.'001';
+                $validated_req['account_code'] = $control->id.'-'.$subsidary->code.'-001';
             } else {
                 $lastCode = $lastDetail->code;
-                $sequencePart = substr($lastCode, strlen($control->id.$subsidary->id));
+                $sequencePart = substr($lastCode, strlen($control->id.$subsidary->code));
                 $sequence = intval($sequencePart) + 1;
-                $validated_req['account_code'] = $control->id.'-'.$subsidary->id.'-'.str_pad($sequence, 3, '0', STR_PAD_LEFT);
-                $validated_req['code'] = $control->id.$subsidary->id.str_pad($sequence, 3, '0', STR_PAD_LEFT);
+                $validated_req['account_code'] = $control->id.'-'.$subsidary->code.'-'.str_pad($sequence, 3, '0', STR_PAD_LEFT);
+                $validated_req['code'] = $control->id.$subsidary->code.str_pad($sequence, 3, '0', STR_PAD_LEFT);
             }
 
             $created = Detail::create($validated_req);
@@ -88,10 +93,15 @@ class DetailController extends Controller
 
         $validated_req = $request->validate([
             'title' => ['required', 'max:255'],
-            'payment_method' => ['required', 'in:cash,bank'],
+            'bank_cash' => ['nullable', 'in:cash,bank'],
             'other_details' => ['nullable', 'max:500'],
+            'address' => ['nullable', 'max:500'],
+            'ntn_no' => ['nullable', 'max:255'],
+            'strn_no' => ['nullable', 'max:255'],
+            'email' => ['nullable', 'max:255', 'email'],
+            'mobile_no' => ['nullable', 'max:255'],
+            'cnic_no' => ['nullable', 'max:255'],
         ]);
-
         try {
             $detail = Detail::find($id);
 
@@ -151,6 +161,21 @@ class DetailController extends Controller
             return back()->with('success', 'Details Deleted Successfully');
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
+        }
+    }
+
+    public function getSubsidaryByControl(string $control_id)
+    {
+        try {
+            if (empty($control_id)) {
+                throw new Exception('Control ID is Missing');
+            }
+
+            $subsidaries = Subsidary::where('control_id', $control_id)->get();
+
+            return response()->json(['status' => true, 'data' => $subsidaries]);
+        } catch (Exception $e) {
+            return response()->json(['status' => false, 'message' => $e]);
         }
     }
 }

@@ -53,8 +53,27 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('/currency', CurrencyController::class)->except(['show', 'edit', 'create']);
         Route::delete('/currency-destroy-by-selectetion', [CurrencyController::class, 'destroyBySelection'])->name('currency.destroybyselection');
 
+        // Account Routes Group
+        Route::prefix('/accounts')->name('accounts.')->group(function () {
+
+            // Account Control Routes
+            Route::resource('/controls', ControlController::class)->except(['show', 'edit', 'create']);
+            Route::delete('/controls-destroy-by-selectetion', [ControlController::class, 'destroyBySelection'])->name('controls.destroybyselection');
+
+            // Account Subsidary Routes
+            Route::resource('/subsidaries', SubsidaryController::class)->except(['show', 'edit', 'create']);
+            Route::delete('/subsidaries-destroy-by-selectetion', [SubsidaryController::class, 'destroyBySelection'])->name('subsidaries.destroybyselection');
+
+            // Account Detail Routes
+            Route::resource('/details', DetailController::class)->except(['show', 'edit', 'create']);
+            Route::get('/details-get-subsidary-by-control/{control_id}', [DetailController::class, 'getSubsidaryByControl'])->name('details.getsubsidarybycontrol');
+            Route::delete('/details-destroy-by-selectetion', [DetailController::class, 'destroyBySelection'])->name('details.destroybyselection');
+
+        });
+
     });
 
+    // Transactions Route Group
     Route::prefix('/transactions')->name('transactions.')->group(function () {
         Route::resource('/stock-in', StockInController::class)->except(['show', 'edit', 'create']);
         Route::delete('/stock-in-destroy-by-selectetion', [StockInController::class, 'destroyBySelection'])->name('stock-in.destroybyselection');
@@ -66,17 +85,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // User Routes
     Route::resource('/users', UserController::class)->except(['show', 'edit', 'create']);
     Route::delete('/users-destroy-by-selectetion', [UserController::class, 'destroyBySelection'])->name('users.destroybyselection');
-
-    Route::prefix('/accounts')->name('accounts.')->group(function () {
-        Route::resource('/controls', ControlController::class)->except(['show', 'edit', 'create']);
-        Route::delete('/controls-destroy-by-selectetion', [ControlController::class, 'destroyBySelection'])->name('controls.destroybyselection');
-
-        Route::resource('/subsidaries', SubsidaryController::class)->except(['show', 'edit', 'create']);
-        Route::delete('/subsidaries-destroy-by-selectetion', [SubsidaryController::class, 'destroyBySelection'])->name('subsidaries.destroybyselection');
-
-        Route::resource('/details', DetailController::class)->except(['show', 'edit', 'create']);
-        Route::delete('/details-destroy-by-selectetion', [DetailController::class, 'destroyBySelection'])->name('details.destroybyselection');
-    });
 
 });
 
