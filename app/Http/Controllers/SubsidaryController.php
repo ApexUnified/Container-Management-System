@@ -109,6 +109,10 @@ class SubsidaryController extends Controller
                 throw new Exception('Subsidary Not Found');
             }
 
+            if ($subsidary->details()->exists()) {
+                throw new Exception($subsidary->name.' Subsidary Account Has '.$subsidary->details()->count().' Detail Account So It Cant Be Deleted');
+            }
+
             if ($subsidary->delete()) {
                 return back()->with('success', 'Subsidary Deleted Successfully');
             }
@@ -127,10 +131,17 @@ class SubsidaryController extends Controller
                 throw new Exception('Subsidary ID is Missing');
             }
 
-            $deleted = Subsidary::destroy($ids);
+            $subsidaries = Subsidary::whereIn('id', $ids)->get();
 
-            if ($deleted !== count($ids)) {
+            if ($subsidaries->isEmpty()) {
                 throw new Exception('Something Went Wrong While Deleting Subsidary');
+            }
+
+            foreach ($subsidaries as $subsidary) {
+                if ($subsidary->details()->exists()) {
+                    throw new Exception('Selected '.$subsidary->name.' Subsidary Account Has '.$subsidary->details()->count().' Detail Account So It Cant Be Deleted');
+                }
+                $subsidary->delete();
             }
 
             return back()->with('success', 'Subsidary Deleted Successfully');

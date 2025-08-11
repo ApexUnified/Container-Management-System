@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ControlController;
+use App\Http\Controllers\CroController;
 use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\CustomClearanceController;
 use App\Http\Controllers\DashboardController;
@@ -75,6 +76,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // Transactions Route Group
     Route::prefix('/transactions')->name('transactions.')->group(function () {
+
+        Route::resource('/cros', CroController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/cros-destroy-by-selectetion', [CroController::class, 'destroyBySelection'])->name('cros.destroybyselection');
+
         Route::resource('/stock-in', StockInController::class)->except(['show', 'edit', 'create']);
         Route::delete('/stock-in-destroy-by-selectetion', [StockInController::class, 'destroyBySelection'])->name('stock-in.destroybyselection');
 

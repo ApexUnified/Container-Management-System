@@ -11,7 +11,7 @@ class StockIn extends Model
         'entry_date',
         'container_no',
         'vehicle_no',
-        'cro_no',
+        'cro_id',
         'port_location',
         'vendor_id',
         'product_id',
@@ -68,6 +68,11 @@ class StockIn extends Model
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class, 'currency_id', 'id');
+    }
+
+    public function cro(): BelongsTo
+    {
+        return $this->belongsTo(Cro::class, 'cro_id', 'id');
     }
 
     protected $casts = [

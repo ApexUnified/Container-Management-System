@@ -88,7 +88,7 @@ export default function Sidebar({
                     </button>
                 </div>
 
-                <div className="no-scrollbar flex flex-1 flex-col overflow-y-auto duration-300 ease-linear">
+                <div className="flex flex-col flex-1 overflow-y-auto duration-300 ease-linear no-scrollbar">
                     <nav>
                         <div>
                             <h3 className="mb-4 text-xs uppercase leading-[20px] text-gray-400">
@@ -109,7 +109,7 @@ export default function Sidebar({
                                 </svg>
                             </h3>
 
-                            <ul className="mb-6 flex flex-col gap-4">
+                            <ul className="flex flex-col gap-4 mb-6">
                                 <li>
                                     <Link
                                         href={route('dashboard')}
@@ -326,7 +326,7 @@ export default function Sidebar({
                                                                 )}
                                                                 className={`menu-dropdown-item group ${route().current() === 'setups.accounts.controls.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                             >
-                                                                Account Control
+                                                                Control Setup
                                                             </Link>
                                                         </li>
 
@@ -337,7 +337,7 @@ export default function Sidebar({
                                                                 )}
                                                                 className={`menu-dropdown-item group ${route().current() === 'setups.accounts.subsidaries.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                             >
-                                                                Account Subsidary
+                                                                Subsidary Setup
                                                             </Link>
                                                         </li>
 
@@ -348,7 +348,7 @@ export default function Sidebar({
                                                                 )}
                                                                 className={`menu-dropdown-item group ${route().current() === 'setups.accounts.details.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                             >
-                                                                Account Detail
+                                                                Detail Setup
                                                             </Link>
                                                         </li>
                                                     </ul>
@@ -414,6 +414,15 @@ export default function Sidebar({
                                         <ul
                                             className={`menu-dropdown mt-2 flex flex-col gap-1 pl-9 ${sidebarToggle ? 'lg:hidden' : 'flex'} `}
                                         >
+                                            <li>
+                                                <Link
+                                                    href={route('transactions.cros.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'transactions.cros.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    Cro
+                                                </Link>
+                                            </li>
+
                                             <li>
                                                 <Link
                                                     href={route('transactions.stock-in.index')}

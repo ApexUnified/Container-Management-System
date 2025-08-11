@@ -36,6 +36,28 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $containers
+ * @property string $cro_no
+ * @property \Illuminate\Support\Carbon $date
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read int|null $containers_count
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereContainers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereCroNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereUpdatedAt($value)
+ */
+	class Cro extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property string $name
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -184,7 +206,7 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $entry_date
  * @property string $container_no
  * @property string|null $vehicle_no
- * @property string|null $cro_no
+ * @property int|null $cro_id
  * @property string|null $port_location
  * @property int|null $vendor_id
  * @property int|null $product_id
@@ -208,6 +230,7 @@ namespace App\Models{
  * @property string|null $note
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Cro|null $cro
  * @property-read \App\Models\Currency|null $currency
  * @property-read \App\Models\CustomClearance|null $custom_clearance
  * @property-read \App\Models\Product|null $product
@@ -221,7 +244,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereAllInOne($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereContainerNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCroNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCroId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCustomClearanceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCustomClearanceRate($value)

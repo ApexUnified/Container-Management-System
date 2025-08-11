@@ -79,6 +79,10 @@ class ControlController extends Controller
                 throw new Exception('Control Not Found');
             }
 
+            if ($control->subsidaries()->exists()) {
+                throw new Exception($control->name.' Control Accounts Has '.$control->subsidaries()->count().' Subsidary Account So It Cant Be Deleted');
+            }
+
             if ($control->delete()) {
                 return back()->with('success', 'Control Deleted Successfully');
             }
@@ -96,12 +100,22 @@ class ControlController extends Controller
             if (blank($ids)) {
                 throw new Exception('Control ID Not Found');
             }
-            $deleted = Control::destroy($ids);
-            if ($deleted === count($ids)) {
-                return back()->with('success', 'Control Deleted Successfully');
+            $controls = Control::whereIn('id', $ids)->get();
+
+            if ($controls->isEmpty()) {
+                throw new Exception('Control Not Found');
             }
 
-            throw new Exception('Something Went Wrong While Deleting Control');
+            foreach ($controls as $control) {
+
+                if ($control->subsidaries()->exists()) {
+                    throw new Exception('Selected '.$control->name.' Control Accounts Has '.$control->subsidaries()->count().' Subsidary Account So It Cant Be Deleted');
+                }
+
+                $control->delete();
+            }
+
+            return back()->with('success', 'Control Deleted Successfully');
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }

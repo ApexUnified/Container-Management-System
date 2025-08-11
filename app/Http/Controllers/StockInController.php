@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Cro;
 use App\Models\Currency;
 use App\Models\CustomClearance;
 use App\Models\Product;
@@ -22,12 +23,19 @@ class StockInController extends Controller
         // dd($request->all());
         $request->validate([
             'container_no' => ['nullable', 'max:255', 'string', 'exists:stock_ins,container_no'],
-            's_cro_no' => ['nullable', 'max:255', 'string', 'exists:stock_ins,cro_no'],
         ], [
             'container_no.exists' => 'The Container You Searched is Not Exists',
-            's_cro_no.exists' => 'The CRO No You Searched is Not Exists',
-
         ]);
+
+        if (! empty($request->input('s_cro_no'))) {
+            $cro = Cro::where('cro_no', $request->input('s_cro_no'))->first();
+            if (empty($cro)) {
+                throw ValidationException::withMessages([
+                    's_cro_no' => 'The CRO You Searched is Not Exists',
+                ]);
+            }
+
+        }
 
         $entry_date = $request->input('entry_date');
         $dates = [];
@@ -45,7 +53,7 @@ class StockInController extends Controller
 
         }
 
-        $stock_ins = StockIn::query()->with(['currency', 'vendor', 'product', 'unit', 'transporter', 'custom_clearance', 'shipping_line'])
+        $stock_ins = StockIn::query()->with(['currency', 'vendor', 'product', 'unit', 'cro', 'transporter', 'custom_clearance', 'shipping_line'])
             ->latest();
 
         $stock_ins = $stock_ins->when(! empty($request->input('entry_date')), function ($query) use ($dates) {
@@ -54,7 +62,9 @@ class StockInController extends Controller
             $query->where('container_no', $request->input('container_no'));
         })
             ->when(! empty($request->input('s_cro_no')), function ($query) use ($request) {
-                $query->where('cro_no', $request->input('s_cro_no'));
+                $query->whereHas('cro', function ($subQ) use ($request) {
+                    $subQ->where('cro_no', $request->input('s_cro_no'));
+                });
             });
 
         $stock_ins = $stock_ins->paginate(10)->withQueryString();
@@ -66,6 +76,7 @@ class StockInController extends Controller
         $custom_clearances = CustomClearance::all();
         $shipping_lines = ShippingLine::all();
         $currencies = Currency::all();
+        $cros = Cro::with('containers')->get();
 
         return Inertia::render('Transactions/StockIns/index', [
             'stock_ins' => $stock_ins,
@@ -75,6 +86,7 @@ class StockInController extends Controller
             'custom_clearances' => $custom_clearances,
             'shipping_lines' => $shipping_lines,
             'units' => $units,
+            'cros' => $cros,
             'currencies' => $currencies,
             'container_no' => old('container_no') ?? $request->input('container_no'),
             'entry_date' => old('entry_date') ?? $request->input('entry_date'),
@@ -89,7 +101,7 @@ class StockInController extends Controller
             'entry_date' => ['required', 'date'],
             'container_no' => ['required', 'max:255', 'unique:stock_ins,container_no'],
             'vehicle_no' => ['nullable', 'max:255'],
-            'cro_no' => ['required', 'max:255'],
+            'cro_id' => ['required', 'exists:cros,id'],
             'port_location' => ['required', 'in:KICT,KTGL'],
             'vendor_id' => ['required', 'exists:vendors,id'],
             'product_id' => ['required', 'exists:products,id'],
@@ -114,6 +126,20 @@ class StockInController extends Controller
         ]);
 
         try {
+
+            $cro = Cro::find($validated_req['cro_id']);
+
+            if (empty($cro)) {
+                throw new Exception('CRO Not Found');
+            }
+
+            $allowed_containers = $cro->containers_count;
+            $containers_count = $cro->containers()->count();
+
+            if ($containers_count >= $allowed_containers) {
+                throw new Exception("This CRO No is Full and you can't add more containers in it");
+            }
+
             if (StockIn::create($validated_req)) {
                 return back()->with('success', 'Stock In Added Successfully');
             }
@@ -137,7 +163,7 @@ class StockInController extends Controller
             'container_no' => ['required', 'max:255', 'unique:stock_ins,container_no,'.$id],
             'vehicle_no' => ['nullable', 'max:255'],
             'port_location' => ['required', 'in:KICT,KTGL'],
-            'cro_no' => ['required', 'max:255'],
+            'cro_id' => ['required', 'exists:cros,id'],
             'vendor_id' => ['required', 'exists:vendors,id'],
             'product_id' => ['required', 'exists:products,id'],
             'product_weight' => ['required', 'numeric'],

@@ -134,7 +134,7 @@ export default function SelectInput({
                         isSearchable
                         required={Required}
                         {...(Placeholder && {
-                            placeholder: `Select ${InputName} Or Search By its Name`,
+                            placeholder: `Select ${InputName} Or Search `,
                         })}
                         styles={isDarkMode ? darkStyles : lightStyles}
                         className={`react-select-container ${isDisabled && 'opacity-30'}`}

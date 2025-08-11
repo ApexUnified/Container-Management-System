@@ -134,6 +134,10 @@
 }
 
 @media (min-width: 1023px) {
+    .sidebar:hover {
+        width: 240px;
+    }
+
     .sidebar:hover .logo {
         display: block;
     }
