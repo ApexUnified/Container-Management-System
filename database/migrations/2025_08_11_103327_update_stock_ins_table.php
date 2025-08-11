@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('stock_ins', function (Blueprint $table) {
-            if (Schema::hasColumn('cro_no')) {
+            if (Schema::hasColumn('stock_ins', 'cro_no')) {
                 $table->dropColumn('cro_no');
             }
             $table->foreignId('cro_id')->nullable()->after('vehicle_no')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
