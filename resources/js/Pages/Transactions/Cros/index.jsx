@@ -137,7 +137,6 @@ export default function index({ cros }) {
 
         createPost(route('transactions.cros.store'), {
             onSuccess: () => {
-                setCreateModalOpen(false);
                 setCreateData('cro_no', '');
                 setCreateData('containers_count', '');
                 setCreateData('date', '');
@@ -251,7 +250,7 @@ export default function index({ cros }) {
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-3">
                                                     <Input
                                                         InputName={'CRO No'}
                                                         Id={'cro_no'}
@@ -398,7 +397,7 @@ export default function index({ cros }) {
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-3">
                                                     <Input
                                                         InputName={'CRO No'}
                                                         Id={'cro_no'}

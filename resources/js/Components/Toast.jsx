@@ -27,16 +27,16 @@ export default function Toast({ flash }) {
 
     return (
         <>
-            <div className="fixed bottom-6 left-1/2 z-50 -translate-x-1/2 transform space-y-3">
+            <div className="fixed bottom-6 left-1/2 z-[99] -translate-x-1/2 transform space-y-3">
                 {/* Success Toast */}
                 {showSuccess && (
                     <div
-                        className="animate-slide-up flex max-w-xl items-center rounded-lg bg-green-400 p-4 text-green-800 shadow-sm transition-all duration-500 ease-out"
+                        className="flex items-center max-w-xl p-4 text-green-800 transition-all duration-500 ease-out bg-green-400 rounded-lg shadow-sm animate-slide-up"
                         role="alert"
                     >
-                        <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-white text-green-600">
+                        <div className="inline-flex items-center justify-center w-10 h-10 text-green-600 bg-white rounded-lg shrink-0">
                             <svg
-                                className="h-5 w-5"
+                                className="w-5 h-5"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -45,7 +45,7 @@ export default function Toast({ flash }) {
                                 <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 8.207-4 4a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L9 10.586l3.293-3.293a1 1 0 0 1 1.414 1.414Z" />
                             </svg>
                         </div>
-                        <div className="text-md p-3 font-normal text-green-800">
+                        <div className="p-3 font-normal text-green-800 text-md">
                             {flash.success}
                         </div>
                         <button
@@ -54,7 +54,7 @@ export default function Toast({ flash }) {
                             aria-label="Close"
                         >
                             <svg
-                                className="h-3 w-3"
+                                className="w-3 h-3"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 14 14"
@@ -74,12 +74,12 @@ export default function Toast({ flash }) {
                 {/* Error Toast */}
                 {showError && (
                     <div
-                        className="text-white-500 animate-slide-up flex w-full max-w-xl items-center rounded-lg bg-red-500 p-4 shadow-sm transition-all duration-500 ease-out"
+                        className="flex items-center w-full max-w-xl p-4 transition-all duration-500 ease-out bg-red-500 rounded-lg shadow-sm text-white-500 animate-slide-up"
                         role="alert"
                     >
-                        <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-500">
+                        <div className="inline-flex items-center justify-center w-10 h-10 text-red-500 bg-red-100 rounded-lg shrink-0">
                             <svg
-                                className="h-5 w-5"
+                                className="w-5 h-5"
                                 aria-hidden="true"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="currentColor"
@@ -88,14 +88,14 @@ export default function Toast({ flash }) {
                                 <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5Zm3.707 11.793a1 1 0 1 1-1.414 1.414L10 11.414l-2.293 2.293a1 1 0 0 1-1.414-1.414L8.586 10 6.293 7.707a1 1 0 0 1 1.414-1.414L10 8.586l2.293-2.293a1 1 0 0 1 1.414 1.414L11.414 10l2.293 2.293Z" />
                             </svg>
                         </div>
-                        <div className="text-md p-3 font-normal text-white">{flash.error}</div>
+                        <div className="p-3 font-normal text-white text-md">{flash.error}</div>
                         <button
                             onClick={() => setShowError(false)}
                             className="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg text-white hover:text-white/50 focus:ring-2"
                             aria-label="Close"
                         >
                             <svg
-                                className="h-3 w-3"
+                                className="w-3 h-3"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 14 14"
@@ -115,17 +115,17 @@ export default function Toast({ flash }) {
                 {/* Info Toast */}
                 {showInfo && (
                     <div
-                        className="animate-slide-up flex w-full max-w-xl items-center rounded-lg bg-blue-500 p-4 text-white shadow-sm transition-all duration-500 ease-out"
+                        className="flex items-center w-full max-w-xl p-4 text-white transition-all duration-500 ease-out bg-blue-500 rounded-lg shadow-sm animate-slide-up"
                         role="alert"
                     >
-                        <div className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-100 text-blue-500">
+                        <div className="inline-flex items-center justify-center w-10 h-10 text-blue-500 bg-blue-100 rounded-lg shrink-0">
                             <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 24 24"
                                 strokeWidth={1.5}
                                 stroke="currentColor"
-                                className="h-6 w-6"
+                                className="w-6 h-6"
                             >
                                 <path
                                     strokeLinecap="round"
@@ -134,14 +134,14 @@ export default function Toast({ flash }) {
                                 />
                             </svg>
                         </div>
-                        <div className="text-md p-3 font-normal">{flash.info}</div>
+                        <div className="p-3 font-normal text-md">{flash.info}</div>
                         <button
                             onClick={() => setShowInfo(false)}
                             className="-mx-1.5 -my-1.5 ms-auto inline-flex h-8 w-8 items-center justify-center rounded-lg text-white hover:text-white/50 focus:ring-2"
                             aria-label="Close"
                         >
                             <svg
-                                className="h-3 w-3"
+                                className="w-3 h-3"
                                 xmlns="http://www.w3.org/2000/svg"
                                 fill="none"
                                 viewBox="0 0 14 14"

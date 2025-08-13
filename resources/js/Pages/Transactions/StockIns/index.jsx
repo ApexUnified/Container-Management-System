@@ -465,29 +465,25 @@ export default function index({
 
         createPost(route('transactions.stock-in.store'), {
             onSuccess: () => {
-                setCreateModalOpen(false);
                 setCreateData('entry_date', '');
                 setCreateData('container_no', '');
                 setCreateData('vehicle_no', '');
-                setCreateData('cro_id', '');
-                setCreateData('port_location', '');
-                setCreateData('vendor_id', '');
-                setCreateData('product_id', '');
+
                 setCreateData('product_weight', '');
-                setCreateData('product_unit_id', '');
+
                 setCreateData('product_weight_in_man', '');
                 setCreateData('product_no_of_bundles', '');
                 setCreateData('product_rate', '');
                 setCreateData('product_total_amount', '');
-                setCreateData('transporter_id', '');
+
                 setCreateData('transporter_rate', '');
-                setCreateData('custom_clearance_id', '');
+
                 setCreateData('custom_clearance_rate', '');
-                setCreateData('shipping_line_id', '');
+
                 setCreateData('shipping_line_rate', '');
                 setCreateData('fc_amount', '');
                 setCreateData('exchange_rate', '');
-                setCreateData('currency_id', '');
+
                 setCreateData('all_in_one', false);
                 setCreateData('total_amount', '');
                 setCreateData('note', '');
@@ -710,7 +706,7 @@ export default function index({
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-3">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-5">
                                                     <Input
                                                         InputName={'Entry Date'}
                                                         InputRef={flatpickerForCreateForm}
@@ -948,7 +944,7 @@ export default function index({
                                                     </div>
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
                                                     <SelectInput
                                                         InputName={'Transporter'}
                                                         Id={'transporter_id'}
@@ -1282,7 +1278,7 @@ export default function index({
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-3">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-5">
                                                     <Input
                                                         InputName={'Entry Date'}
                                                         InputRef={flatpickerForEditForm}
@@ -1520,7 +1516,7 @@ export default function index({
                                                     </div>
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
                                                     <SelectInput
                                                         InputName={'Transporter'}
                                                         Id={'transporter_id'}

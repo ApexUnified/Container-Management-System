@@ -20,7 +20,7 @@ export default function Dashboard({
                 Content={
                     <>
                         <div className="my-8 text-center">
-                            <h3 className="font-outfit text-4xl font-bold text-gray-800 transition-colors duration-300 dark:text-white lg:text-6xl">
+                            <h3 className="text-4xl font-bold text-gray-800 transition-colors duration-300 font-outfit dark:text-white lg:text-6xl">
                                 <span className="text-gray-400">H</span>
                                 <span className="text-gray-600 dark:text-gray-300">
                                     asnain Enterprises
@@ -31,7 +31,7 @@ export default function Dashboard({
                             </p>
                         </div>
 
-                        <div className="my-10 grid grid-cols-1 gap-5 md:grid-cols-3">
+                        <div className="grid grid-cols-1 gap-5 my-10 md:grid-cols-4">
                             <Card
                                 Content={
                                     <>
@@ -49,14 +49,14 @@ export default function Dashboard({
                                             {/* Right Side: Icon with Count */}
                                             <div className="flex items-center space-x-2">
                                                 {/* Icon */}
-                                                <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                                <div className="p-3 bg-blue-100 rounded-full dark:bg-blue-900">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         fill="none"
                                                         viewBox="0 0 24 24"
                                                         strokeWidth={1.5}
                                                         stroke="currentColor"
-                                                        className="size-6 text-blue-600 dark:text-blue-300"
+                                                        className="text-blue-600 size-6 dark:text-blue-300"
                                                     >
                                                         <path
                                                             strokeLinecap="round"
@@ -91,14 +91,14 @@ export default function Dashboard({
                                             {/* Right Side: Icon with Count */}
                                             <div className="flex items-center space-x-2">
                                                 {/* Icon */}
-                                                <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                                <div className="p-3 bg-blue-100 rounded-full dark:bg-blue-900">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         fill="none"
                                                         viewBox="0 0 24 24"
                                                         strokeWidth={1.5}
                                                         stroke="currentColor"
-                                                        className="size-6 text-blue-600 dark:text-blue-300"
+                                                        className="text-blue-600 size-6 dark:text-blue-300"
                                                     >
                                                         <path
                                                             strokeLinecap="round"
@@ -134,10 +134,10 @@ export default function Dashboard({
                                             {/* Right Side: Icon with Count */}
                                             <div className="flex items-center space-x-2">
                                                 {/* Icon */}
-                                                <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                                <div className="p-3 bg-blue-100 rounded-full dark:bg-blue-900">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
-                                                        className="size-6 text-blue-600 dark:text-blue-300"
+                                                        className="text-blue-600 size-6 dark:text-blue-300"
                                                         fill="none"
                                                         viewBox="0 0 24 24"
                                                         stroke="currentColor"
@@ -177,14 +177,14 @@ export default function Dashboard({
                                             {/* Right Side: Icon with Count */}
                                             <div className="flex items-center space-x-2">
                                                 {/* Icon */}
-                                                <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                                <div className="p-3 bg-blue-100 rounded-full dark:bg-blue-900">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         fill="none"
                                                         viewBox="0 0 24 24"
                                                         strokeWidth={1.5}
                                                         stroke="currentColor"
-                                                        className="size-6 text-blue-600 dark:text-blue-300"
+                                                        className="text-blue-600 size-6 dark:text-blue-300"
                                                     >
                                                         <path
                                                             strokeLinecap="round"
@@ -220,14 +220,14 @@ export default function Dashboard({
                                             {/* Right Side: Icon with Count */}
                                             <div className="flex items-center space-x-2">
                                                 {/* Icon */}
-                                                <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                                <div className="p-3 bg-blue-100 rounded-full dark:bg-blue-900">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         fill="none"
                                                         viewBox="0 0 24 24"
                                                         strokeWidth={1.5}
                                                         stroke="currentColor"
-                                                        className="size-6 text-blue-600 dark:text-blue-300"
+                                                        className="text-blue-600 size-6 dark:text-blue-300"
                                                     >
                                                         <path
                                                             strokeLinecap="round"
@@ -263,14 +263,14 @@ export default function Dashboard({
                                             {/* Right Side: Icon with Count */}
                                             <div className="flex items-center space-x-2">
                                                 {/* Icon */}
-                                                <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                                <div className="p-3 bg-blue-100 rounded-full dark:bg-blue-900">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         fill="none"
                                                         viewBox="0 0 24 24"
                                                         strokeWidth={1.5}
                                                         stroke="currentColor"
-                                                        className="size-6 text-blue-600 dark:text-blue-300"
+                                                        className="text-blue-600 size-6 dark:text-blue-300"
                                                     >
                                                         <path
                                                             strokeLinecap="round"
@@ -306,14 +306,14 @@ export default function Dashboard({
                                             {/* Right Side: Icon with Count */}
                                             <div className="flex items-center space-x-2">
                                                 {/* Icon */}
-                                                <div className="rounded-full bg-blue-100 p-3 dark:bg-blue-900">
+                                                <div className="p-3 bg-blue-100 rounded-full dark:bg-blue-900">
                                                     <svg
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         fill="none"
                                                         viewBox="0 0 24 24"
                                                         strokeWidth={1.5}
                                                         stroke="currentColor"
-                                                        className="size-6 text-blue-600 dark:text-blue-300"
+                                                        className="text-blue-600 size-6 dark:text-blue-300"
                                                     >
                                                         <path
                                                             strokeLinecap="round"

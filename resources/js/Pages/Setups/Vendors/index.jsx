@@ -132,7 +132,6 @@ export default function index({ vendors }) {
 
         createPost(route('setups.vendors.store'), {
             onSuccess: () => {
-                setCreateModalOpen(false);
                 setCreateData('name', '');
                 setCreateData('email', '');
                 setCreateData('contact_person', '');
@@ -175,7 +174,7 @@ export default function index({ vendors }) {
                 <Card
                     Content={
                         <>
-                            <div className="my-3 flex flex-wrap justify-end">
+                            <div className="flex flex-wrap justify-end my-3">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
                                     Text={'Create Vendor'}
@@ -217,9 +216,9 @@ export default function index({ vendors }) {
                             />
 
                             {/* Create Modal */}
-                            <div className="border-t border-gray-100 p-6 dark:border-gray-800">
+                            <div className="p-6 border-t border-gray-100 dark:border-gray-800">
                                 {CreateModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -229,10 +228,10 @@ export default function index({ vendors }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={CreateMethod}
-                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
+                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -244,7 +243,7 @@ export default function index({ vendors }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {createErrors?.server && (
-                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
+                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -252,7 +251,7 @@ export default function index({ vendors }) {
                                                     </div>
                                                 )}
 
-                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -345,7 +344,7 @@ export default function index({ vendors }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
+                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setCreateModalOpen(false);
@@ -360,7 +359,7 @@ export default function index({ vendors }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="h-5 w-5"
+                                                                className="w-5 h-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -411,7 +410,7 @@ export default function index({ vendors }) {
                                 )}
 
                                 {EditModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -421,10 +420,10 @@ export default function index({ vendors }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={EditMethod}
-                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
+                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -436,7 +435,7 @@ export default function index({ vendors }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {editErrors?.server && (
-                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
+                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -444,7 +443,7 @@ export default function index({ vendors }) {
                                                     </div>
                                                 )}
 
-                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-2">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -534,7 +533,7 @@ export default function index({ vendors }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
+                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setEditModalOpen(false);
@@ -550,7 +549,7 @@ export default function index({ vendors }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="h-5 w-5"
+                                                                className="w-5 h-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -601,7 +600,7 @@ export default function index({ vendors }) {
                                 )}
 
                                 {viewModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -609,7 +608,7 @@ export default function index({ vendors }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 max-h-screen w-full max-w-4xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-4xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <h3 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
                                                 View Vendor
                                             </h3>
@@ -619,62 +618,62 @@ export default function index({ vendors }) {
 
                                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                                 <div>
-                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Name
                                                     </label>
-                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                         {viewData?.name || 'N/A'}
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Email
                                                     </label>
-                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                         {viewData?.email || 'N/A'}
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Address
                                                     </label>
-                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                         {viewData?.address || 'N/A'}
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Contact Person
                                                     </label>
-                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                         {viewData?.contact_person || 'N/A'}
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Mobile No
                                                     </label>
-                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                         {viewData?.mobile_no || 'N/A'}
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Tel No
                                                     </label>
-                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                         {viewData?.tel_no || 'N/A'}
                                                     </div>
                                                 </div>
                                             </div>
 
                                             {/* Buttons */}
-                                            <div className="mt-8 flex flex-col-reverse items-center justify-end gap-4 sm:flex-row">
+                                            <div className="flex flex-col-reverse items-center justify-end gap-4 mt-8 sm:flex-row">
                                                 <PrimaryButton
                                                     Action={() => {
                                                         setViewModalOpen(false);
@@ -683,7 +682,7 @@ export default function index({ vendors }) {
                                                     Icon={
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
-                                                            className="h-5 w-5"
+                                                            className="w-5 h-5"
                                                             fill="none"
                                                             viewBox="0 0 24 24"
                                                             stroke="currentColor"

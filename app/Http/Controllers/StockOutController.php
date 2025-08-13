@@ -120,6 +120,7 @@ class StockOutController extends Controller
             'currency_id' => ['required', 'exists:currencies,id'],
         ]);
 
+        // dd($validated_req);
         try {
 
             $request->validate([

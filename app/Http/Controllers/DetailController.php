@@ -34,6 +34,9 @@ class DetailController extends Controller
             'email' => ['nullable', 'max:255', 'email'],
             'mobile_no' => ['nullable', 'max:255'],
             'cnic_no' => ['nullable', 'max:255'],
+        ], [
+            'title.required' => 'Detail Account is Required',
+            'title.max' => 'Detail Account Must Not Exceed 255 Characters',
         ]);
 
         try {
@@ -58,15 +61,17 @@ class DetailController extends Controller
                 ->latest('code')
                 ->first();
 
+            $subsidary_code = explode('-', $subsidary->account_code);
+
             if (empty($lastDetail)) {
-                $validated_req['code'] = $control->id.$subsidary->code.'001';
-                $validated_req['account_code'] = $control->id.'-'.$subsidary->code.'-001';
+                $validated_req['code'] = $control->id.$subsidary_code[1].'001';
+                $validated_req['account_code'] = $control->id.'-'.$subsidary_code[1].'-001';
             } else {
                 $lastCode = $lastDetail->code;
-                $sequencePart = substr($lastCode, strlen($control->id.$subsidary->code));
+                $sequencePart = substr($lastCode, strlen($control->id.$subsidary_code[1]));
                 $sequence = intval($sequencePart) + 1;
-                $validated_req['account_code'] = $control->id.'-'.$subsidary->code.'-'.str_pad($sequence, 3, '0', STR_PAD_LEFT);
-                $validated_req['code'] = $control->id.$subsidary->code.str_pad($sequence, 3, '0', STR_PAD_LEFT);
+                $validated_req['account_code'] = $control->id.'-'.$subsidary_code[1].'-'.str_pad($sequence, 3, '0', STR_PAD_LEFT);
+                $validated_req['code'] = $control->id.$subsidary_code[1].str_pad($sequence, 3, '0', STR_PAD_LEFT);
             }
 
             $created = Detail::create($validated_req);
@@ -101,7 +106,11 @@ class DetailController extends Controller
             'email' => ['nullable', 'max:255', 'email'],
             'mobile_no' => ['nullable', 'max:255'],
             'cnic_no' => ['nullable', 'max:255'],
-        ]);
+        ],
+            [
+                'title.required' => 'Detail Account is Required',
+                'title.max' => 'Detail Account Must Not Exceed 255 Characters',
+            ]);
         try {
             $detail = Detail::find($id);
 
