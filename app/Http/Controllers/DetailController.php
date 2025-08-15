@@ -64,15 +64,16 @@ class DetailController extends Controller
             $subsidary_code = explode('-', $subsidary->account_code);
 
             if (empty($lastDetail)) {
-                $validated_req['code'] = $control->id.$subsidary_code[1].'001';
-                $validated_req['account_code'] = $control->id.'-'.$subsidary_code[1].'-001';
+                $sequence = 1;
             } else {
-                $lastCode = $lastDetail->code;
-                $sequencePart = substr($lastCode, strlen($control->id.$subsidary_code[1]));
-                $sequence = intval($sequencePart) + 1;
-                $validated_req['account_code'] = $control->id.'-'.$subsidary_code[1].'-'.str_pad($sequence, 3, '0', STR_PAD_LEFT);
-                $validated_req['code'] = $control->id.$subsidary_code[1].str_pad($sequence, 3, '0', STR_PAD_LEFT);
+                $lastCode = $lastDetail->account_code;
+                $parts = explode('-', $lastCode);
+                $sequence = intval($parts[2]) + 1;
             }
+
+            $sequencePadded = str_pad($sequence, 3, '0', STR_PAD_LEFT);
+            $validated_req['account_code'] = $control->id.'-'.$subsidary_code[1].'-'.$sequencePadded;
+            $validated_req['code'] = $control->id.$subsidary_code[1].$sequencePadded;
 
             $created = Detail::create($validated_req);
 
