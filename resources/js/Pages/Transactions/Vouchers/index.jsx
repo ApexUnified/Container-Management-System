@@ -747,7 +747,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         Placeholder={'Enter Exchange Rate'}
                                                         Required={true}
                                                         Error={createErrors.exchange_rate}
-                                                        Disabled={createData.exchange_rate == 1}
+                                                        Disabled={
+                                                            createData.currency_id == 1 &&
+                                                            createData.exchange_rate == 1
+                                                        }
                                                         Value={createData.exchange_rate}
                                                         onKeyDown={(e) => {
                                                             if (
