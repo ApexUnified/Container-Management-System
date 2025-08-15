@@ -9,13 +9,6 @@ class Control extends Model
 {
     protected $fillable = ['name'];
 
-    protected $appends = ['added_at'];
-
-    public function getAddedAtAttribute()
-    {
-        return $this->created_at->format('Y-m-d');
-    }
-
     public function subsidaries(): HasMany
     {
         return $this->hasMany(Subsidary::class, 'control_id', 'id');

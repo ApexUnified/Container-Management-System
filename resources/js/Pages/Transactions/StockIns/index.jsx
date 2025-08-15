@@ -427,10 +427,10 @@ export default function index({
                 label: 'All in One Package',
                 render: (item) => {
                     if (item.all_in_one) {
-                        return <span className="p-2 text-white bg-blue-500 rounded-lg">Yes</span>;
+                        return <span className="rounded-lg bg-blue-500 p-2 text-white">Yes</span>;
                     }
 
-                    return <span className="p-2 text-white bg-red-500 rounded-lg">No</span>;
+                    return <span className="rounded-lg bg-red-500 p-2 text-white">No</span>;
                 },
             },
         ];
@@ -550,7 +550,7 @@ export default function index({
                 <Card
                     Content={
                         <>
-                            <div className="flex flex-wrap justify-end my-3">
+                            <div className="my-3 flex flex-wrap justify-end">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
                                     Text={'Create Stock In'}
@@ -671,9 +671,9 @@ export default function index({
                             />
 
                             {/* { Modal} */}
-                            <div className="p-6 border-t border-gray-100 dark:border-gray-800">
+                            <div className="border-t border-gray-100 p-6 dark:border-gray-800">
                                 {CreateModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -683,10 +683,10 @@ export default function index({
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-h-screen p-6 overflow-y-auto bg-white shadow-xl max-w-screen-2xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-screen-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={CreateMethod}
-                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
+                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -698,7 +698,7 @@ export default function index({
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {createErrors?.server && (
-                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
+                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -706,7 +706,7 @@ export default function index({
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-5">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-5">
                                                     <Input
                                                         InputName={'Entry Date'}
                                                         InputRef={flatpickerForCreateForm}
@@ -920,11 +920,11 @@ export default function index({
                                                     />
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 justify-items-end md:grid-cols-1">
+                                                <div className="col-span-2 grid grid-cols-1 justify-items-end gap-4 md:grid-cols-1">
                                                     <div className="me-4">
                                                         <label
                                                             htmlFor="all_in_one"
-                                                            className="text-sm font-medium text-gray-900 cursor-pointer me-2 dark:text-white"
+                                                            className="me-2 cursor-pointer text-sm font-medium text-gray-900 dark:text-white"
                                                         >
                                                             All in One
                                                         </label>
@@ -938,13 +938,13 @@ export default function index({
                                                             type="checkbox"
                                                             id="all_in_one"
                                                             value=""
-                                                            className="w-6 h-6 mx-2 text-blue-600 rounded-lg cursor-pointer border-slate-300 bg-slate-50 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-white"
+                                                            className="mx-2 h-6 w-6 cursor-pointer rounded-lg border-slate-300 bg-slate-50 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-white"
                                                             checked={createData.all_in_one}
                                                         />
                                                     </div>
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-4">
                                                     <SelectInput
                                                         InputName={'Transporter'}
                                                         Id={'transporter_id'}
@@ -1033,7 +1033,7 @@ export default function index({
                                                     />
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-3">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                                                     <SelectInput
                                                         InputName={'Shipping Line'}
                                                         Id={'shipping_line_id'}
@@ -1112,7 +1112,7 @@ export default function index({
                                                     />
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 justify-items-end md:grid-cols-1">
+                                                <div className="col-span-2 grid grid-cols-1 justify-items-end gap-4 md:grid-cols-1">
                                                     <div className="me-4">
                                                         <p className="text-2xl font-semibold dark:text-white/85">
                                                             Total Amount: {createData.total_amount}
@@ -1121,7 +1121,7 @@ export default function index({
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
+                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setCreateModalOpen(false);
@@ -1170,7 +1170,7 @@ export default function index({
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="w-5 h-5"
+                                                                className="h-5 w-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -1245,7 +1245,7 @@ export default function index({
                                 )}
 
                                 {EditModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -1255,10 +1255,10 @@ export default function index({
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-h-screen p-6 overflow-y-auto bg-white shadow-xl max-w-screen-2xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-screen-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={EditMethod}
-                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
+                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -1270,7 +1270,7 @@ export default function index({
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {editErrors?.server && (
-                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
+                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -1278,7 +1278,7 @@ export default function index({
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-5">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-5">
                                                     <Input
                                                         InputName={'Entry Date'}
                                                         InputRef={flatpickerForEditForm}
@@ -1492,11 +1492,11 @@ export default function index({
                                                     />
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 justify-items-end md:grid-cols-1">
+                                                <div className="col-span-2 grid grid-cols-1 justify-items-end gap-4 md:grid-cols-1">
                                                     <div className="me-4">
                                                         <label
                                                             htmlFor="all_in_one"
-                                                            className="text-sm font-medium text-gray-900 cursor-pointer me-2 dark:text-white"
+                                                            className="me-2 cursor-pointer text-sm font-medium text-gray-900 dark:text-white"
                                                         >
                                                             All in One
                                                         </label>
@@ -1510,13 +1510,13 @@ export default function index({
                                                             type="checkbox"
                                                             id="all_in_one"
                                                             value=""
-                                                            className="w-6 h-6 mx-2 text-blue-600 rounded-lg cursor-pointer border-slate-300 bg-slate-50 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-white"
+                                                            className="mx-2 h-6 w-6 cursor-pointer rounded-lg border-slate-300 bg-slate-50 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-white"
                                                             checked={editData.all_in_one}
                                                         />
                                                     </div>
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-4">
                                                     <SelectInput
                                                         InputName={'Transporter'}
                                                         Id={'transporter_id'}
@@ -1605,7 +1605,7 @@ export default function index({
                                                     />
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-3">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                                                     <SelectInput
                                                         InputName={'Shipping Line'}
                                                         Id={'shipping_line_id'}
@@ -1684,7 +1684,7 @@ export default function index({
                                                     />
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 justify-items-end md:grid-cols-1">
+                                                <div className="col-span-2 grid grid-cols-1 justify-items-end gap-4 md:grid-cols-1">
                                                     <div className="me-4">
                                                         <p className="text-2xl font-semibold dark:text-white/85">
                                                             Total Amount: {editData.total_amount}
@@ -1693,7 +1693,7 @@ export default function index({
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
+                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setEditModalOpen(false);
@@ -1736,7 +1736,7 @@ export default function index({
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="w-5 h-5"
+                                                                className="h-5 w-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -1810,7 +1810,7 @@ export default function index({
                                 )}
 
                                 {viewModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -1818,7 +1818,7 @@ export default function index({
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-h-screen p-6 overflow-y-auto bg-white shadow-xl max-w-screen-2xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-screen-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <h3 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
                                                 View Stock In
                                             </h3>
@@ -1828,195 +1828,230 @@ export default function index({
 
                                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Entry Date
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.entry_date || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.entry_date || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Container No
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.container_no || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.container_no || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Vehicle No
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.vehicle_no || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.vehicle_no || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         CRO No
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.cro?.cro_no || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.cro?.cro_no || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Port Location
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.port_location || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.port_location || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Vendor
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.vendor?.name || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.vendor?.name || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Transporter
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.transporter?.name || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.transporter?.name || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Transporter Rate
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.transporter_rate || 0}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.transporter_rate || 0}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Custom Clearance
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.custom_clearance?.name || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.custom_clearance?.name ||
+                                                                'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Custom Clearance Rate
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.custom_clearance_rate || 0}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.custom_clearance_rate || 0}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Shipping Line
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.shipping_line?.name || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.shipping_line?.name || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Shipping Line Rate
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.shipping_line_rate || 0}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.shipping_line_rate || 0}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         FC Amount
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.fc_amount || 0}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.fc_amount || 0}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Exchange Rate
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.exchange_rate || 0}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.exchange_rate || 0}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Currency
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.currency?.name || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.currency?.name || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Note
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.note || 'N/A'}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.note || 'N/A'}
+                                                        </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         All in One
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
                                                         {viewData?.all_in_one ? 'Yes' : 'No'}
                                                     </div>
                                                 </div>
 
                                                 <div>
-                                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Total Amount
                                                     </label>
-                                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
-                                                        {viewData?.total_amount || 0}
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.total_amount || 0}
+                                                        </p>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             {/* Product Table Section */}
-                                            <div className="mt-6">
+                                            <div className="mt-6 overflow-x-auto">
                                                 <h3 className="mb-2 text-lg font-semibold text-gray-800 dark:text-white">
                                                     Product Details
                                                 </h3>
-                                                <table className="min-w-full border divide-y divide-gray-200 dark:divide-gray-600">
+                                                <table className="min-w-full divide-y divide-gray-200 border dark:divide-gray-600">
                                                     <thead className="bg-gray-100 dark:bg-gray-700">
                                                         <tr>
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Product
                                                             </th>
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Unit
                                                             </th>
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Weight
                                                             </th>
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Weight (Mann)
                                                             </th>
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Bundles
                                                             </th>
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Rate
                                                             </th>
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Total Amount
                                                             </th>
                                                         </tr>
@@ -2053,7 +2088,7 @@ export default function index({
                                             </div>
 
                                             {/* Buttons */}
-                                            <div className="flex flex-col-reverse items-center justify-end gap-4 mt-8 sm:flex-row">
+                                            <div className="mt-8 flex flex-col-reverse items-center justify-end gap-4 sm:flex-row">
                                                 <PrimaryButton
                                                     Action={() => {
                                                         setViewModalOpen(false);
@@ -2062,7 +2097,7 @@ export default function index({
                                                     Icon={
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
-                                                            className="w-5 h-5"
+                                                            className="h-5 w-5"
                                                             fill="none"
                                                             viewBox="0 0 24 24"
                                                             stroke="currentColor"
@@ -2110,7 +2145,7 @@ export default function index({
                                 )}
 
                                 {viewCroModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -2118,7 +2153,7 @@ export default function index({
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-h-screen p-6 overflow-y-auto bg-white shadow-xl max-w-screen-2xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-screen-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <h3 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
                                                 Containers In CRO
                                             </h3>
@@ -2127,31 +2162,31 @@ export default function index({
                                             <div className="mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                             {/* Product Table Section */}
-                                            <div className="mt-6">
-                                                <table className="min-w-full border divide-y divide-gray-200 dark:divide-gray-600">
+                                            <div className="mt-6 overflow-x-auto">
+                                                <table className="min-w-full divide-y divide-gray-200 border dark:divide-gray-600">
                                                     <thead className="bg-gray-100 dark:bg-gray-700">
                                                         <tr>
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 SN
                                                             </th>
 
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 CRO No
                                                             </th>
 
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Entry Date
                                                             </th>
 
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Container No
                                                             </th>
 
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Vehicle No
                                                             </th>
 
-                                                            <th className="px-4 py-2 text-sm font-medium text-left text-gray-700 dark:text-white">
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Total Amount
                                                             </th>
                                                         </tr>
@@ -2213,7 +2248,7 @@ export default function index({
                                             </div>
 
                                             {/* Buttons */}
-                                            <div className="flex flex-col-reverse items-center justify-end gap-4 mt-8 sm:flex-row">
+                                            <div className="mt-8 flex flex-col-reverse items-center justify-end gap-4 sm:flex-row">
                                                 <PrimaryButton
                                                     Action={() => {
                                                         setViewCroModalOpen(false);
@@ -2222,7 +2257,7 @@ export default function index({
                                                     Icon={
                                                         <svg
                                                             xmlns="http://www.w3.org/2000/svg"
-                                                            className="w-5 h-5"
+                                                            className="h-5 w-5"
                                                             fill="none"
                                                             viewBox="0 0 24 24"
                                                             stroke="currentColor"

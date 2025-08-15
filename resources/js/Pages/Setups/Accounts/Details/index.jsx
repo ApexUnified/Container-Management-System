@@ -172,7 +172,7 @@ export default function index({ controls, details }) {
                 <Card
                     Content={
                         <>
-                            <div className="flex flex-wrap justify-end my-3">
+                            <div className="my-3 flex flex-wrap justify-end">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
                                     Text={'Create Account Detail'}
@@ -214,9 +214,9 @@ export default function index({ controls, details }) {
                             />
 
                             {/* Create Modal */}
-                            <div className="p-6 border-t border-gray-100 dark:border-gray-800">
+                            <div className="border-t border-gray-100 p-6 dark:border-gray-800">
                                 {CreateModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -226,10 +226,10 @@ export default function index({ controls, details }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={CreateMethod}
-                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
+                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -241,7 +241,7 @@ export default function index({ controls, details }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {createErrors?.server && (
-                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
+                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -249,7 +249,7 @@ export default function index({ controls, details }) {
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-4">
                                                     <SelectInput
                                                         InputName={'Control Account'}
                                                         Name={'control_id'}
@@ -377,11 +377,11 @@ export default function index({ controls, details }) {
                                                     </div>
                                                 </div>
 
-                                                <div className="grid col-span-2">
+                                                <div className="col-span-2 grid">
                                                     <hr />
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-4">
                                                     <div>
                                                         <label
                                                             htmlFor="address"
@@ -484,7 +484,7 @@ export default function index({ controls, details }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
+                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setCreateModalOpen(false);
@@ -505,7 +505,7 @@ export default function index({ controls, details }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="w-5 h-5"
+                                                                className="h-5 w-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -558,7 +558,7 @@ export default function index({ controls, details }) {
                                 )}
 
                                 {EditModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -568,10 +568,10 @@ export default function index({ controls, details }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={EditMethod}
-                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
+                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -583,7 +583,7 @@ export default function index({ controls, details }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {editErrors?.server && (
-                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
+                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -591,7 +591,7 @@ export default function index({ controls, details }) {
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-4">
                                                     <SelectInput
                                                         InputName={'Bank/Cash'}
                                                         Name={'bank_cash'}
@@ -633,7 +633,7 @@ export default function index({ controls, details }) {
                                                             rows="1"
                                                             className="dark:bg-dark-900 shadow-theme-xs focus:ring-3 focus:outline-hidden mb-2 h-[42px] w-full min-w-0 max-w-full rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-300 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800"
                                                             placeholder="Enter Other Details here..."
-                                                            value={editData.other_details}
+                                                            value={editData.other_details ?? ''}
                                                             onChange={(e) =>
                                                                 setEditData(
                                                                     'other_details',
@@ -649,11 +649,11 @@ export default function index({ controls, details }) {
                                                     </div>
                                                 </div>
 
-                                                <div className="grid col-span-2">
+                                                <div className="col-span-2 grid">
                                                     <hr />
                                                 </div>
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-4">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-4">
                                                     <div>
                                                         <label
                                                             htmlFor="address"
@@ -666,7 +666,7 @@ export default function index({ controls, details }) {
                                                             rows="1"
                                                             className="dark:bg-dark-900 shadow-theme-xs focus:ring-3 focus:outline-hidden mb-2 h-[42px] w-full min-w-0 max-w-full rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-300 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800"
                                                             placeholder="Enter Address here..."
-                                                            value={editData.address}
+                                                            value={editData.address ?? ''}
                                                             onChange={(e) =>
                                                                 setEditData(
                                                                     'address',
@@ -753,7 +753,7 @@ export default function index({ controls, details }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
+                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setEditModalOpen(false);
@@ -775,7 +775,7 @@ export default function index({ controls, details }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="w-5 h-5"
+                                                                className="h-5 w-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"

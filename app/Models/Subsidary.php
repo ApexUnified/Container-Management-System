@@ -10,13 +10,6 @@ class Subsidary extends Model
 {
     protected $fillable = ['control_id', 'name', 'code', 'account_code'];
 
-    protected $appends = ['added_at'];
-
-    public function getAddedAtAttribute()
-    {
-        return $this->created_at->format('Y-m-d');
-    }
-
     public function control(): BelongsTo
     {
         return $this->belongsTo(Control::class, 'control_id', 'id');

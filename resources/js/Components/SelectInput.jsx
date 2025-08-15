@@ -56,6 +56,11 @@ export default function SelectInput({
             ...base,
             color: '#9ca3af',
         }),
+        menuList: (provided) => ({
+            ...provided,
+            maxHeight: '120px',
+            overflowY: 'auto',
+        }),
     };
     const lightStyles = {
         control: (base, state) => ({
@@ -92,6 +97,11 @@ export default function SelectInput({
         placeholder: (base) => ({
             ...base,
             color: '#6b7280', // gray-500
+        }),
+        menuList: (provided) => ({
+            ...provided,
+            maxHeight: '120px',
+            overflowY: 'auto',
         }),
     };
 
@@ -134,7 +144,7 @@ export default function SelectInput({
                         isSearchable
                         required={Required}
                         {...(Placeholder && {
-                            placeholder: `Select ${InputName} Or Search `,
+                            placeholder: ` ${InputName} `,
                         })}
                         styles={isDarkMode ? darkStyles : lightStyles}
                         className={`react-select-container ${isDisabled && 'opacity-30'}`}

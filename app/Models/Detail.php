@@ -23,15 +23,6 @@ class Detail extends Model
         'cnic_no',
     ];
 
-    protected $appends = [
-        'added_at',
-    ];
-
-    public function getAddedAtAttribute()
-    {
-        return $this->created_at->format('Y-m-d');
-    }
-
     public function control(): BelongsTo
     {
         return $this->belongsTo(Control::class, 'control_id', 'id');

@@ -15,6 +15,7 @@ use App\Http\Controllers\TransporterController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
+use App\Http\Controllers\VoucherController;
 use Illuminate\Support\Facades\Route;
 
 Route::redirect('/', 'dashboard')->name('home');
@@ -85,6 +86,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::resource('/stock-out', StockOutController::class)->except(['show', 'edit', 'create']);
         Route::delete('/stock-out-destroy-by-selectetion', [StockOutController::class, 'destroyBySelection'])->name('stock-out.destroybyselection');
+
+        Route::resource('/vouchers', VoucherController::class)->except(['show', 'edit', 'create']);
+        Route::get('/vouchers-get-account-details-by-type/{type}', [VoucherController::class, 'getAccountDetailsByType'])->name('vouchers.getaccountdetailsbytype');
+        Route::delete('/vouchers-destroy-by-selectetion', [VoucherController::class, 'destroyBySelection'])->name('vouchers.destroybyselection');
     });
 
     // User Routes

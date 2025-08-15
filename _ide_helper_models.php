@@ -19,7 +19,6 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Detail> $details
  * @property-read int|null $details_count
- * @property-read mixed $added_at
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Subsidary> $subsidaries
  * @property-read int|null $subsidaries_count
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Control newModelQuery()
@@ -36,16 +35,16 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $containers
+ * @property-read int|null $containers_count
  * @property string $cro_no
  * @property \Illuminate\Support\Carbon $date
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read int|null $containers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $containers
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro query()
- * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereContainers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereContainersCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereCroNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Cro whereDate($value)
@@ -124,7 +123,6 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \App\Models\Control $control
- * @property-read mixed $added_at
  * @property-read \App\Models\Subsidary $subsidary
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Detail newQuery()
@@ -312,7 +310,6 @@ namespace App\Models{
  * @property-read \App\Models\Control $control
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\Detail> $details
  * @property-read int|null $details_count
- * @property-read mixed $added_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Subsidary query()
@@ -431,5 +428,48 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Vendor whereUpdatedAt($value)
  */
 	class Vendor extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property \Illuminate\Support\Carbon $payment_date
+ * @property string|null $payment_no
+ * @property string|null $paid_to
+ * @property string|null $payment_details
+ * @property string $payment_by
+ * @property array<array-key, mixed>|null $bank_details
+ * @property array<array-key, mixed>|null $cash_details
+ * @property int|null $detail_id
+ * @property int|null $currency_id
+ * @property string $amount
+ * @property string $exchange_rate
+ * @property string $total_amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Detail|null $account_detail
+ * @property-read \App\Models\Currency|null $currency
+ * @property-read mixed $formated_bank_details
+ * @property-read mixed $formated_cash_details
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereBankDetails($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereCashDetails($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereCurrencyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereDetailId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereExchangeRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher wherePaidTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher wherePaymentBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher wherePaymentDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher wherePaymentDetails($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher wherePaymentNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Voucher whereUpdatedAt($value)
+ */
+	class Voucher extends \Eloquent {}
 }
 
