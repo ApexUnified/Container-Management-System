@@ -53,9 +53,9 @@ export default function index({ vouchers, account_details, currencies }) {
             chequebook_id: '',
         },
         detail_id: '',
-        currency_id: '',
+        currency_id: 1,
         amount: '',
-        exchange_rate: '',
+        exchange_rate: 1,
         total_amount: '',
     });
 
@@ -113,7 +113,7 @@ export default function index({ vouchers, account_details, currencies }) {
     const flatpickerForEditForm = useRef(null);
     const flatpickerForCreateFormChequeDate = useRef(null);
     const flatpickerForEditFormChequeDate = useRef(null);
-
+    const initialCurrencyId = useRef(null);
     // flatpicker init useEffect
     useEffect(() => {
         const timeout = setTimeout(() => {
@@ -194,11 +194,48 @@ export default function index({ vouchers, account_details, currencies }) {
     // Handling Total Amount Calculation For Edit
     useEffect(() => {
         setEditData('total_amount', '');
+
         if (editData.currency_id && editData.amount && editData.exchange_rate) {
             const totalAmount = (editData.amount * editData.exchange_rate).toFixed(2);
             setEditData('total_amount', totalAmount);
         }
     }, [editData.currency_id, editData.amount, editData.exchange_rate]);
+
+    // Handling Currency Change For Exchange Rate Create Form
+    useEffect(() => {
+        if (createData.currency_id != 1) {
+            setCreateData('exchange_rate', '');
+        } else {
+            setCreateData('exchange_rate', 1);
+        }
+    }, [createData.currency_id]);
+
+    // Handling Currency Change For Exchange Rate Edit Form
+    const [exchangeRateDisabled, setExchangeRateDisabled] = useState(false);
+    const firstLoad = useRef(true);
+    useEffect(() => {
+        // First load after modal open
+        if (firstLoad.current) {
+            if (editData.currency_id == 1) {
+                setExchangeRateDisabled(true);
+                setEditData('exchange_rate', 1);
+            } else {
+                setExchangeRateDisabled(false);
+                // DO NOT clear exchange rate here — keep DB value
+            }
+            firstLoad.current = false;
+            return;
+        }
+
+        // After first load → user changed currency
+        if (editData.currency_id == 1) {
+            setExchangeRateDisabled(true);
+            setEditData('exchange_rate', 1);
+        } else {
+            setExchangeRateDisabled(false);
+            setEditData('exchange_rate', '');
+        }
+    }, [editData.currency_id]);
 
     useEffect(() => {
         const columns = [
@@ -226,7 +263,7 @@ export default function index({ vouchers, account_details, currencies }) {
             { key: 'currency.name', label: 'Currency' },
             { key: 'amount', label: 'Amount' },
             { key: 'exchange_rate', label: 'Exchange Rate' },
-            { key: 'total_amount', label: 'Total Amount' },
+            { key: 'total_amount', label: 'Amount PAID' },
         ];
 
         const actions = [
@@ -247,6 +284,8 @@ export default function index({ vouchers, account_details, currencies }) {
                     setEditData('amount', item.amount);
                     setEditData('exchange_rate', item.exchange_rate);
                     setEditData('total_amount', item.total_amount);
+                    initialCurrencyId.current = item.currency_id;
+                    firstLoad.current = true;
                 },
             },
             {
@@ -375,19 +414,19 @@ export default function index({ vouchers, account_details, currencies }) {
     return (
         <>
             <AuthenticatedLayout>
-                <Head title="Vouchers" />
+                <Head title="Payment Vouchers" />
 
                 <BreadCrumb
-                    header={'Vouchers'}
+                    header={'Payment Vouchers'}
                     parent={'Dashboard'}
                     parent_link={route('dashboard')}
-                    child={'Vouchers'}
+                    child={'Payment Vouchers'}
                 />
 
                 <Card
                     Content={
                         <>
-                            <div className="my-3 flex flex-wrap justify-end">
+                            <div className="flex flex-wrap justify-end my-3">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
                                     Text={'Create Voucher'}
@@ -429,9 +468,9 @@ export default function index({ vouchers, account_details, currencies }) {
                             />
 
                             {/* Create Modal */}
-                            <div className="border-t border-gray-100 p-6 dark:border-gray-800">
+                            <div className="p-6 border-t border-gray-100 dark:border-gray-800">
                                 {CreateModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -441,14 +480,14 @@ export default function index({ vouchers, account_details, currencies }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={CreateMethod}
-                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
+                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Create Voucher
+                                                        Create Payment Voucher
                                                     </h3>
                                                 </div>
 
@@ -456,7 +495,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {createErrors?.server && (
-                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
+                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -464,7 +503,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                     </div>
                                                 )}
 
-                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-3">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-3">
                                                     <Input
                                                         InputName={'Payment Date'}
                                                         InputRef={flatpickerForCreateForm}
@@ -544,7 +583,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         bankDetails?.length > 0 && (
                                                             <>
                                                                 <SelectInput
-                                                                    InputName={'Bank'}
+                                                                    InputName={'Select Bank Name'}
                                                                     Id={'bank_id'}
                                                                     Name={'bank_id'}
                                                                     Value={
@@ -623,7 +662,9 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         checkbookDetails?.length > 0 && (
                                                             <>
                                                                 <SelectInput
-                                                                    InputName={'Select Cheque Book'}
+                                                                    InputName={
+                                                                        'Select Cash Book Name'
+                                                                    }
                                                                     Id={'chequebook_id'}
                                                                     Name={'chequebook_id'}
                                                                     Error={
@@ -655,7 +696,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         Error={createErrors.detail_id}
                                                         Value={createData.detail_id}
                                                         items={account_details}
-                                                        itemKey={'account_code'}
+                                                        itemKey={'name'}
                                                         Required={true}
                                                         Action={(value) =>
                                                             setCreateData('detail_id', value)
@@ -685,9 +726,17 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         Required={true}
                                                         Error={createErrors.amount}
                                                         Value={createData.amount}
-                                                        Action={(e) =>
-                                                            setCreateData('amount', e.target.value)
-                                                        }
+                                                        onKeyDown={(e) => {
+                                                            if (
+                                                                ['e', 'E', '+', '-'].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        Action={(e) => {
+                                                            const value = e.target.value;
+                                                            setCreateData('amount', value);
+                                                        }}
                                                     />
 
                                                     <Input
@@ -698,30 +747,36 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         Placeholder={'Enter Exchange Rate'}
                                                         Required={true}
                                                         Error={createErrors.exchange_rate}
+                                                        Disabled={createData.exchange_rate == 1}
                                                         Value={createData.exchange_rate}
-                                                        Action={(e) =>
-                                                            setCreateData(
-                                                                'exchange_rate',
-                                                                e.target.value,
-                                                            )
-                                                        }
+                                                        onKeyDown={(e) => {
+                                                            if (
+                                                                ['e', 'E', '+', '-'].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        Action={(e) => {
+                                                            const value = e.target.value;
+                                                            setCreateData('exchange_rate', value);
+                                                        }}
                                                     />
 
                                                     <Input
-                                                        InputName={'Total Amount'}
+                                                        InputName={'Amount PAID'}
                                                         Id={'total_amount'}
                                                         Name={'total_amount'}
                                                         Type={'number'}
-                                                        Placeholder={'Enter Total Amount'}
                                                         Required={false}
                                                         Error={createErrors.total_amount}
                                                         Value={createData.total_amount}
+                                                        Placeholder={'Amount PAID'}
                                                         readOnly={true}
                                                     />
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
+                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setCreateModalOpen(false);
@@ -747,7 +802,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="h-5 w-5"
+                                                                className="w-5 h-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -768,7 +823,7 @@ export default function index({ vouchers, account_details, currencies }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Save Voucher"
+                                                        Text="Save Payment Voucher"
                                                         Spinner={createProcessing}
                                                         Disabled={
                                                             createProcessing ||
@@ -809,7 +864,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                 )}
 
                                 {EditModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -819,14 +874,14 @@ export default function index({ vouchers, account_details, currencies }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={EditMethod}
-                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
+                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
-                                                        Edit Voucher
+                                                        Edit Payment Voucher
                                                     </h3>
                                                 </div>
 
@@ -834,7 +889,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {editErrors?.server && (
-                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
+                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -842,7 +897,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                     </div>
                                                 )}
 
-                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-3">
+                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-3">
                                                     <Input
                                                         InputName={'Payment Date'}
                                                         InputRef={flatpickerForEditForm}
@@ -931,7 +986,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         bankDetails?.length > 0 && (
                                                             <>
                                                                 <SelectInput
-                                                                    InputName={'Bank'}
+                                                                    InputName={'Select Bank Name'}
                                                                     Id={'bank_id'}
                                                                     Name={'bank_id'}
                                                                     Value={
@@ -1010,7 +1065,9 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         checkbookDetails?.length > 0 && (
                                                             <>
                                                                 <SelectInput
-                                                                    InputName={'Select Cheque Book'}
+                                                                    InputName={
+                                                                        'Select Cash Book Name'
+                                                                    }
                                                                     Id={'chequebook_id'}
                                                                     Name={'chequebook_id'}
                                                                     Error={
@@ -1042,7 +1099,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         Error={editErrors.detail_id}
                                                         Value={editData.detail_id}
                                                         items={account_details}
-                                                        itemKey={'account_code'}
+                                                        itemKey={'name'}
                                                         Required={true}
                                                         Action={(value) =>
                                                             setEditData('detail_id', value)
@@ -1058,9 +1115,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         items={currencies}
                                                         itemKey={'name'}
                                                         Required={true}
-                                                        Action={(value) =>
-                                                            setEditData('currency_id', value)
-                                                        }
+                                                        Action={(value) => {
+                                                            initialCurrencyId.current = value;
+                                                            setEditData('currency_id', value);
+                                                        }}
                                                     />
 
                                                     <Input
@@ -1072,9 +1130,17 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         Required={true}
                                                         Error={editErrors.amount}
                                                         Value={editData.amount}
-                                                        Action={(e) =>
-                                                            setEditData('amount', e.target.value)
-                                                        }
+                                                        onKeyDown={(e) => {
+                                                            if (
+                                                                ['e', 'E', '+', '-'].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        Action={(e) => {
+                                                            const value = e.target.value;
+                                                            setEditData('amount', value);
+                                                        }}
                                                     />
 
                                                     <Input
@@ -1086,29 +1152,35 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         Required={true}
                                                         Error={editErrors.exchange_rate}
                                                         Value={editData.exchange_rate}
-                                                        Action={(e) =>
-                                                            setEditData(
-                                                                'exchange_rate',
-                                                                e.target.value,
-                                                            )
-                                                        }
+                                                        Disabled={exchangeRateDisabled}
+                                                        onKeyDown={(e) => {
+                                                            if (
+                                                                ['e', 'E', '+', '-'].includes(e.key)
+                                                            ) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        Action={(e) => {
+                                                            const value = e.target.value;
+                                                            setEditData('exchange_rate', value);
+                                                        }}
                                                     />
 
                                                     <Input
-                                                        InputName={'Total Amount'}
+                                                        InputName={'Amount PAID'}
                                                         Id={'total_amount'}
                                                         Name={'total_amount'}
                                                         Type={'number'}
-                                                        Placeholder={'Enter Total Amount'}
                                                         Required={false}
                                                         Error={editErrors.total_amount}
                                                         Value={editData.total_amount}
+                                                        Placeholder={'Amount PAID'}
                                                         readOnly={true}
                                                     />
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
+                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setEditModalOpen(false);
@@ -1135,7 +1207,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="h-5 w-5"
+                                                                className="w-5 h-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -1156,7 +1228,7 @@ export default function index({ vouchers, account_details, currencies }) {
 
                                                     <PrimaryButton
                                                         Type="submit"
-                                                        Text="Update Voucher"
+                                                        Text="Update Payment Voucher"
                                                         Spinner={editProcessing}
                                                         Disabled={
                                                             editProcessing ||
@@ -1201,7 +1273,7 @@ export default function index({ vouchers, account_details, currencies }) {
                 />
 
                 {viewModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
                         {/* Backdrop */}
                         <div
                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -1209,9 +1281,9 @@ export default function index({ vouchers, account_details, currencies }) {
                         ></div>
 
                         {/* Modal content */}
-                        <div className="relative z-10 max-h-screen w-full max-w-screen-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                        <div className="relative z-10 w-full max-h-screen p-6 overflow-y-auto bg-white shadow-xl max-w-screen-2xl rounded-2xl dark:bg-gray-800 sm:p-8">
                             <h3 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
-                                View Voucher
+                                View Payment Voucher
                             </h3>
 
                             {/* Divider */}
@@ -1242,10 +1314,10 @@ export default function index({ vouchers, account_details, currencies }) {
 
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Payment No
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">
                                             {viewData?.payment_no || 'N/A'}
                                         </p>
@@ -1253,10 +1325,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                 </div>
 
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Payment Date
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">
                                             {viewData?.payment_date || 'N/A'}
                                         </p>
@@ -1264,19 +1336,19 @@ export default function index({ vouchers, account_details, currencies }) {
                                 </div>
 
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Paid To
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">{viewData?.paid_to || 'N/A'}</p>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Account Code
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">
                                             {viewData?.account_detail?.account_code || 'N/A'}
                                         </p>
@@ -1284,10 +1356,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                 </div>
 
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Payment Details
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">
                                             {viewData?.payment_details || 'N/A'}
                                         </p>
@@ -1295,10 +1367,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                 </div>
 
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Payment By
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">
                                             {viewData?.payment_by || 'N/A'}
                                         </p>
@@ -1308,10 +1380,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                 {viewData.payment_by === 'bank' && (
                                     <>
                                         <div>
-                                            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 Bank Name
                                             </label>
-                                            <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                            <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                 <p className="break-words">
                                                     {viewData?.formated_bank_details?.bank_name ||
                                                         'N/A'}
@@ -1320,10 +1392,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                         </div>
 
                                         <div>
-                                            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 Cheque No
                                             </label>
-                                            <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                            <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                 <p className="break-words">
                                                     {viewData?.formated_bank_details?.cheque_no ||
                                                         'N/A'}
@@ -1332,10 +1404,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                         </div>
 
                                         <div>
-                                            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 Cheque Date
                                             </label>
-                                            <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                            <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                 <p className="break-words">
                                                     {viewData?.formated_bank_details?.cheque_date ||
                                                         'N/A'}
@@ -1348,10 +1420,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                 {viewData.payment_by === 'cash' && (
                                     <>
                                         <div>
-                                            <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                            <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                                 Cheque Book Name
                                             </label>
-                                            <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                            <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                                 <p className="break-words">
                                                     {viewData?.formated_cash_details
                                                         ?.chequebook_name || 'N/A'}
@@ -1362,10 +1434,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                 )}
 
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Currency
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">
                                             {viewData?.currency?.name || 'N/A'}
                                         </p>
@@ -1373,19 +1445,19 @@ export default function index({ vouchers, account_details, currencies }) {
                                 </div>
 
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Amount
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">{viewData?.amount || 'N/A'}</p>
                                     </div>
                                 </div>
 
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
                                         Exchange Rate
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">
                                             {viewData?.exchange_rate || 'N/A'}
                                         </p>
@@ -1393,10 +1465,10 @@ export default function index({ vouchers, account_details, currencies }) {
                                 </div>
 
                                 <div>
-                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                        Total Amount
+                                    <label className="block mb-1 text-sm font-medium text-gray-700 dark:text-gray-300">
+                                        Amount PAID
                                     </label>
-                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                    <div className="px-4 py-2 text-gray-800 bg-gray-100 rounded-md dark:bg-gray-700 dark:text-white">
                                         <p className="break-words">
                                             {viewData?.total_amount || 'N/A'}
                                         </p>
@@ -1405,7 +1477,7 @@ export default function index({ vouchers, account_details, currencies }) {
                             </div>
 
                             {/* Buttons */}
-                            <div className="mt-8 flex flex-col-reverse items-center justify-end gap-4 sm:flex-row">
+                            <div className="flex flex-col-reverse items-center justify-end gap-4 mt-8 sm:flex-row">
                                 <PrimaryButton
                                     Action={() => {
                                         setViewModalOpen(false);
@@ -1414,7 +1486,7 @@ export default function index({ vouchers, account_details, currencies }) {
                                     Icon={
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5"
+                                            className="w-5 h-5"
                                             fill="none"
                                             viewBox="0 0 24 24"
                                             stroke="currentColor"

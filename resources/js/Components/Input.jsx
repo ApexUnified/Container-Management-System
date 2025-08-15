@@ -16,6 +16,7 @@ export default function Input({
     InputRef,
     readOnly = false,
     Disabled = false,
+    onKeyDown = () => {},
 }) {
     return (
         <div className={CustomCss || 'w-full'}>
@@ -36,6 +37,7 @@ export default function Input({
                     className={`dark:bg-dark-900 shadow-theme-xs focus:ring-3 focus:outline-hidden mb-2 h-[42px] w-full min-w-0 max-w-full rounded-lg border border-gray-300 bg-transparent py-2.5 text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-300 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800 ${Disabled && 'cursor-not-allowed opacity-25 dark:opacity-40'}`}
                     placeholder={Placeholder}
                     step="any"
+                    onKeyDown={onKeyDown}
                     name={Name}
                     value={Value ?? ''}
                     {...(!readOnly && { onChange: Action })}

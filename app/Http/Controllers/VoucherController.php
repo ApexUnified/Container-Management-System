@@ -16,7 +16,12 @@ class VoucherController extends Controller
     public function index()
     {
         $vouchers = Voucher::with(['currency', 'account_detail'])->paginate(10);
-        $account_details = Detail::all();
+        $account_details = Detail::all()->map(function ($detail) {
+            return [
+                'id' => $detail->id,
+                'name' => $detail->account_code.' - '.$detail->title,
+            ];
+        });
         $currencies = Currency::all();
 
         // return $vouchers;

@@ -12,9 +12,11 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
-            'name' => 'Admin',
-            'password' => '12345678',
-        ]);
+        if (! User::exists()) {
+            User::create([
+                'name' => 'Admin',
+                'password' => '12345678',
+            ]);
+        }
     }
 }

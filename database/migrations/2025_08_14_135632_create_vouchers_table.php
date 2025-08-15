@@ -23,7 +23,7 @@ return new class extends Migration
             $table->foreignId('detail_id')->nullable()->constrained('details')->cascadeOnUpdate()->nullOnDelete();
             $table->foreignId('currency_id')->nullable()->constrained('currencies')->cascadeOnUpdate()->nullOnDelete();
             $table->decimal('amount', 20, 2);
-            $table->decimal('exchange_rate', 20, 2);
+            $table->decimal('exchange_rate', 20, 4);
             $table->decimal('total_amount', 20, 2);
             $table->timestamps();
         });

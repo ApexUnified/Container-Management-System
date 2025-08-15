@@ -53,6 +53,10 @@ class CurrencyController extends Controller
                 throw new Exception('Currency Not Found');
             }
 
+            if ($currency->name == 'PKR') {
+                throw new Exception('PKR Currency Can Not Be Updated Its System Default Currency');
+            }
+
             if ($currency->update($validated_req)) {
                 return back()->with('success', 'Currency Updated Successfully');
             }
@@ -79,6 +83,10 @@ class CurrencyController extends Controller
                 throw new Exception('Currency Not Found');
             }
 
+            if ($currency->name == 'PKR') {
+                throw new Exception('PKR Currency Can Not Be Deleted Its System Default Currency');
+            }
+
             if ($currency->delete()) {
                 return back()->with('success', 'Currency Deleted Successfully');
             }
@@ -97,6 +105,14 @@ class CurrencyController extends Controller
             $ids = $request->array('ids');
             if (blank($ids)) {
                 throw new Exception('Currency ID is Missing');
+            }
+
+            $currencies = Currency::whereIn('id', $ids)->get();
+
+            foreach ($currencies as $currency) {
+                if ($currency->name == 'PKR') {
+                    throw new Exception('PKR Currency Can Not Be Deleted Its System Default Currency');
+                }
             }
 
             $deleted = Currency::destroy($ids);

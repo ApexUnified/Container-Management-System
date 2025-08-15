@@ -88,7 +88,7 @@ export default function Sidebar({
                     </button>
                 </div>
 
-                <div className="no-scrollbar flex flex-1 flex-col overflow-y-auto duration-300 ease-linear">
+                <div className="flex flex-col flex-1 overflow-y-auto duration-300 ease-linear no-scrollbar">
                     <nav>
                         <div>
                             <h3 className="mb-4 text-xs uppercase leading-[20px] text-gray-400">
@@ -109,7 +109,7 @@ export default function Sidebar({
                                 </svg>
                             </h3>
 
-                            <ul className="mb-6 flex flex-col gap-4">
+                            <ul className="flex flex-col gap-4 mb-6">
                                 <li>
                                     <Link
                                         href={route('dashboard')}
@@ -419,7 +419,7 @@ export default function Sidebar({
                                                     href={route('transactions.cros.index')}
                                                     className={`menu-dropdown-item group ${route().current() === 'transactions.cros.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                 >
-                                                    Cro
+                                                    CRO
                                                 </Link>
                                             </li>
 
@@ -446,7 +446,7 @@ export default function Sidebar({
                                                     href={route('transactions.vouchers.index')}
                                                     className={`menu-dropdown-item group ${route().current() === 'transactions.vouchers.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                 >
-                                                    Vouchers
+                                                    Payment Vouchers
                                                 </Link>
                                             </li>
                                         </ul>
