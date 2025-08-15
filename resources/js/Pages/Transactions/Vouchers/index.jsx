@@ -321,9 +321,9 @@ export default function index({ vouchers, account_details, currencies }) {
                     chequebook_id: '',
                 });
                 setCreateData('detail_id', '');
-                setCreateData('currency_id', '');
+                setCreateData('currency_id', 1);
                 setCreateData('amount', '');
-                setCreateData('exchange_rate', '');
+                setCreateData('exchange_rate', 1);
                 setCreateData('total_amount', '');
             },
         });
@@ -793,9 +793,9 @@ export default function index({ vouchers, account_details, currencies }) {
                                                                 chequebook_id: '',
                                                             });
                                                             setCreateData('detail_id', '');
-                                                            setCreateData('currency_id', '');
+                                                            setCreateData('currency_id', 1);
                                                             setCreateData('amount', '');
-                                                            setCreateData('exchange_rate', '');
+                                                            setCreateData('exchange_rate', 1);
                                                             setCreateData('total_amount', '');
                                                         }}
                                                         Disabled={createProcessing}
