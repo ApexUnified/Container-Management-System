@@ -68,7 +68,7 @@ class Voucher extends Model
     public static function booted()
     {
         static::created(function ($voucher) {
-            $nextId = $voucher ? $voucher->id + 1 : 1;
+            $nextId = $voucher ? $voucher->id : 1;
             $payment_no = 'P'.str_pad($nextId, 4, '0', STR_PAD_LEFT).'/'.date('Y');
 
             $voucher->payment_no = $payment_no;
