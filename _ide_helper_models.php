@@ -172,6 +172,49 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
+ * @property \Illuminate\Support\Carbon $receipt_date
+ * @property string|null $receipt_no
+ * @property string|null $received_from
+ * @property string|null $received_details
+ * @property string $received_by
+ * @property array<array-key, mixed>|null $bank_details
+ * @property array<array-key, mixed>|null $cash_details
+ * @property int|null $detail_id
+ * @property int|null $currency_id
+ * @property string $amount
+ * @property string $exchange_rate
+ * @property string $total_amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Detail|null $account_detail
+ * @property-read \App\Models\Currency|null $currency
+ * @property-read mixed $formated_bank_details
+ * @property-read mixed $formated_cash_details
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereBankDetails($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereCashDetails($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereCurrencyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereDetailId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereExchangeRate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereReceiptDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereReceiptNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereReceivedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereReceivedDetails($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereReceivedFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ReceiptVoucher whereUpdatedAt($value)
+ */
+	class ReceiptVoucher extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property string $name
  * @property string|null $email
  * @property string|null $contact_person

@@ -449,6 +449,17 @@ export default function Sidebar({
                                                     Payment Vouchers
                                                 </Link>
                                             </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route(
+                                                        'transactions.receipt-vouchers.index',
+                                                    )}
+                                                    className={`menu-dropdown-item group ${route().current() === 'transactions.receipt-vouchers.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    Receipt Vouchers
+                                                </Link>
+                                            </li>
                                         </ul>
                                     </div>
                                 </li>

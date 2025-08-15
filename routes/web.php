@@ -7,6 +7,7 @@ use App\Http\Controllers\CustomClearanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\ReceiptVoucherController;
 use App\Http\Controllers\ShippingLineController;
 use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockOutController;
@@ -90,6 +91,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('/vouchers', VoucherController::class)->except(['show', 'edit', 'create']);
         Route::get('/vouchers-get-account-details-by-type/{type}', [VoucherController::class, 'getAccountDetailsByType'])->name('vouchers.getaccountdetailsbytype');
         Route::delete('/vouchers-destroy-by-selectetion', [VoucherController::class, 'destroyBySelection'])->name('vouchers.destroybyselection');
+
+        Route::resource('/receipt-vouchers', ReceiptVoucherController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/receipt-vouchers-destroy-by-selectetion', [ReceiptVoucherController::class, 'destroyBySelection'])->name('receipt-vouchers.destroybyselection');
     });
 
     // User Routes

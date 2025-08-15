@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\Currency;
 use App\Models\Detail;
-use App\Models\Voucher;
+use App\Models\ReceiptVoucher;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
-use Validator;
 
-class VoucherController extends Controller
+class ReceiptVoucherController extends Controller
 {
     public function index()
     {
-        $vouchers = Voucher::with(['currency', 'account_detail'])->paginate(10);
+        $receipt_vouchers = ReceiptVoucher::with(['currency', 'account_detail'])->paginate(10);
         $account_details = Detail::all()->map(function ($detail) {
             return [
                 'id' => $detail->id,
@@ -24,19 +24,16 @@ class VoucherController extends Controller
         });
         $currencies = Currency::all();
 
-        // return $vouchers;
-
-        return Inertia::render('Transactions/Vouchers/index', compact('vouchers', 'account_details', 'currencies'));
+        return Inertia::render('Transactions/ReceiptVouchers/index', compact('receipt_vouchers', 'account_details', 'currencies'));
     }
 
     public function store(Request $request)
     {
-        // dd($request->all());
         $validated_req = $request->validate([
-            'payment_date' => ['required', 'date'],
-            'paid_to' => ['nullable', 'string', 'max:255'],
-            'payment_details' => ['nullable', 'string'],
-            'payment_by' => ['required', 'in:bank,cash'],
+            'receipt_date' => ['required', 'date'],
+            'received_from' => ['nullable', 'string', 'max:255'],
+            'received_details' => ['nullable', 'string'],
+            'received_by' => ['required', 'in:bank,cash'],
             'bank_details' => ['nullable', 'array', 'required_without:cash_details'],
             'cash_details' => ['nullable', 'array', 'required_without:bank_details'],
             'detail_id' => ['required', 'exists:details,id'],
@@ -49,14 +46,11 @@ class VoucherController extends Controller
             'detail_id.exists' => 'Selecte Account Does Not Exist',
             'currency_id.required' => 'Currency is Required',
             'currency_id.exists' => 'Selected Currency Does Not Exist',
-            'total_amount.required' => 'Amount Paid is Required',
-            'total_amount.numeric' => 'Amount Paid Should Be Numeric',
-            'total_amount.min' => 'Amount Paid Should Not Be Less Than 1',
         ]);
 
         try {
 
-            if ($validated_req['payment_by'] == 'bank') {
+            if ($validated_req['received_by'] == 'bank') {
 
                 $bank_validator = Validator::make($validated_req, [
                     'bank_details.bank_id' => ['required', 'exists:details,id'],
@@ -74,7 +68,7 @@ class VoucherController extends Controller
                 }
             }
 
-            if ($validated_req['payment_by'] == 'cash') {
+            if ($validated_req['received_by'] == 'cash') {
                 $cash_validator = Validator::make($validated_req, [
                     'cash_details.chequebook_id' => ['required', 'exists:details,id'],
                 ], [
@@ -87,13 +81,13 @@ class VoucherController extends Controller
                 }
             }
 
-            $created = Voucher::create($validated_req);
+            $created = ReceiptVoucher::create($validated_req);
 
             if (empty($created)) {
-                throw new Exception('Something Went Wrong While Creating Voucher');
+                throw new Exception('Something Went Wrong While Creating Receipt Voucher');
             }
 
-            return back()->with('success', 'Voucher Created Successfully');
+            return back()->with('success', 'Receipt Voucher Created Successfully');
         } catch (Exception $e) {
             throw ValidationException::withMessages([
                 'server' => $e->getMessage(),
@@ -104,17 +98,15 @@ class VoucherController extends Controller
     public function update(Request $request, string $id)
     {
 
-        // dd($request->all());
-
         if (empty($id)) {
-            return back()->with('error', 'Voucher Not ID Found');
+            return back()->with('error', 'Receipt Voucher Not ID Found');
         }
 
         $validated_req = $request->validate([
-            'payment_date' => ['required', 'date'],
-            'paid_to' => ['nullable', 'string', 'max:255'],
-            'payment_details' => ['nullable', 'string'],
-            'payment_by' => ['required', 'in:bank,cash'],
+            'receipt_date' => ['required', 'date'],
+            'received_from' => ['nullable', 'string', 'max:255'],
+            'received_details' => ['nullable', 'string'],
+            'received_by' => ['required', 'in:bank,cash'],
             'bank_details' => ['nullable', 'array', 'required_without:cash_details'],
             'cash_details' => ['nullable', 'array', 'required_without:bank_details'],
             'detail_id' => ['required', 'exists:details,id'],
@@ -127,13 +119,10 @@ class VoucherController extends Controller
             'detail_id.exists' => 'Selecte Account Does Not Exist',
             'currency_id.required' => 'Currency is Required',
             'currency_id.exists' => 'Selected Currency Does Not Exist',
-            'total_amount.required' => 'Amount Paid is Required',
-            'total_amount.numeric' => 'Amount Paid Should Be Numeric',
-            'total_amount.min' => 'Amount Paid Should Not Be Less Than 1',
         ]);
 
         try {
-            if ($validated_req['payment_by'] == 'bank') {
+            if ($validated_req['received_by'] == 'bank') {
 
                 $bank_validator = Validator::make($validated_req, [
                     'bank_details.bank_id' => ['required', 'exists:details,id'],
@@ -151,12 +140,12 @@ class VoucherController extends Controller
                 }
             }
 
-            if ($validated_req['payment_by'] == 'cash') {
+            if ($validated_req['received_by'] == 'cash') {
                 $cash_validator = Validator::make($validated_req, [
                     'cash_details.chequebook_id' => ['required', 'exists:details,id'],
                 ], [
-                    'cash_details.chequebook_id.required' => 'Cash Book is Required Please Select Cash Book',
-                    'cash_details.chequebook_id.exists' => 'Selected Cash Book Does Not Exist',
+                    'cash_details.chequebook_id.required' => 'Chequebook is Required Please Select Checkbook',
+                    'cash_details.chequebook_id.exists' => 'Selected Checkbook Does Not Exist',
                 ]);
 
                 if ($cash_validator->fails()) {
@@ -164,19 +153,19 @@ class VoucherController extends Controller
                 }
             }
 
-            $voucher = Voucher::find($id);
+            $receipt_voucher = ReceiptVoucher::find($id);
 
-            if (empty($voucher)) {
-                throw new Exception('Voucher Does Not Exist');
+            if (empty($receipt_voucher)) {
+                throw new Exception('Receipt Voucher Does Not Exist');
             }
 
-            $updated = $voucher->update($validated_req);
+            $updated = $receipt_voucher->update($validated_req);
 
             if (! $updated) {
-                throw new Exception('Something Went Wrong While Updating Voucher');
+                throw new Exception('Something Went Wrong While Updating Receipt Voucher');
             }
 
-            return back()->with('success', 'Voucher Updated Successfully');
+            return back()->with('success', 'Receipt Voucher Updated Successfully');
 
         } catch (Exception $e) {
             throw ValidationException::withMessages([
@@ -189,20 +178,20 @@ class VoucherController extends Controller
     {
         try {
             if (empty($id)) {
-                throw new Exception('Voucher ID is Not Found');
+                throw new Exception('Receipt Voucher ID is Not Found');
             }
 
-            $voucher = Voucher::find($id);
+            $receipt_voucher = ReceiptVoucher::find($id);
 
-            if (empty($voucher)) {
-                throw new Exception('Voucher Not Found');
+            if (empty($receipt_voucher)) {
+                throw new Exception('Receipt Voucher Not Found');
             }
 
-            if ($voucher->delete()) {
-                return back()->with('success', 'Voucher Deleted Successfully');
+            if ($receipt_voucher->delete()) {
+                return back()->with('success', 'Receipt Voucher Deleted Successfully');
             }
 
-            throw new Exception('Something Went Wrong While Deleting Voucher');
+            throw new Exception('Something Went Wrong While Deleting Receipt Voucher');
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
         }
@@ -213,41 +202,18 @@ class VoucherController extends Controller
         try {
             $ids = $request->array('ids');
             if (blank($ids)) {
-                throw new Exception('Voucher ID is Not Found');
+                throw new Exception('Receipt Voucher ID is Not Found');
             }
 
-            $deleted = Voucher::destroy($ids);
+            $deleted = ReceiptVoucher::destroy($ids);
 
             if ($deleted !== count($ids)) {
-                throw new Exception('Something Went Wrong While Deleting Voucher');
+                throw new Exception('Something Went Wrong While Deleting Receipt Voucher');
             }
 
-            return back()->with('success', 'Voucher Deleted Successfully');
+            return back()->with('success', 'Receipt Voucher Deleted Successfully');
         } catch (Exception $e) {
             return back()->with('error', $e->getMessage());
-        }
-    }
-
-    public function getAccountDetailsByType(string $type)
-    {
-        try {
-            if (empty($type)) {
-                throw new Exception('Account Type is Missing');
-            }
-
-            if (! in_array($type, ['bank', 'cash'])) {
-                throw new Exception('Invalid Account Type');
-            }
-
-            $details = Detail::where('bank_cash', $type)->get();
-            if ($details->isEmpty()) {
-                throw new Exception('No Account Found From Given Account Type');
-            }
-
-            return response()->json(['status' => true, 'type' => $type, 'data' => $details]);
-
-        } catch (Exception $e) {
-            return response()->json(['status' => false, 'message' => $e->getMessage()]);
         }
     }
 }
