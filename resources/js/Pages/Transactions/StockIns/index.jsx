@@ -19,7 +19,7 @@ export default function index({
     units,
     transporters,
     custom_clearances,
-    shipping_lines,
+    freight_forwarders,
     currencies,
     cros,
 }) {
@@ -88,8 +88,8 @@ export default function index({
         transporter_rate: 0,
         custom_clearance_id: '',
         custom_clearance_rate: 0,
-        shipping_line_id: '',
-        shipping_line_rate: 0,
+        freight_forwarder_id: '',
+        freight_forwarder_rate: 0,
         fc_amount: 0,
         exchange_rate: 0,
         currency_id: '',
@@ -124,8 +124,8 @@ export default function index({
         transporter_rate: 0,
         custom_clearance_id: '',
         custom_clearance_rate: 0,
-        shipping_line_id: '',
-        shipping_line_rate: 0,
+        freight_forwarder_id: '',
+        freight_forwarder_rate: 0,
         fc_amount: 0,
         exchange_rate: 0,
         currency_id: '',
@@ -231,7 +231,7 @@ export default function index({
 
     const calculateCreateTotalAmount = () => {
         const productTotal = Number(createData.product_total_amount) || 0;
-        const shippingLine = Number(createData.shipping_line_rate) || 0;
+        const shippingLine = Number(createData.freight_forwarder_rate) || 0;
 
         const transporterRate = createData.all_in_one
             ? 0
@@ -263,9 +263,9 @@ export default function index({
         const fcAmount = Number(createData.fc_amount);
 
         if (createData.currency_id && !isNaN(exchangeRate) && !isNaN(fcAmount)) {
-            setCreateData('shipping_line_rate', exchangeRate * fcAmount);
+            setCreateData('freight_forwarder_rate', exchangeRate * fcAmount);
         } else {
-            setCreateData('shipping_line_rate', 0);
+            setCreateData('freight_forwarder_rate', 0);
         }
     }, [createData.currency_id, createData.exchange_rate, createData.fc_amount]);
 
@@ -284,7 +284,7 @@ export default function index({
         calculateCreateTotalAmount();
     }, [
         createData.product_total_amount,
-        createData.shipping_line_rate,
+        createData.freight_forwarder_rate,
         createData.transporter_rate,
         createData.custom_clearance_rate,
         createData.all_in_one,
@@ -306,7 +306,7 @@ export default function index({
 
     const calculateEditTotalAmount = () => {
         const productTotal = Number(editData.product_total_amount) || 0;
-        const shippingLine = Number(editData.shipping_line_rate) || 0;
+        const shippingLine = Number(editData.freight_forwarder_rate) || 0;
 
         const transporterRate = editData.all_in_one ? 0 : Number(editData.transporter_rate) || 0;
         const clearanceRate = editData.all_in_one ? 0 : Number(editData.custom_clearance_rate) || 0;
@@ -334,9 +334,9 @@ export default function index({
         const fcAmount = Number(editData.fc_amount);
 
         if (editData.currency_id && !isNaN(exchangeRate) && !isNaN(fcAmount)) {
-            setEditData('shipping_line_rate', exchangeRate * fcAmount);
+            setEditData('freight_forwarder_rate', exchangeRate * fcAmount);
         } else {
-            setEditData('shipping_line_rate', 0);
+            setEditData('freight_forwarder_rate', 0);
         }
     }, [editData.currency_id, editData.exchange_rate, editData.fc_amount]);
 
@@ -355,7 +355,7 @@ export default function index({
         calculateEditTotalAmount();
     }, [
         editData.product_total_amount,
-        editData.shipping_line_rate,
+        editData.freight_forwarder_rate,
         editData.transporter_rate,
         editData.custom_clearance_rate,
         editData.all_in_one,
@@ -416,7 +416,12 @@ export default function index({
                 },
             },
             { key: 'port_location', label: 'Port Location' },
-            { key: 'vendor.name', label: 'Vendor Name' },
+            {
+                label: 'Vendor Account Name',
+                render: (item) => {
+                    return item?.vendor?.account_code + ' - ' + item?.vendor?.title;
+                },
+            },
             { key: 'product.name', label: 'Product Name' },
             { key: 'unit.name', label: 'Product Unit' },
             { key: 'product_weight', label: 'Product Weight' },
@@ -480,7 +485,7 @@ export default function index({
 
                 setCreateData('custom_clearance_rate', '');
 
-                setCreateData('shipping_line_rate', '');
+                setCreateData('freight_forwarder_rate', '');
                 setCreateData('fc_amount', '');
                 setCreateData('exchange_rate', '');
 
@@ -515,8 +520,8 @@ export default function index({
                 setEditData('transporter_rate', '');
                 setEditData('custom_clearance_id', '');
                 setEditData('custom_clearance_rate', '');
-                setEditData('shipping_line_id', '');
-                setEditData('shipping_line_rate', '');
+                setEditData('freight_forwarder_id', '');
+                setEditData('freight_forwarder_rate', '');
                 setEditData('fc_amount', '');
                 setEditData('exchange_rate', '');
                 setEditData('currency_id', '');
@@ -1035,16 +1040,19 @@ export default function index({
 
                                                 <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                                                     <SelectInput
-                                                        InputName={'Shipping Line'}
-                                                        Id={'shipping_line_id'}
-                                                        Name={'shipping_line_id'}
-                                                        items={shipping_lines}
+                                                        InputName={'Freight Forwarder'}
+                                                        Id={'freight_forwarder_id'}
+                                                        Name={'freight_forwarder_id'}
+                                                        items={freight_forwarders}
                                                         itemKey={'name'}
                                                         Required={true}
-                                                        Error={createErrors.shipping_line_id}
-                                                        Value={createData.shipping_line_id}
+                                                        Error={createErrors.freight_forwarder_id}
+                                                        Value={createData.freight_forwarder_id}
                                                         Action={(value) =>
-                                                            setCreateData('shipping_line_id', value)
+                                                            setCreateData(
+                                                                'freight_forwarder_id',
+                                                                value,
+                                                            )
                                                         }
                                                     />
 
@@ -1101,13 +1109,13 @@ export default function index({
 
                                                     <Input
                                                         InputName={'Amount'}
-                                                        Id={'shipping_line_rate'}
-                                                        Name={'shipping_line_rate'}
+                                                        Id={'freight_forwarder_rate'}
+                                                        Name={'freight_forwarder_rate'}
                                                         Type={'number'}
-                                                        Placeholder={'Shipping Line Amount'}
+                                                        Placeholder={'Freight Forwarder Amount'}
                                                         Required={true}
-                                                        Error={createErrors.shipping_line_rate}
-                                                        Value={createData.shipping_line_rate}
+                                                        Error={createErrors.freight_forwarder_rate}
+                                                        Value={createData.freight_forwarder_rate}
                                                         readOnly={true}
                                                     />
                                                 </div>
@@ -1157,8 +1165,14 @@ export default function index({
                                                                 'custom_clearance_rate',
                                                                 '',
                                                             );
-                                                            setCreateData('shipping_line_id', '');
-                                                            setCreateData('shipping_line_rate', '');
+                                                            setCreateData(
+                                                                'freight_forwarder_id',
+                                                                '',
+                                                            );
+                                                            setCreateData(
+                                                                'freight_forwarder_rate',
+                                                                '',
+                                                            );
                                                             setCreateData('fc_amount', '');
                                                             setCreateData('exchange_rate', '');
                                                             setCreateData('currency_id', '');
@@ -1215,8 +1229,9 @@ export default function index({
                                                                         '' ||
                                                                     createData.custom_clearance_rate ==
                                                                         '')) ||
-                                                            createData.shipping_line_id == '' ||
-                                                            createData.shipping_line_rate == '' ||
+                                                            createData.freight_forwarder_id == '' ||
+                                                            createData.freight_forwarder_rate ==
+                                                                '' ||
                                                             createData.fc_amount == '' ||
                                                             createData.exchange_rate == '' ||
                                                             createData.currency_id == ''
@@ -1607,16 +1622,19 @@ export default function index({
 
                                                 <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                                                     <SelectInput
-                                                        InputName={'Shipping Line'}
-                                                        Id={'shipping_line_id'}
-                                                        Name={'shipping_line_id'}
-                                                        items={shipping_lines}
+                                                        InputName={'Freight Forwarder'}
+                                                        Id={'freight_forwarder_id'}
+                                                        Name={'freight_forwarder_id'}
+                                                        items={freight_forwarders}
                                                         itemKey={'name'}
                                                         Required={true}
-                                                        Error={editErrors.shipping_line_id}
-                                                        Value={editData.shipping_line_id}
+                                                        Error={editErrors.freight_forwarder_id}
+                                                        Value={editData.freight_forwarder_id}
                                                         Action={(value) =>
-                                                            setEditData('shipping_line_id', value)
+                                                            setEditData(
+                                                                'freight_forwarder_id',
+                                                                value,
+                                                            )
                                                         }
                                                     />
 
@@ -1673,13 +1691,13 @@ export default function index({
 
                                                     <Input
                                                         InputName={'Amount'}
-                                                        Id={'shipping_line_rate'}
-                                                        Name={'shipping_line_rate'}
+                                                        Id={'freight_forwarder_rate'}
+                                                        Name={'freight_forwarder_rate'}
                                                         Type={'number'}
-                                                        Placeholder={'Shipping Line Amount'}
+                                                        Placeholder={'Freight Forwarder Amount'}
                                                         Required={true}
-                                                        Error={editErrors.shipping_line_rate}
-                                                        Value={editData.shipping_line_rate}
+                                                        Error={editErrors.freight_forwarder_rate}
+                                                        Value={editData.freight_forwarder_rate}
                                                         readOnly={true}
                                                     />
                                                 </div>
@@ -1723,8 +1741,11 @@ export default function index({
                                                                 'custom_clearance_rate',
                                                                 '',
                                                             );
-                                                            setEditData('shipping_line_id', '');
-                                                            setEditData('shipping_line_rate', '');
+                                                            setEditData('freight_forwarder_id', '');
+                                                            setEditData(
+                                                                'freight_forwarder_rate',
+                                                                '',
+                                                            );
                                                             setEditData('fc_amount', '');
                                                             setEditData('exchange_rate', '');
                                                             setEditData('currency_id', '');
@@ -1780,8 +1801,8 @@ export default function index({
                                                                         '' ||
                                                                     editData.custom_clearance_rate ==
                                                                         '')) ||
-                                                            editData.shipping_line_id == '' ||
-                                                            editData.shipping_line_rate == '' ||
+                                                            editData.freight_forwarder_id == '' ||
+                                                            editData.freight_forwarder_rate == '' ||
                                                             editData.fc_amount == '' ||
                                                             editData.exchange_rate == '' ||
                                                             editData.currency_id == ''
@@ -1888,7 +1909,11 @@ export default function index({
                                                     </label>
                                                     <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
                                                         <p className="break-words">
-                                                            {viewData?.vendor?.name || 'N/A'}
+                                                            {(viewData?.vendor &&
+                                                                viewData?.vendor?.account_code +
+                                                                    ' - ' +
+                                                                    viewData?.vendor?.title) ||
+                                                                'N/A'}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1899,7 +1924,12 @@ export default function index({
                                                     </label>
                                                     <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
                                                         <p className="break-words">
-                                                            {viewData?.transporter?.name || 'N/A'}
+                                                            {(viewData?.transporter &&
+                                                                viewData?.transporter
+                                                                    ?.account_code +
+                                                                    ' - ' +
+                                                                    viewData?.transporter?.title) ||
+                                                                'N/A'}
                                                         </p>
                                                     </div>
                                                 </div>
@@ -1921,7 +1951,12 @@ export default function index({
                                                     </label>
                                                     <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
                                                         <p className="break-words">
-                                                            {viewData?.custom_clearance?.name ||
+                                                            {(viewData?.custom_clearance &&
+                                                                viewData?.custom_clearance
+                                                                    ?.account_code +
+                                                                    ' - ' +
+                                                                    viewData?.custom_clearance
+                                                                        ?.title) ||
                                                                 'N/A'}
                                                         </p>
                                                     </div>
@@ -1940,22 +1975,28 @@ export default function index({
 
                                                 <div>
                                                     <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Shipping Line
+                                                        Freight Forwarder
                                                     </label>
                                                     <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
                                                         <p className="break-words">
-                                                            {viewData?.shipping_line?.name || 'N/A'}
+                                                            {(viewData?.freight_forwarder &&
+                                                                viewData?.freight_forwarder
+                                                                    ?.account_code +
+                                                                    ' - ' +
+                                                                    viewData?.freight_forwarder
+                                                                        ?.title) ||
+                                                                'N/A'}
                                                         </p>
                                                     </div>
                                                 </div>
 
                                                 <div>
                                                     <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Shipping Line Rate
+                                                        Freight Forwarder Rate
                                                     </label>
                                                     <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
                                                         <p className="break-words">
-                                                            {viewData?.shipping_line_rate || 0}
+                                                            {viewData?.freight_forwarder_rate || 0}
                                                         </p>
                                                     </div>
                                                 </div>

@@ -34,6 +34,7 @@ class DetailController extends Controller
             'email' => ['nullable', 'max:255', 'email'],
             'mobile_no' => ['nullable', 'max:255'],
             'cnic_no' => ['nullable', 'max:255'],
+            'opening_balance' => ['nullable', 'numeric'],
         ], [
             'title.required' => 'Detail Account is Required',
             'title.max' => 'Detail Account Must Not Exceed 255 Characters',
@@ -107,6 +108,7 @@ class DetailController extends Controller
             'email' => ['nullable', 'max:255', 'email'],
             'mobile_no' => ['nullable', 'max:255'],
             'cnic_no' => ['nullable', 'max:255'],
+            'opening_balance' => ['nullable', 'numeric'],
         ],
             [
                 'title.required' => 'Detail Account is Required',

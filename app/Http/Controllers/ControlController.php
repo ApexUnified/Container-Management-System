@@ -21,6 +21,9 @@ class ControlController extends Controller
     {
         $validated_req = $request->validate([
             'name' => ['required',  'unique:controls,name'],
+            'nature_of_account' => ['required',  'in:A,L,I,R,E'],
+        ], [
+            'nature_of_account.in' => 'Nature Of Account Must Be in A,L,I,R,E',
         ]);
 
         try {
@@ -44,7 +47,11 @@ class ControlController extends Controller
 
         $validated_req = $request->validate([
             'name' => ['required',  'unique:controls,name,'.$id],
-        ]);
+            'nature_of_account' => ['required',  'in:A,L,I,R,E'],
+        ], [
+            'nature_of_account.in' => 'Nature Of Account Must Be in A,L,I,R,E',
+        ]
+        );
 
         try {
             $control = Control::find($id);

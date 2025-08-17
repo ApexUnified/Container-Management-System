@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Subsidary extends Model
 {
-    protected $fillable = ['control_id', 'name', 'code', 'account_code'];
+    protected $fillable = ['control_id', 'name', 'code', 'account_code', 'account_category'];
 
     public function control(): BelongsTo
     {

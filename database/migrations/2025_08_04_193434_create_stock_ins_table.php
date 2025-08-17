@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('container_no')->unique();
             $table->string('vehicle_no')->nullable();
 
-            $table->foreignId('vendor_id')->nullable()->constrained('vendors')->nullOnDelete()->cascadeOnUpdate();
             $table->foreignId('product_id')->nullable()->constrained('products')->nullOnDelete()->cascadeOnUpdate();
             $table->decimal('product_weight', 20, 2);
             $table->foreignId('product_unit_id')->nullable()->constrained('units')->nullOnDelete()->cascadeOnUpdate();
@@ -26,13 +25,10 @@ return new class extends Migration
             $table->decimal('product_rate', 20, 2);
             $table->decimal('product_total_amount', 20, 2);
 
-            $table->foreignId('transporter_id')->nullable()->constrained('transporters')->nullOnDelete()->cascadeOnUpdate();
             $table->decimal('transporter_rate', 20, 2)->nullable();
 
-            $table->foreignId('custom_clearance_id')->nullable()->constrained('custom_clearances')->nullOnDelete()->cascadeOnUpdate();
             $table->decimal('custom_clearance_rate', 20, 2)->nullable();
 
-            $table->foreignId('shipping_line_id')->nullable()->constrained('shipping_lines')->nullOnDelete()->cascadeOnUpdate();
             $table->decimal('shipping_line_rate', 20, 2);
             $table->decimal('fc_amount', 20, 2);
             $table->decimal('exchange_rate', 20, 2);

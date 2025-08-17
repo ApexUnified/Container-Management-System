@@ -25,8 +25,8 @@ class StockIn extends Model
         'transporter_rate',
         'custom_clearance_id',
         'custom_clearance_rate',
-        'shipping_line_id',
-        'shipping_line_rate',
+        'freight_forwarder_id',
+        'freight_forwarder_rate',
         'fc_amount',
         'exchange_rate',
         'currency_id',
@@ -37,7 +37,7 @@ class StockIn extends Model
 
     public function vendor(): BelongsTo
     {
-        return $this->belongsTo(Vendor::class, 'vendor_id', 'id');
+        return $this->belongsTo(Detail::class, 'vendor_id', 'id');
     }
 
     public function product(): BelongsTo
@@ -52,17 +52,17 @@ class StockIn extends Model
 
     public function transporter(): BelongsTo
     {
-        return $this->belongsTo(Transporter::class, 'transporter_id', 'id');
+        return $this->belongsTo(Detail::class, 'transporter_id', 'id');
     }
 
     public function custom_clearance(): BelongsTo
     {
-        return $this->belongsTo(CustomClearance::class, 'custom_clearance_id', 'id');
+        return $this->belongsTo(Detail::class, 'custom_clearance_id', 'id');
     }
 
-    public function shipping_line(): BelongsTo
+    public function freight_forwarder(): BelongsTo
     {
-        return $this->belongsTo(ShippingLine::class, 'shipping_line_id', 'id');
+        return $this->belongsTo(Detail::class, 'freight_forwarder_id', 'id');
     }
 
     public function currency(): BelongsTo

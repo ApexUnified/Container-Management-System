@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Control extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'nature_of_account'];
 
     public function subsidaries(): HasMany
     {

@@ -24,6 +24,10 @@ class SubsidaryController extends Controller
         $validated_req = $request->validate([
             'name' => ['required',  'unique:subsidaries,name', 'max:255'],
             'control_id' => ['required', 'exists:controls,id'],
+            'account_category' => ['nullable', 'in:V,T,C,F,R'],
+        ], [
+            'control_id.exists' => 'Control Not Found',
+            'account_category.in' => 'Account Category Must Be V, T, C, F, R',
         ]);
 
         try {
@@ -75,6 +79,9 @@ class SubsidaryController extends Controller
 
         $validated_req = $request->validate([
             'name' => ['required',  'unique:subsidaries,name,'.$id, 'max:255'],
+            'account_category' => ['nullable', 'in:V,T,C,F,R'],
+        ], [
+            'account_category.in' => 'Account Category Must Be V, T, C, F, R',
         ]);
 
         try {

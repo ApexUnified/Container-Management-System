@@ -51,6 +51,7 @@ export default function index({ controls, details }) {
         email: '',
         mobile_no: '',
         cnic_no: '',
+        opening_balance: '',
     });
 
     // Edit Form Data
@@ -70,6 +71,7 @@ export default function index({ controls, details }) {
         email: '',
         mobile_no: '',
         cnic_no: '',
+        opening_balance: '',
     });
 
     const [columns, setColumns] = useState([]);
@@ -110,6 +112,7 @@ export default function index({ controls, details }) {
                     setEditData('mobile_no', item.mobile_no);
                     setEditData('cnic_no', item.cnic_no);
                     setEditData('other_details', item.other_details);
+                    setEditData('opening_balance', item.opening_balance);
                 },
             },
         ];
@@ -132,6 +135,7 @@ export default function index({ controls, details }) {
                 setCreateData('mobile_no', '');
                 setCreateData('cnic_no', '');
                 setCreateData('other_details', '');
+                setCreateData('opening_balance', '');
             },
         });
     };
@@ -152,6 +156,7 @@ export default function index({ controls, details }) {
                 setEditData('mobile_no', '');
                 setEditData('cnic_no', '');
                 setEditData('other_details', '');
+                setEditData('opening_balance', '');
                 setSubsidaries([]);
             },
         });
@@ -375,6 +380,29 @@ export default function index({ controls, details }) {
                                                             </span>
                                                         )}
                                                     </div>
+
+                                                    <Input
+                                                        InputName={'Opening Balance'}
+                                                        Id={'opening_balance'}
+                                                        Name={'opening_balance'}
+                                                        Type={'number'}
+                                                        Placeholder={'Enter Opening Balance'}
+                                                        Required={false}
+                                                        Negative={true}
+                                                        Error={createErrors.opening_balance}
+                                                        Value={createData.opening_balance}
+                                                        onKeyDown={(e) => {
+                                                            if (['e', 'E', '+'].includes(e.key)) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        Action={(e) =>
+                                                            setCreateData(
+                                                                'opening_balance',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                    />
                                                 </div>
 
                                                 <div className="col-span-2 grid">
@@ -499,6 +527,7 @@ export default function index({ controls, details }) {
                                                             setCreateData('mobile_no', '');
                                                             setCreateData('cnic_no', '');
                                                             setCreateData('other_details', '');
+                                                            setCreateData('opening_balance', '');
                                                             setSubsidaries([]);
                                                         }}
                                                         Disabled={createProcessing}
@@ -647,6 +676,29 @@ export default function index({ controls, details }) {
                                                             </span>
                                                         )}
                                                     </div>
+
+                                                    <Input
+                                                        InputName={'Opening Balance'}
+                                                        Id={'opening_balance'}
+                                                        Name={'opening_balance'}
+                                                        Type={'number'}
+                                                        Placeholder={'Enter Opening Balance'}
+                                                        Required={false}
+                                                        Negative={true}
+                                                        Error={editErrors.opening_balance}
+                                                        Value={editData.opening_balance}
+                                                        onKeyDown={(e) => {
+                                                            if (['e', 'E', '+'].includes(e.key)) {
+                                                                e.preventDefault();
+                                                            }
+                                                        }}
+                                                        Action={(e) =>
+                                                            setEditData(
+                                                                'opening_balance',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                    />
                                                 </div>
 
                                                 <div className="col-span-2 grid">
@@ -769,6 +821,7 @@ export default function index({ controls, details }) {
                                                             setEditData('mobile_no', '');
                                                             setEditData('cnic_no', '');
                                                             setEditData('other_details', '');
+                                                            setEditData('opening_balance', '');
                                                             setSubsidaries([]);
                                                         }}
                                                         Disabled={editProcessing}
