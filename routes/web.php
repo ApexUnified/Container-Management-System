@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountLedgerController;
 use App\Http\Controllers\ControlController;
 use App\Http\Controllers\CroController;
 use App\Http\Controllers\CurrencyController;
@@ -94,6 +95,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::resource('/receipt-vouchers', ReceiptVoucherController::class)->except(['show', 'edit', 'create']);
         Route::delete('/receipt-vouchers-destroy-by-selectetion', [ReceiptVoucherController::class, 'destroyBySelection'])->name('receipt-vouchers.destroybyselection');
+    });
+
+    // Report Routes Group
+    Route::prefix('/reports')->name('reports.')->group(function () {
+
+        Route::get('/account-ledgers', [AccountLedgerController::class, 'index'])->name('account-ledgers.index');
+        Route::post('/account-ledgers-generate-report', [AccountLedgerController::class, 'generateReport'])->name('account-ledgers.generate-report');
+
     });
 
     // User Routes

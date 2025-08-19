@@ -38,10 +38,12 @@ class Voucher extends Model
     {
         $bank_id = $this->bank_details['bank_id'] ?? null;
         if (! empty($bank_id)) {
-            $bank_name = Detail::find($bank_id)->title;
+            $bank = Detail::find($bank_id);
 
             return [
-                'bank_name' => $bank_name,
+                'bank_name' => $bank->title,
+                'bank_code' => $bank->code,
+                'bank_account_code' => $bank->account_code,
                 'cheque_no' => $this->bank_details['cheque_no'],
                 'cheque_date' => $this->bank_details['cheque_date'],
             ];
