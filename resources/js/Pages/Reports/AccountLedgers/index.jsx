@@ -135,8 +135,16 @@ export default function index({ details }) {
                         text: res.data.message,
                     });
                 } else {
-                    setLedgerReportData(res.data.data);
-                    setLedgerReportModalOpen(true);
+                    if (res.data.data.length > 0) {
+                        setLedgerReportData(res.data.data);
+                        setLedgerReportModalOpen(true);
+                    } else {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Info',
+                            text: res.data.message,
+                        });
+                    }
                 }
             })
             .catch((error) => {

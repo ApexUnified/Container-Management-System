@@ -330,6 +330,10 @@ class AccountLedgerController extends Controller
             ->values()
             ->filter(fn ($item) => $item['account_code'] != 'no_account');
 
+        if ($final_data->isEmpty()) {
+            return response()->json(['status' => false, 'message' => 'No Data Found Between The Date Range And Account Code You Selected']);
+        }
+
         return response()->json(['status' => true, 'data' => $final_data]);
 
     }
