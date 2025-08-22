@@ -8,7 +8,7 @@ import { Head, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 
 export default function index({ details }) {
@@ -64,6 +64,9 @@ export default function index({ details }) {
             minimumFractionDigits: 2,
             maximumFractionDigits: 2,
         });
+
+        console.log(amount);
+
         if (numAmount > 0) {
             return `${formattedAmount} DR`;
         } else if (numAmount < 0) {
@@ -136,13 +139,15 @@ export default function index({ details }) {
                     });
                 } else {
                     if (res.data.data.length > 0) {
-                        setLedgerReportData(res.data.data);
-                        setLedgerReportModalOpen(true);
+                        setTimeout(() => {
+                            setLedgerReportData(res.data.data);
+                            setLedgerReportModalOpen(true);
+                        }, 1000);
                     } else {
                         Swal.fire({
-                            icon: 'info',
-                            title: 'Info',
-                            text: res.data.message,
+                            icon: 'error',
+                            title: 'Error',
+                            text: 'Something Went Wrong',
                         });
                     }
                 }
@@ -161,7 +166,9 @@ export default function index({ details }) {
                 setLedgerReportData({});
             })
             .finally(() => {
-                setProcessing(false);
+                setTimeout(() => {
+                    setProcessing(false);
+                }, 1000);
             });
     };
 
@@ -169,183 +176,148 @@ export default function index({ details }) {
         const printWindow = window.open('', '_blank');
 
         const printContent = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <title>Accounts Ledger - All Accounts</title>
-                <style>
-                    body {
-                        font-family: Arial, sans-serif;
-                        margin: 0;
-                        padding: 0;
-                        font-size: 12px;
-                    }
-                    .page {
-                        min-height: 100vh; /* full viewport height */
-                        display: flex;
-                        flex-direction: column;
-                        justify-content: flex-start;
-                        padding: 20px;
-                        box-sizing: border-box;
-                    }
-                    .page-break { page-break-before: always; }
-                    .header { text-align: center; margin-bottom: 20px; }
-                    .company-name { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-                    .report-title { font-size: 18px; font-weight: bold; }
-                    .account-info { background-color: #f5f5f5; padding: 15px; margin: 15px 0; border: 1px solid #ddd; }
-                    .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 10px; }
-                    .info-item { font-size: 11px; }
-                    .info-label { font-weight: bold; }
-                    .account-title { font-size: 16px; font-weight: bold; }
-                    table { width: 100%; border-collapse: collapse; margin: 15px 0; page-break-inside: auto; }
-                    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 10px; }
-                    th { background-color: #f5f5f5; font-weight: bold; }
-                    .text-right { text-align: right; }
-                    .total-row { background-color: #f0f0f0; font-weight: bold; }
-                    .summary { background-color: #e3f2fd; padding: 15px; margin: 15px 0; border: 1px solid #90caf9; }
-                    .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-                    .summary-item { font-size: 12px; }
-                    .summary-label { font-weight: bold; color: #666; }
-                    .summary-value { font-size: 16px; font-weight: bold; margin-top: 5px; }
-                    .debit-color { color: #d32f2f; }
-                    .credit-color { color: #388e3c; }
-                    .balance-color { color: #1976d2; }
-                    .footer { text-align: center; margin-top: auto; font-size: 10px; color: #666; }
-                    @media print {
-                        .page-break { page-break-before: always; }
-                        body { margin: 0; }
-                        table, tr, td, th { page-break-inside: avoid; }
-                        .no-print {
-                            display: none  !important;
-                        }
-                    }
-                </style>
-            </head>
-            <body>
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>Accounts Ledger - All Accounts</title>
+        <style>
+            body { font-family: Arial, sans-serif; margin: 0; padding: 0; font-size: 12px; }
+            .page { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; padding: 20px; box-sizing: border-box; }
+            .page-break { page-break-before: always; }
+            .header { text-align: center; margin-bottom: 20px; }
+            .company-name { font-size: 24px; font-weight: bold; margin-bottom: 5px; }
+            .report-title { font-size: 18px; font-weight: bold; }
+            .account-info { background-color: #f5f5f5; padding: 15px; margin: 15px 0; border: 1px solid #ddd; }
+            .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 10px; }
+            .info-item { font-size: 11px; }
+            .info-label { font-weight: bold; }
+            .account-title { font-size: 16px; font-weight: bold; }
+            table { width: 100%; border-collapse: collapse; margin: 15px 0; page-break-inside: auto; }
+            th, td { border: 1px solid #ddd; padding: 8px; text-align: left; font-size: 10px; }
+            th { background-color: #f5f5f5; font-weight: bold; }
+            .text-right { text-align: right; }
+            .total-row { background-color: #f0f0f0; font-weight: bold; }
+            .summary { background-color: #e3f2fd; padding: 15px; margin: 15px 0; border: 1px solid #90caf9; }
+            .summary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+            .summary-item { font-size: 12px; }
+            .summary-label { font-weight: bold; color: #666; }
+            .summary-value { font-size: 16px; font-weight: bold; margin-top: 5px; }
+            .debit-color { color: #d32f2f; }
+            .credit-color { color: #388e3c; }
+            .balance-color { color: #1976d2; }
+            .footer { text-align: center; margin-top: auto; font-size: 10px; color: #666; }
+            @media print { .page-break { page-break-before: always; } body { margin: 0; } table, tr, td, th { page-break-inside: avoid; } .no-print { display: none !important; } }
+        </style>
+    </head>
+    <body>
+        <div style="display: flex; justify-content: end; margin:1rem;" class='no-print' onclick="window.print()">
+            <button>Print</button>
+        </div>
 
-              <div style="display: flex; justify-content: end; margin:1rem;" class='no-print' onclick="window.print()">
-                        <button>Print</button>
-                        </div>
-                ${ledgerReportData
-                    .map(
-                        (account, index) => `
-                    <div class="page ${index > 0 ? 'page-break' : ''}">
-                        <div class="header">
-                            <div class="company-name">Hasnain Enterprises</div>
-                            <div class="report-title">Accounts Ledger</div>
-                        </div>
+        ${ledgerReportData
+            .map((account, index) => {
+                const runningTransactions = calculateRunningBalance(account.transactions);
 
+                // Compute totals from runningTransactions
+                const totalDebit = runningTransactions.reduce(
+                    (sum, t) => sum + (t.debit ? parseFloat(t.debit) : 0),
+                    0,
+                );
+                const totalCredit = runningTransactions.reduce(
+                    (sum, t) => sum + (t.credit ? parseFloat(t.credit) : 0),
+                    0,
+                );
+                const netBalance =
+                    (runningTransactions[0]?.opening_balance || 0) +
+                    runningTransactions.reduce(
+                        (sum, t) =>
+                            sum +
+                            (t.debit ? parseFloat(t.debit) : 0) -
+                            (t.credit ? parseFloat(t.credit) : 0),
+                        0,
+                    );
 
+                return `
+            <div class="page ${index > 0 ? 'page-break' : ''}">
+                <div class="header">
+                    <div class="company-name">Hasnain Enterprises</div>
+                    <div class="report-title">Accounts Ledger</div>
+                </div>
 
-                        <div class="account-info">
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <div class="info-label">Account Code:</div>
-                                    <div>${account.account_code}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">FROM:</div>
-                                    <div>${account.from_date || '01/07/2024'}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">TO:</div>
-                                    <div>${account.to_date || '30/06/2025'}</div>
-                                </div>
-                                <div class="info-item">
-                                    <div class="info-label">Print Dt:</div>
-                                    <div>${formatDate(new Date())}</div>
-                                </div>
-                            </div>
-                            <div class="account-title">Account Title: ${account.account_title}</div>
-                        </div>
-
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>V Dt</th>
-                                    <th>Inv # / Voucher #</th>
-                                    <th>Narration</th>
-                                    <th class="text-right">Debit</th>
-                                    <th class="text-right">Credit</th>
-                                    <th class="text-right">Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${calculateRunningBalance(account.transactions)
-                                    .map(
-                                        (t, index) => `
-
-                                    ${
-                                        index === 0
-                                            ? `<tr>
-                                        <td>${formatDate(t.entry_date)}</td>
-                                        <td>-</td>
-                                        <td>Opening Balance</td>
-                                        <td class="text-right">-</td>
-                                        <td class="text-right">-</td>
-                                        <td class="text-right">${formatBalance(t?.opening_balance) ?? '-'}</td>
-                                    </tr>`
-                                            : ''
-                                    }
-
-                                    <tr>
-                                        <td>${formatDate(t.entry_date)}</td>
-                                        <td>${t.id || '-'}</td>
-                                        <td>${t.narration || '-'}</td>
-                                        <td class="text-right">${t.debit ? formatCurrency(t.debit) : '-'}</td>
-                                        <td class="text-right">${t.credit ? formatCurrency(t.credit) : '-'}</td>
-                                        <td class="text-right">${formatBalance(t.runningBalance)}</td>
-                                    </tr>
-                                `,
-                                    )
-                                    .join('')}
-                                <tr class="total-row">
-                                    <td colspan="3">Total Dr & Cr :</td>
-                                    <td class="text-right">
-                                        ${formatCurrency(account.transactions.reduce((sum, t) => sum + (t.debit ? parseFloat(t.debit) : 0), 0))}
-                                    </td>
-                                    <td class="text-right">
-                                        ${formatCurrency(account.transactions.reduce((sum, t) => sum + (t.credit ? parseFloat(t.credit) : 0), 0))}
-                                    </td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="summary">
-                            <h3>Account Summary</h3>
-                            <div class="summary-grid">
-                                <div class="summary-item">
-                                    <div class="summary-label">Total Debits:</div>
-                                    <div class="summary-value debit-color">
-                                        Rs. ${formatCurrency(account.transactions.reduce((sum, t) => sum + (t.debit ? parseFloat(t.debit) : 0), 0))}
-                                    </div>
-                                </div>
-                                <div class="summary-item">
-                                    <div class="summary-label">Total Credits:</div>
-                                    <div class="summary-value credit-color">
-                                        Rs. ${formatCurrency(account.transactions.reduce((sum, t) => sum + (t.credit ? parseFloat(t.credit) : 0), 0))}
-                                    </div>
-                                </div>
-                                <div class="summary-item">
-                                    <div class="summary-label">Net Balance:</div>
-                                    <div class="summary-value balance-color">
-                                        Rs. ${formatCurrency(account.transactions.reduce((sum, t) => sum + (t.debit ? parseFloat(t.debit) : 0) - (t.credit ? parseFloat(t.credit) : 0), 0))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="footer">
-                            <p>Page No: ${index + 1} | Generated on: ${formatDate(new Date())}</p>
-                        </div>
+                <div class="account-info">
+                    <div class="info-grid">
+                        <div class="info-item"><div class="info-label">Account Code:</div><div>${account.account_code}</div></div>
+                        <div class="info-item"><div class="info-label">FROM:</div><div>${account.from_date || '01/07/2024'}</div></div>
+                        <div class="info-item"><div class="info-label">TO:</div><div>${account.to_date || '30/06/2025'}</div></div>
+                        <div class="info-item"><div class="info-label">Print Dt:</div><div>${formatDate(new Date())}</div></div>
                     </div>
-                `,
-                    )
-                    .join('')}
-            </body>
-            </html>
-                `;
+                    <div class="account-title">Account Title: ${account.account_title}</div>
+                </div>
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>V Dt</th>
+                            <th>Inv # / Voucher #</th>
+                            <th>Narration</th>
+                            <th class="text-right">Debit</th>
+                            <th class="text-right">Credit</th>
+                            <th class="text-right">Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${runningTransactions
+                            .map((t, idx) => {
+                                let row = '';
+                                if (idx === 0 && t.narration !== 'Opening Balance') {
+                                    row += `<tr>
+                                    <td>${t.entry_date ? formatDate(t.entry_date) : '-'}</td>
+                                    <td>-</td>
+                                    <td>Opening Balance</td>
+                                    <td class="text-right">-</td>
+                                    <td class="text-right">-</td>
+                                    <td class="text-right">${formatBalance(t.opening_balance)}</td>
+                                </tr>`;
+                                }
+
+                                row += `<tr>
+                                <td>${t.entry_date ? formatDate(t.entry_date) : '-'}</td>
+                                <td>${t.id || '-'}</td>
+                                <td>${t.narration || '-'}</td>
+                                <td class="text-right">${t.debit ? formatCurrency(t.debit) : '-'}</td>
+                                <td class="text-right">${t.credit ? formatCurrency(t.credit) : '-'}</td>
+                                <td class="text-right">${formatBalance(t.runningBalance)}</td>
+                            </tr>`;
+                                return row;
+                            })
+                            .join('')}
+                        <tr class="total-row">
+                            <td colspan="3">Total Dr & Cr :</td>
+                            <td class="text-right">${formatCurrency(totalDebit)}</td>
+                            <td class="text-right">${formatCurrency(totalCredit)}</td>
+                            <td class="text-right">${formatBalance(netBalance)}</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="summary">
+                    <h3>Account Summary</h3>
+                    <div class="summary-grid">
+                        <div class="summary-item"><div class="summary-label">Total Debits:</div><div class="summary-value debit-color">Rs. ${formatCurrency(totalDebit)}</div></div>
+                        <div class="summary-item"><div class="summary-label">Total Credits:</div><div class="summary-value credit-color">Rs. ${formatCurrency(totalCredit)}</div></div>
+                        <div class="summary-item"><div class="summary-label">Net Balance:</div><div class="summary-value balance-color">Rs. ${formatBalance(netBalance)}</div></div>
+                    </div>
+                </div>
+
+                <div class="footer">
+                    <p>Page No: ${index + 1} | Generated on: ${formatDate(new Date())}</p>
+                </div>
+            </div>`;
+            })
+            .join('')}
+    </body>
+    </html>
+    `;
 
         printWindow.document.write(printContent);
         printWindow.document.close();
@@ -578,76 +550,88 @@ export default function index({ details }) {
                                             <tbody>
                                                 {calculateRunningBalance(
                                                     currentAccount.transactions,
-                                                ).map((transaction, index) => (
-                                                    <React.Fragment key={index + 1}>
-                                                        {index === 0 && (
-                                                            <tr key={index + 2}>
+                                                ).map((transaction, index) => {
+                                                    const isOpeningBalance =
+                                                        transaction.narration === 'Opening Balance';
+
+                                                    return (
+                                                        <Fragment key={index}>
+                                                            {index == 0 && !isOpeningBalance && (
+                                                                <tr key={index + 1}>
+                                                                    <td className="border-r border-gray-300 px-3 py-2 text-xs">
+                                                                        {transaction.entry_date !=
+                                                                        ''
+                                                                            ? formatDate(
+                                                                                  transaction.entry_date,
+                                                                              )
+                                                                            : '-'}
+                                                                    </td>
+
+                                                                    <td className="border-r border-gray-300 px-3 py-2 text-xs">
+                                                                        -
+                                                                    </td>
+
+                                                                    <td className="border-r border-gray-300 px-3 py-2 text-xs">
+                                                                        Opening Balance
+                                                                    </td>
+
+                                                                    <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
+                                                                        -
+                                                                    </td>
+
+                                                                    <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
+                                                                        -
+                                                                    </td>
+
+                                                                    <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
+                                                                        {formatBalance(
+                                                                            transaction?.opening_balance,
+                                                                        ) ?? '-'}
+                                                                    </td>
+                                                                </tr>
+                                                            )}
+                                                            <tr
+                                                                key={index + 2}
+                                                                className="border-b border-gray-200 hover:bg-gray-50"
+                                                            >
                                                                 <td className="border-r border-gray-300 px-3 py-2 text-xs">
-                                                                    {formatDate(
-                                                                        transaction.entry_date,
-                                                                    )}
+                                                                    {transaction.entry_date != ''
+                                                                        ? formatDate(
+                                                                              transaction.entry_date,
+                                                                          )
+                                                                        : '-'}
                                                                 </td>
-
                                                                 <td className="border-r border-gray-300 px-3 py-2 text-xs">
-                                                                    -
+                                                                    {transaction.id || '-'}
                                                                 </td>
 
-                                                                <td className="border-r border-gray-300 px-3 py-2 text-xs">
-                                                                    Opening Balance
+                                                                <td className="max-w-xs border-r border-gray-300 px-3 py-2 text-xs">
+                                                                    {transaction.narration || '-'}
                                                                 </td>
 
-                                                                <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
-                                                                    -
+                                                                <td className="border-r border-gray-300 px-3 py-2 text-right font-mono text-xs">
+                                                                    {transaction.debit
+                                                                        ? formatCurrency(
+                                                                              transaction.debit,
+                                                                          )
+                                                                        : '-'}
                                                                 </td>
-
-                                                                <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
-                                                                    -
+                                                                <td className="border-r border-gray-300 px-3 py-2 text-right font-mono text-xs">
+                                                                    {transaction.credit
+                                                                        ? formatCurrency(
+                                                                              transaction.credit,
+                                                                          )
+                                                                        : '-'}
                                                                 </td>
-
                                                                 <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
                                                                     {formatBalance(
-                                                                        transaction?.opening_balance,
-                                                                    ) ?? '-'}
+                                                                        transaction.runningBalance,
+                                                                    )}
                                                                 </td>
                                                             </tr>
-                                                        )}
-                                                        <tr
-                                                            key={index + 3}
-                                                            className="border-b border-gray-200 hover:bg-gray-50"
-                                                        >
-                                                            <td className="border-r border-gray-300 px-3 py-2 text-xs">
-                                                                {formatDate(transaction.entry_date)}
-                                                            </td>
-                                                            <td className="border-r border-gray-300 px-3 py-2 text-xs">
-                                                                {transaction.id || '-'}
-                                                            </td>
-
-                                                            <td className="max-w-xs border-r border-gray-300 px-3 py-2 text-xs">
-                                                                {transaction.narration || '-'}
-                                                            </td>
-
-                                                            <td className="border-r border-gray-300 px-3 py-2 text-right font-mono text-xs">
-                                                                {transaction.debit
-                                                                    ? formatCurrency(
-                                                                          transaction.debit,
-                                                                      )
-                                                                    : '-'}
-                                                            </td>
-                                                            <td className="border-r border-gray-300 px-3 py-2 text-right font-mono text-xs">
-                                                                {transaction.credit
-                                                                    ? formatCurrency(
-                                                                          transaction.credit,
-                                                                      )
-                                                                    : '-'}
-                                                            </td>
-                                                            <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
-                                                                {formatBalance(
-                                                                    transaction.runningBalance,
-                                                                )}
-                                                            </td>
-                                                        </tr>
-                                                    </React.Fragment>
-                                                ))}
+                                                        </Fragment>
+                                                    );
+                                                })}
 
                                                 {/* Total Row */}
                                                 <tr className="border-t-2 border-gray-400 bg-gray-100 font-semibold">
@@ -765,7 +749,7 @@ export default function index({ details }) {
                                                                         : 0),
                                                                 0,
                                                             );
-                                                        return formatCurrency(netBalance);
+                                                        return formatBalance(netBalance);
                                                     })()}
                                                 </div>
                                             </div>

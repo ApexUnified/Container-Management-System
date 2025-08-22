@@ -147,44 +147,46 @@ class AccountLedgerController extends Controller
             ->orderBy('payment_date', 'asc')
             ->get();
 
-        $payment_vouchers_transformed = $payment_vouchers->map(function ($voucher) use ($fromCode, $toCode) {
-            $debit = null;
-            $credit = null;
-            $account_code = null;
-            $account_title = null;
+        $payment_vouchers_transformed = $payment_vouchers->flatMap(function ($voucher) use ($fromCode, $toCode) {
+            $entries = [];
 
-            $bank_id = $voucher->bank_details['bank_id'] ?? null;
-
+            // Check account_detail
             if ($voucher->account_detail && $voucher->account_detail->code >= $fromCode && $voucher->account_detail->code <= $toCode) {
-                $debit = $voucher->amount;
-                $account_code = $voucher->account_detail->account_code;
-                $account_title = $voucher->account_detail->title;
-            } elseif ($bank_id) {
+                $entries[] = collect([
+                    'id' => $voucher->payment_no,
+                    'account_code' => $voucher->account_detail->account_code,
+                    'account_title' => $voucher->account_detail->title,
+                    'entry_date' => $voucher->payment_date,
+                    'narration' => $voucher->payment_details,
+                    'debit' => $voucher->amount,
+                    'credit' => null,
+                ]);
+            }
+
+            // Check bank_id (could match another account)
+            $bank_id = $voucher->bank_details['bank_id'] ?? null;
+            if ($bank_id) {
                 $bank = Detail::find($bank_id);
                 if ($bank && $bank->code >= $fromCode && $bank->code <= $toCode) {
-                    $credit = $voucher->amount;
-                    // Only set account info if debit not already set
-                    if (! $account_code) {
-                        $account_code = $bank->account_code;
-                        $account_title = $bank->title;
-                    }
+                    $entries[] = collect([
+                        'id' => $voucher->payment_no,
+                        'account_code' => $bank->account_code,
+                        'account_title' => $bank->title,
+                        'entry_date' => $voucher->payment_date,
+                        'narration' => $voucher->payment_details,
+                        'debit' => null,
+                        'credit' => $voucher->amount,
+                    ]);
                 }
             }
 
-            return collect([
-                'id' => $voucher->payment_no,
-                'account_code' => $account_code,
-                'account_title' => $account_title,
-                'entry_date' => $voucher->payment_date,
-                'narration' => $voucher->payment_details,
-                'credit' => $credit,
-                'debit' => $debit,
-            ]);
+            return $entries; // flatMap ensures all entries are included
         });
 
-        if ($containers_transformed->isEmpty() && $payment_vouchers_transformed->isEmpty()) {
-            return response()->json(['status' => false, 'message' => 'No Data Found Between The Date Range And Account Code You Selected']);
-        }
+        // dd($payment_vouchers_transformed);
+        // if ($containers_transformed->isEmpty() && $payment_vouchers_transformed->isEmpty()) {
+        //     return response()->json(['status' => false, 'message' => 'No Data Found Between The Date Range And Account Code You Selected']);
+        // }
 
         $merged_data = $containers_transformed->isEmpty()
         ? $payment_vouchers_transformed
@@ -233,7 +235,7 @@ class AccountLedgerController extends Controller
         // --- Step 1: Previous containers with account_code ---
         $previous_entries = $previous_containers->flatMap(function ($container) use ($fromCode, $toCode) {
             $checkRange = fn ($code) => $fromCode === $toCode ? $code === $fromCode : ($code >= $fromCode && $code <= $toCode);
-
+            $entry_date = $container->entry_date ?? now()->subDay();
             $entries = [];
 
             if ($checkRange($container->vendor->code ?? null)) {
@@ -241,6 +243,7 @@ class AccountLedgerController extends Controller
                     'account_code' => $container->vendor->account_code,
                     'debit' => null,
                     'credit' => $container->total_amount,
+                    'entry_date' => $entry_date,
                 ];
             }
 
@@ -249,6 +252,7 @@ class AccountLedgerController extends Controller
                     'account_code' => $container->transporter->account_code,
                     'debit' => null,
                     'credit' => $container->transporter_rate,
+                    'entry_date' => $entry_date,
                 ];
             }
 
@@ -257,6 +261,7 @@ class AccountLedgerController extends Controller
                     'account_code' => $container->freight_forwarder->account_code,
                     'debit' => null,
                     'credit' => $container->freight_forwarder_rate,
+                    'entry_date' => $entry_date,
                 ];
             }
 
@@ -265,6 +270,7 @@ class AccountLedgerController extends Controller
                     'account_code' => $container->custom_clearance->account_code,
                     'debit' => null,
                     'credit' => $container->custom_clearance_rate,
+                    'entry_date' => $entry_date,
                 ];
             }
 
@@ -272,45 +278,77 @@ class AccountLedgerController extends Controller
         });
 
         // --- Step 2: Previous vouchers with account_code ---
-        $previous_voucher_entries = $previous_vouchers->map(function ($voucher) use ($fromCode, $toCode) {
-            $debit = null;
-            $credit = null;
-            $account_code = null;
+        $previous_voucher_entries = $previous_vouchers->flatMap(function ($voucher) use ($fromCode, $toCode) {
+            $entries = [];
+            $payment_date = $voucher->payment_date ?? now()->subDay();
 
-            $bank_id = $voucher->bank_details['bank_id'] ?? null;
-
+            // Check account_detail
             if ($voucher->account_detail && $voucher->account_detail->code >= $fromCode && $voucher->account_detail->code <= $toCode) {
-                $debit = $voucher->amount;
-                $account_code = $voucher->account_detail->account_code;
-            } elseif ($bank_id) {
+                $entries[] = [
+                    'account_code' => $voucher->account_detail->account_code,
+                    'debit' => $voucher->amount,
+                    'credit' => null,
+                    'entry_date' => $payment_date,
+                ];
+            }
+
+            // Check bank (can be another account)
+            $bank_id = $voucher->bank_details['bank_id'] ?? null;
+            if ($bank_id) {
                 $bank = Detail::find($bank_id);
                 if ($bank && $bank->code >= $fromCode && $bank->code <= $toCode) {
-                    $credit = $voucher->amount;
-                    $account_code = $bank->account_code;
+                    $entries[] = [
+                        'account_code' => $bank->account_code,
+                        'debit' => null,
+                        'credit' => $voucher->amount,
+                        'entry_date' => $payment_date,
+                    ];
                 }
             }
 
-            return [
-                'account_code' => $account_code,
-                'debit' => $debit,
-                'credit' => $credit,
-            ];
+            return $entries; // flatMap ensures all matching entries are included
         });
 
-        // --- Step 3: Group by account and calculate opening balance per account ---
-        $opening_balances = collect($previous_entries)
+        // Step 1: Fetch all account base openings once
+        $account_openings = Detail::query();
+
+        if ($fromCode && $toCode) {
+            $account_openings = $account_openings->whereBetween('code', [$fromCode, $toCode]);
+        } else {
+            $account_openings = $account_openings->where('code', $fromCode);
+        }
+
+        $account_openings = $account_openings->pluck('opening_balance', 'account_code');
+
+        // Step 2: Compute previous debits/credits per account
+        $previous_totals = collect($previous_entries)
             ->merge($previous_voucher_entries)
+            ->filter(fn ($item) => isset($item['entry_date']) && $item['entry_date'] < $request->from_date)
             ->groupBy('account_code')
             ->map(function ($entries) {
-                return ($entries->sum('opening_balance') ?? 0) + ($entries->sum('debit') ?? 0) - ($entries->sum('credit') ?? 0);
+                $total_debit = $entries->sum(fn ($e) => floatval($e['debit'] ?? 0));
+                $total_credit = $entries->sum(fn ($e) => floatval($e['credit'] ?? 0));
+
+                return $total_debit - $total_credit;
             });
 
-        $final_data = $grouped->map(function ($items, $accountCode) use ($request, $opening_balances) {
+        // Step 3: Merge both to get final opening balances
+        $opening_balances = $account_openings->mapWithKeys(function ($base_opening, $accountCode) use ($previous_totals) {
+            $prev_total = $previous_totals[$accountCode] ?? 0;
+
+            return [$accountCode => $base_opening + $prev_total];
+        });
+
+        $allGrouped = collect($opening_balances->keys())
+            ->mapWithKeys(fn ($code) => [$code => collect()])
+            ->merge($grouped);
+
+        $final_data = $allGrouped->map(function ($items, $accountCode) use ($request, $opening_balances) {
 
             $items = $items->sortBy('entry_date')->values();
-            $account_opening = $opening_balances[$accountCode] ?? null;
 
-            return [
+            $account_opening = $opening_balances[$accountCode] ?? 0;
+            $data = [
                 'account_code' => $accountCode,
                 'from_date' => Carbon::parse($request->from_date)->format('d/m/Y'),
                 'to_date' => Carbon::parse($request->to_date)->format('d/m/Y'),
@@ -318,7 +356,7 @@ class AccountLedgerController extends Controller
                 'transactions' => $items->map(fn ($item) => [
                     'id' => $item['id'],
                     'entry_date' => $item['entry_date'],
-                    'opening_balance' => $account_opening ?? $item['opening_balance'] ?? 0,
+                    'opening_balance' => $account_opening ?? 0,
                     'narration' => $item['narration'],
                     'credit' => $item['credit'] ?? 0,
                     'debit' => $item['debit'] ?? 0,
@@ -326,24 +364,34 @@ class AccountLedgerController extends Controller
                 'total_credit' => $items->sum(fn ($i) => $i['credit'] ?? 0),
                 'total_debit' => $items->sum(fn ($i) => $i['debit'] ?? 0),
             ];
+
+            if (blank($data['transactions'])) {
+                $detail = Detail::where('account_code', $accountCode)->first();
+                $data = [
+                    'account_code' => $accountCode,
+                    'from_date' => Carbon::parse($request->from_date)->format('d/m/Y'),
+                    'to_date' => Carbon::parse($request->to_date)->format('d/m/Y'),
+                    'account_title' => $detail->title ?? 'N/A',
+                    'transactions' => [
+                        [
+                            'id' => '',
+                            'entry_date' => '',
+                            'opening_balance' => $account_opening,
+                            'narration' => 'Opening Balance',
+                            'credit' => 0,
+                            'debit' => 0,
+                        ],
+                    ],
+                    'total_credit' => 0,
+                    'total_debit' => 0,
+                ];
+            }
+
+            return $data;
+
         })
             ->values()
             ->filter(fn ($item) => $item['account_code'] != 'no_account');
-
-        dd([
-            'final Data: ' => $final_data,
-            'container_data' => $containers_data,
-            'payment_vouchers' => $payment_vouchers,
-            'previous container' => $previous_containers,
-            'previous vouchrs' => $previous_vouchers,
-            'previous cotnainer entriues' => $previous_entries,
-            'previous voucher entries' => $previous_voucher_entries,
-
-        ]);
-
-        if ($final_data->isEmpty()) {
-            return response()->json(['status' => false, 'message' => 'No Data Found Between The Date Range And Account Code You Selected']);
-        }
 
         return response()->json(['status' => true, 'data' => $final_data]);
 
