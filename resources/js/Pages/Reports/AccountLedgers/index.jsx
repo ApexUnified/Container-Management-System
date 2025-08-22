@@ -452,29 +452,27 @@ export default function index({ details }) {
                                     </div>
 
                                     {/* Account Selection */}
-                                    <div className="my-5 flex flex-wrap items-end justify-between">
+                                    <div className="my-5 flex flex-wrap items-center justify-between gap-4">
                                         {/* Select Input */}
-                                        <div className="max-w-[200px] flex-1">
-                                            <label className="mb-2 block text-sm font-medium text-gray-700">
-                                                Select Account:
-                                            </label>
-                                            <select
-                                                value={selectedAccountCode}
-                                                onChange={(e) =>
-                                                    setSelectedAccountCode(e.target.value)
-                                                }
-                                                className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-800 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                            >
-                                                {ledgerReportData.map((account) => (
-                                                    <option
-                                                        key={account.account_code}
-                                                        value={account.account_code}
-                                                    >
-                                                        {account.account_code} -{' '}
-                                                        {account.account_title}
-                                                    </option>
-                                                ))}
-                                            </select>
+                                        <div className="min-w-0 flex-1">
+                                            <SelectInput
+                                                key={selectedAccountCode}
+                                                InputName={'Select Account'}
+                                                CustomCss={'w-full md:w-[300px]'}
+                                                Id={'selectedAccountCode'}
+                                                Name={'selectedAccountCode'}
+                                                items={ledgerReportData.map((account) => ({
+                                                    id: account.account_code,
+                                                    name: `${account.account_code} - ${account.account_title}`,
+                                                }))}
+                                                Value={selectedAccountCode}
+                                                Action={(value) => setSelectedAccountCode(value)}
+                                                Placeholder={'Select Account'}
+                                                Multiple={false}
+                                                itemKey={'name'}
+                                                DarkModeSupported={false}
+                                                Clearable={false}
+                                            />
                                         </div>
 
                                         {/* Print Button */}

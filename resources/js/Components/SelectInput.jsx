@@ -16,6 +16,8 @@ export default function SelectInput({
     Multiple = false,
     Placeholder = true,
     isDisabled = false,
+    DarkModeSupported = true,
+    Clearable = true,
 }) {
     const [options, setOptions] = useState([]);
     const isDarkMode = useDarkMode();
@@ -114,6 +116,8 @@ export default function SelectInput({
         setOptions(modified_options);
     }, []);
 
+    console.log(options);
+
     return (
         <>
             <div className={`${CustomCss} w-full`}>
@@ -140,13 +144,19 @@ export default function SelectInput({
                             }
                         }}
                         isMulti={Multiple}
-                        isClearable={!Multiple}
+                        isClearable={Clearable && !Multiple}
                         isSearchable
                         required={Required}
                         {...(Placeholder && {
                             placeholder: ` ${InputName} `,
                         })}
-                        styles={isDarkMode ? darkStyles : lightStyles}
+                        styles={
+                            DarkModeSupported
+                                ? isDarkMode
+                                    ? darkStyles
+                                    : lightStyles
+                                : lightStyles
+                        }
                         className={`react-select-container ${isDisabled && 'opacity-30'}`}
                         classNamePrefix="react-select"
                     />
