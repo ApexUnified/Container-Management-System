@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -78,9 +79,13 @@ class Voucher extends Model
         });
     }
 
+    public function getPaymentDateAttribute()
+    {
+        return Carbon::parse($this->attributes['payment_date'])->format('Y-m-d');
+    }
+
     protected $casts = [
         'bank_details' => 'array',
         'cash_details' => 'array',
-        'payment_date' => 'date:Y-m-d',
     ];
 }

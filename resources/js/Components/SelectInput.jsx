@@ -116,8 +116,6 @@ export default function SelectInput({
         setOptions(modified_options);
     }, []);
 
-    console.log(options);
-
     return (
         <>
             <div className={`${CustomCss} w-full`}>

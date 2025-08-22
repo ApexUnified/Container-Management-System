@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -75,7 +76,8 @@ class StockIn extends Model
         return $this->belongsTo(Cro::class, 'cro_id', 'id');
     }
 
-    protected $casts = [
-        'entry_date' => 'date:Y-m-d',
-    ];
+    public function getEntryDateAttribute()
+    {
+        return Carbon::parse($this->attributes['entry_date'])->format('Y-m-d');
+    }
 }

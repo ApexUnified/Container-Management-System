@@ -28,13 +28,19 @@ class AccountLedgerController extends Controller
 
         $request->validate([
             'from_date' => ['required', 'date:Y-m-d'],
-            'to_date' => ['required', 'date:Y-m-d'],
+            'to_date' => ['required', 'date:Y-m-d', 'after_or_equal:from_date'],
             'from_account_code' => ['required'],
-            'to_account_code' => ['required'],
+            'to_account_code' => ['required', 'after_or_equal:from_account_code'],
+        ], [
+            'to_date.after_or_equal' => 'To date must be greater than or equal to From date',
         ]);
 
         $fromCode = $request->from_account_code ? str_replace('-', '', $request->from_account_code) : null;
         $toCode = $request->to_account_code ? str_replace('-', '', $request->to_account_code) : null;
+
+        if ($fromCode && $toCode && $fromCode > $toCode) {
+            return response()->json(['status' => false, 'message' => 'From account code must be less than or equal to To account code']);
+        }
 
         $containers_data = StockIn::whereBetween('entry_date', [$request->from_date, $request->to_date])
             ->when($fromCode && $toCode, function ($query) use ($fromCode, $toCode) {
@@ -74,7 +80,7 @@ class AccountLedgerController extends Controller
                                    $container->product_weight.' '.$container->unit->name.', '.
                                    'MANN: '.$container->product_weight_in_man.', '.
                                    $container->product_no_of_bundles.' BUNDLES',
-                    'credit' => $container->total_amount,
+                    'credit' => $container->product_total_amount,
                     'debit' => null,
                 ];
             }
@@ -158,7 +164,7 @@ class AccountLedgerController extends Controller
                     'account_title' => $voucher->account_detail->title,
                     'entry_date' => $voucher->payment_date,
                     'narration' => $voucher->payment_details,
-                    'debit' => $voucher->amount,
+                    'debit' => $voucher->total_amount,
                     'credit' => null,
                 ]);
             }
@@ -175,7 +181,7 @@ class AccountLedgerController extends Controller
                         'entry_date' => $voucher->payment_date,
                         'narration' => $voucher->payment_details,
                         'debit' => null,
-                        'credit' => $voucher->amount,
+                        'credit' => $voucher->total_amount,
                     ]);
                 }
             }
@@ -242,7 +248,7 @@ class AccountLedgerController extends Controller
                 $entries[] = [
                     'account_code' => $container->vendor->account_code,
                     'debit' => null,
-                    'credit' => $container->total_amount,
+                    'credit' => $container->product_total_amount,
                     'entry_date' => $entry_date,
                 ];
             }
@@ -286,7 +292,7 @@ class AccountLedgerController extends Controller
             if ($voucher->account_detail && $voucher->account_detail->code >= $fromCode && $voucher->account_detail->code <= $toCode) {
                 $entries[] = [
                     'account_code' => $voucher->account_detail->account_code,
-                    'debit' => $voucher->amount,
+                    'debit' => $voucher->total_amount,
                     'credit' => null,
                     'entry_date' => $payment_date,
                 ];
@@ -300,7 +306,7 @@ class AccountLedgerController extends Controller
                     $entries[] = [
                         'account_code' => $bank->account_code,
                         'debit' => null,
-                        'credit' => $voucher->amount,
+                        'credit' => $voucher->total_amount,
                         'entry_date' => $payment_date,
                     ];
                 }
@@ -350,6 +356,7 @@ class AccountLedgerController extends Controller
             $account_opening = $opening_balances[$accountCode] ?? 0;
             $data = [
                 'account_code' => $accountCode,
+                'now' => Carbon::now()->format('d/m/Y'),
                 'from_date' => Carbon::parse($request->from_date)->format('d/m/Y'),
                 'to_date' => Carbon::parse($request->to_date)->format('d/m/Y'),
                 'account_title' => $items->first()['account_title'] ?? 'N/A',
@@ -369,6 +376,7 @@ class AccountLedgerController extends Controller
                 $detail = Detail::where('account_code', $accountCode)->first();
                 $data = [
                     'account_code' => $accountCode,
+                    'now' => Carbon::now()->format('d/m/Y'),
                     'from_date' => Carbon::parse($request->from_date)->format('d/m/Y'),
                     'to_date' => Carbon::parse($request->to_date)->format('d/m/Y'),
                     'account_title' => $detail->title ?? 'N/A',
