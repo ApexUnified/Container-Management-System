@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detail;
+use App\Models\ReceiptVoucher;
 use App\Models\StockIn;
 use App\Models\Voucher;
 use Carbon\Carbon;
@@ -189,17 +190,87 @@ class AccountLedgerController extends Controller
             return $entries; // flatMap ensures all entries are included
         });
 
-        // dd($payment_vouchers_transformed);
-        // if ($containers_transformed->isEmpty() && $payment_vouchers_transformed->isEmpty()) {
-        //     return response()->json(['status' => false, 'message' => 'No Data Found Between The Date Range And Account Code You Selected']);
-        // }
+        $receipt_vouchers = ReceiptVoucher::whereBetween('receipt_date', [$request->from_date, $request->to_date])
+            ->where(function ($query) use ($fromCode, $toCode) {
+                $query->whereHas('account_detail', function ($q) use ($fromCode, $toCode) {
+                    $q->whereBetween('code', [$fromCode, $toCode]);
+                })
+                    ->orWhereRaw("
+            EXISTS (
+                SELECT 1
+                FROM details
+                WHERE details.id = CAST(JSON_UNQUOTE(JSON_EXTRACT(receipt_vouchers.bank_details, '$.bank_id')) AS UNSIGNED)
+                AND details.code BETWEEN ? AND ?
+            )
+            ", [$fromCode, $toCode]);
+            })
+            ->orderBy('receipt_date', 'asc')
+            ->get();
 
-        $merged_data = $containers_transformed->isEmpty()
-        ? $payment_vouchers_transformed
-        : ($payment_vouchers_transformed->isNotEmpty() ? $payment_vouchers_transformed->merge($containers_transformed) : $containers_transformed);
+        $receipt_vouchers_transformed = $receipt_vouchers->flatMap(function ($voucher) use ($fromCode, $toCode) {
+            $entries = [];
+
+            // Check account_detail
+            if ($voucher->account_detail && $voucher->account_detail->code >= $fromCode && $voucher->account_detail->code <= $toCode) {
+                $entries[] = collect([
+                    'id' => $voucher->receipt_no,
+                    'account_code' => $voucher->account_detail->account_code,
+                    'account_title' => $voucher->account_detail->title,
+                    'entry_date' => $voucher->receipt_date,
+                    'narration' => $voucher->received_details,
+                    'debit' => null,
+                    'credit' => $voucher->total_amount,
+                ]);
+            }
+
+            // Check bank_id (could match another account)
+            $bank_id = $voucher->bank_details['bank_id'] ?? null;
+            if ($bank_id) {
+                $bank = Detail::find($bank_id);
+                if ($bank && $bank->code >= $fromCode && $bank->code <= $toCode) {
+                    $entries[] = collect([
+                        'id' => $voucher->receipt_no,
+                        'account_code' => $bank->account_code,
+                        'account_title' => $bank->title,
+                        'entry_date' => $voucher->receipt_date,
+                        'narration' => $voucher->received_details,
+                        'debit' => $voucher->total_amount,
+                        'credit' => null,
+                    ]);
+                }
+            }
+
+            return $entries; // flatMap ensures all entries are included
+        });
+
+        // Working Without Receipt
+        // $merged_data = $containers_transformed->isEmpty()
+        // ? $payment_vouchers_transformed
+        // : ($payment_vouchers_transformed->isNotEmpty() ? $payment_vouchers_transformed->merge($containers_transformed) :
+        //     ($receipt_vouchers->isNotEmpty() ? $receipt_vouchers_transformed->merge($containers_transformed) : $containers_transformed));
+
+        $merged_data = collect()
+            ->merge(collect($containers_transformed)->map(function ($item) {
+                return $item instanceof \Illuminate\Database\Eloquent\Model
+                    ? $item->toArray()
+                    : $item;
+            }))
+            ->merge(collect($payment_vouchers_transformed)->map(function ($item) {
+                return $item instanceof \Illuminate\Database\Eloquent\Model
+                    ? $item->toArray()
+                    : $item;
+            }))
+            ->merge(collect($receipt_vouchers_transformed)->map(function ($item) {
+                return $item instanceof \Illuminate\Database\Eloquent\Model
+                    ? $item->toArray()
+                    : $item;
+            }))
+            ->sortBy('entry_date')
+            ->values();
 
         $grouped = $merged_data->groupBy(fn ($item) => $item['account_code'] ?? 'no_account');
 
+        // dd($grouped);
         $previous_containers = StockIn::whereDate('entry_date', '<', $request->from_date)
             ->when($fromCode && $toCode, function ($query) use ($fromCode, $toCode) {
                 $query->where(function ($sub) use ($fromCode, $toCode) {
@@ -232,6 +303,22 @@ class AccountLedgerController extends Controller
                 SELECT 1
                 FROM details
                 WHERE details.id = CAST(JSON_UNQUOTE(JSON_EXTRACT(vouchers.bank_details, '$.bank_id')) AS UNSIGNED)
+                AND details.code BETWEEN ? AND ?
+            )
+        ", [$fromCode, $toCode]);
+            })
+            ->get();
+
+        $previous_receipt_vouchers = ReceiptVoucher::whereDate('receipt_date', '<', $request->from_date)
+            ->where(function ($query) use ($fromCode, $toCode) {
+                $query->whereHas('account_detail', function ($q) use ($fromCode, $toCode) {
+                    $q->whereBetween('code', [$fromCode, $toCode]);
+                })
+                    ->orWhereRaw("
+            EXISTS (
+                SELECT 1
+                FROM details
+                WHERE details.id = CAST(JSON_UNQUOTE(JSON_EXTRACT(receipt_vouchers.bank_details, '$.bank_id')) AS UNSIGNED)
                 AND details.code BETWEEN ? AND ?
             )
         ", [$fromCode, $toCode]);
@@ -315,13 +402,47 @@ class AccountLedgerController extends Controller
             return $entries; // flatMap ensures all matching entries are included
         });
 
+        // --- Step 3: Previous Receipt vouchers with account_code ---
+        $previous_receipt_voucher_entries = $previous_receipt_vouchers->flatMap(function ($voucher) use ($fromCode, $toCode) {
+            $entries = [];
+            $receipt_date = $voucher->receipt_date ?? now()->subDay();
+
+            // Check account_detail
+            if ($voucher->account_detail && $voucher->account_detail->code >= $fromCode && $voucher->account_detail->code <= $toCode) {
+                $entries[] = [
+                    'account_code' => $voucher->account_detail->account_code,
+                    'debit' => null,
+                    'credit' => $voucher->total_amount,
+                    'entry_date' => $receipt_date,
+                ];
+            }
+
+            // Check bank (can be another account)
+            $bank_id = $voucher->bank_details['bank_id'] ?? null;
+            if ($bank_id) {
+                $bank = Detail::find($bank_id);
+                if ($bank && $bank->code >= $fromCode && $bank->code <= $toCode) {
+                    $entries[] = [
+                        'account_code' => $bank->account_code,
+                        'debit' => $voucher->total_amount,
+                        'credit' => null,
+                        'entry_date' => $receipt_date,
+                    ];
+                }
+            }
+
+            return $entries; // flatMap ensures all matching entries are included
+        });
+
         // Step 1: Fetch all account base openings once
         $account_openings = Detail::query();
 
         if ($fromCode && $toCode) {
-            $account_openings = $account_openings->whereBetween('code', [$fromCode, $toCode]);
-        } else {
-            $account_openings = $account_openings->where('code', $fromCode);
+            if ($fromCode === $toCode) {
+                $account_openings = $account_openings->where('code', $fromCode);
+            } else {
+                $account_openings = $account_openings->whereBetween('code', [$fromCode, $toCode]);
+            }
         }
 
         $account_openings = $account_openings->pluck('opening_balance', 'account_code');
@@ -329,6 +450,7 @@ class AccountLedgerController extends Controller
         // Step 2: Compute previous debits/credits per account
         $previous_totals = collect($previous_entries)
             ->merge($previous_voucher_entries)
+            ->merge($previous_receipt_voucher_entries)
             ->filter(fn ($item) => isset($item['entry_date']) && $item['entry_date'] < $request->from_date)
             ->groupBy('account_code')
             ->map(function ($entries) {

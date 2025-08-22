@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -63,6 +64,11 @@ class ReceiptVoucher extends Model
         }
 
         return null;
+    }
+
+    public function getReceiptDateAttribute()
+    {
+        return Carbon::parse($this->attributes['receipt_date'])->format('Y-m-d');
     }
 
     public static function booted()
