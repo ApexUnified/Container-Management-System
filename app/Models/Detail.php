@@ -47,7 +47,7 @@ class Detail extends Model
 
     public function stock_freight_forwarder(): HasMany
     {
-        return $this->hasMany(StockIn::class, 'shipping_line_id', 'id');
+        return $this->hasMany(StockIn::class, 'freight_forwarder_id', 'id');
     }
 
     public function stock_transporter(): HasMany

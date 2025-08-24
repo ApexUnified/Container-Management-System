@@ -14,6 +14,7 @@ use App\Http\Controllers\StockInController;
 use App\Http\Controllers\StockOutController;
 use App\Http\Controllers\SubsidaryController;
 use App\Http\Controllers\TransporterController;
+use App\Http\Controllers\TrialBalanceController;
 use App\Http\Controllers\UnitController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
@@ -102,6 +103,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/account-ledgers', [AccountLedgerController::class, 'index'])->name('account-ledgers.index');
         Route::post('/account-ledgers-generate-report', [AccountLedgerController::class, 'generateReport'])->name('account-ledgers.generate-report');
+
+        Route::get('/trial-balances', [TrialBalanceController::class, 'index'])->name('trial-balances.index');
+        Route::post('/trial-balances-generate-report', [TrialBalanceController::class, 'generateReport'])->name('trial-balances.generate-report');
 
     });
 

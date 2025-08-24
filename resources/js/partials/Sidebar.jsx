@@ -528,6 +528,15 @@ export default function Sidebar({
                                                     Account Ledger
                                                 </Link>
                                             </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route('reports.trial-balances.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'reports.trial-balances.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    Trial Balance
+                                                </Link>
+                                            </li>
                                         </ul>
                                     </div>
                                 </li>
