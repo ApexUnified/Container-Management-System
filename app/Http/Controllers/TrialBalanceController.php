@@ -64,16 +64,17 @@ class TrialBalanceController extends Controller
                         'header' => $subsidary->control->name."\n    \n".$subsidary->name,
                         'control' => $subsidary->control->name,
                         'subsidiary' => $subsidary->name,
-                        'accounts' => $subsidary->details->map(function ($account) use (&$total_opening_balances, &$total_to_date_transactions, &$total_closing_balances, $from_date,
+                        'accounts' => $subsidary->details->isNotEmpty() ?
+                        $subsidary->details->map(function ($account) use (&$total_opening_balances, &$total_to_date_transactions, &$total_closing_balances, $from_date,
                             $to_date) {
                             $ob = (float) ($account->opening_balance ?? 0);
 
                             // Opening Balance Logic
                             $containers = [
-                                'as_vendor' => StockIn::with('vendor')->whereDate('entry_date', '>', $from_date)->where('vendor_id', $account->id)->orderBy('entry_date')->get(),
-                                'as_transporter' => StockIn::with('transporter')->whereDate('entry_date', '>', $from_date)->where('transporter_id', $account->id)->orderBy('entry_date')->get(),
-                                'as_custom_clearance' => StockIn::with('custom_clearance')->whereDate('entry_date', '>', $from_date)->where('custom_clearance_id', $account->id)->orderBy('entry_date')->get(),
-                                'as_freight_forwarder' => StockIn::with('freight_forwarder')->whereDate('entry_date', '>', $from_date)->where('freight_forwarder_id', $account->id)->orderBy('entry_date')->get(),
+                                'as_vendor' => StockIn::with('vendor')->whereDate('entry_date', '<', $from_date)->where('vendor_id', $account->id)->orderBy('entry_date')->get(),
+                                'as_transporter' => StockIn::with('transporter')->whereDate('entry_date', '<', $from_date)->where('transporter_id', $account->id)->orderBy('entry_date')->get(),
+                                'as_custom_clearance' => StockIn::with('custom_clearance')->whereDate('entry_date', '<', $from_date)->where('custom_clearance_id', $account->id)->orderBy('entry_date')->get(),
+                                'as_freight_forwarder' => StockIn::with('freight_forwarder')->whereDate('entry_date', '<', $from_date)->where('freight_forwarder_id', $account->id)->orderBy('entry_date')->get(),
                             ];
 
                             $opening_balance = [
@@ -81,7 +82,7 @@ class TrialBalanceController extends Controller
                                 'credit' => $ob < 0 ? abs($ob) : 0.0,
                             ];
 
-                            $payment_vouchers = Voucher::with(['account_detail'])->whereDate('payment_date', '>', $from_date)->get();
+                            $payment_vouchers = Voucher::with(['account_detail'])->whereDate('payment_date', '<', $from_date)->get();
                             if ($payment_vouchers->isNotEmpty()) {
                                 foreach ($payment_vouchers as $payment_voucher) {
                                     if ($payment_voucher->account_detail->id == $account->id) {
@@ -100,7 +101,7 @@ class TrialBalanceController extends Controller
                                 }
                             }
 
-                            $receipt_vouchers = ReceiptVoucher::with(['account_detail'])->whereDate('receipt_date', '>', $from_date)->get();
+                            $receipt_vouchers = ReceiptVoucher::with(['account_detail'])->whereDate('receipt_date', '<', $from_date)->get();
                             if ($receipt_vouchers->isNotEmpty()) {
                                 foreach ($receipt_vouchers as $receipt_voucher) {
                                     if ($receipt_voucher->account_detail->id == $account->id) {
@@ -235,18 +236,27 @@ class TrialBalanceController extends Controller
                             // Closing Balance Logic
 
                             return [
-                                'account_code' => $account->account_code,
-                                'account_title' => $account->title,
-                                'payment_vouchers' => $payment_vouchers,
+                                'account_code' => $account->account_code ?? '-',
+                                'account_title' => $account->title ?? '-',
+                                // 'payment_vouchers' => $payment_vouchers ?? '-',
                                 // 'account_opening' => $account->opening_balance,
-                                'opening_balance' => $opening_balance,
-                                'to_date_transactions' => $to_date_transactions,
-                                'closing_balance' => $closing_balance,
+                                'opening_balance' => $opening_balance ?? ['credit' => 0, 'debit' => 0],
+                                'to_date_transactions' => $to_date_transactions ?? ['credit' => 0, 'debit' => 0],
+                                'closing_balance' => $closing_balance ?? ['credit' => 0, 'debit' => 0],
                             ];
-                        })->values(),
-                        'total_opening_balance' => $total_opening_balances,
-                        'total_to_date_transaction' => $total_to_date_transactions,
-                        'total_closing_balance' => $total_closing_balances,
+                        })->values()
+                        : collect([
+                            [
+                                'account_code' => 'No Account',
+                                'account_title' => 'No Account',
+                                'opening_balance' => ['credit' => 0, 'debit' => 0],
+                                'to_date_transactions' => ['credit' => 0, 'debit' => 0],
+                                'closing_balance' => ['credit' => 0, 'debit' => 0],
+                            ],
+                        ]),
+                        'total_opening_balance' => $total_opening_balances ?? ['credit' => 0, 'debit' => 0],
+                        'total_to_date_transaction' => $total_to_date_transactions ?? ['credit' => 0, 'debit' => 0],
+                        'total_closing_balance' => $total_closing_balances ?? ['credit' => 0, 'debit' => 0],
                     ];
 
                     $all_total_opening_balances['debit'] += (float) $total_opening_balances['debit'];
