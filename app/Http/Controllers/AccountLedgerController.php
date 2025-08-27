@@ -15,7 +15,7 @@ class AccountLedgerController extends Controller
 {
     public function index(Request $request)
     {
-        $details = Detail::get()->map(function ($detail) {
+        $details = Detail::orderBy('code', 'asc')->get()->map(function ($detail) {
             return [
                 'id' => $detail->account_code,
                 'name' => $detail->title.' - '.$detail->account_code,
@@ -474,7 +474,7 @@ class AccountLedgerController extends Controller
                 ->merge($grouped);
 
             $final_data = $allGrouped->map(function ($items, $accountCode) use ($request, $opening_balances) {
-
+                // dd($items);
                 $items = $items->sortBy('entry_date')->values();
 
                 $account_opening = $opening_balances[$accountCode] ?? 0;
@@ -522,6 +522,7 @@ class AccountLedgerController extends Controller
                 return $data;
 
             })
+
                 ->values()
                 ->filter(fn ($item) => $item['account_code'] != 'no_account');
 
