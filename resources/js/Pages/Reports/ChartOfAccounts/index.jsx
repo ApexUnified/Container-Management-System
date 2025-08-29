@@ -34,30 +34,29 @@ export default function index({ controls_with_sub_and_details }) {
         const printWindow = window.open('', '_blank');
 
         // Build HTML content for all controls
-        const allTables = controlData
-            .map((control) => {
-                return `
-            <div style="margin-bottom: 40px;">
-                <h2 class="text-lg font-bold mb-2">${control.id} - ${control.name}</h2>
-                <table class="w-full border-collapse text-xs lg:m-auto lg:w-[600px]">
-                    <thead>
-                        <tr class="bg-gray-100 border-b border-gray-300">
-                            <th class="px-2 py-1 border-r border-gray-300 text-left">Control</th>
-                            <th class="px-2 py-1 border-r border-gray-300 text-left">Subsidiary</th>
-                            <th class="px-2 py-1 border-r border-gray-300 text-left">Detail Code</th>
-                            <th class="px-2 py-1 text-left">Title of Account</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="font-bold bg-gray-50">
-                            <td class="px-2 py-1 border-r border-gray-300">${control.id} - ${control.name}</td>
-                            <td class="px-2 py-1 border-r border-gray-300"></td>
-                            <td class="px-2 py-1 border-r border-gray-300"></td>
-                            <td class="px-2 py-1"></td>
-                        </tr>
-                        ${control.subsidaries
-                            .map(
-                                (sub) => `
+        const allTables = `
+    <table class="w-full border-collapse text-xs lg:m-auto lg:w-[600px]">
+        <thead>
+            <tr class="bg-gray-100 border-b border-gray-300">
+                <th class="px-2 py-1 border-r border-gray-300 text-left">Control</th>
+                <th class="px-2 py-1 border-r border-gray-300 text-left">Subsidiary</th>
+                <th class="px-2 py-1 border-r border-gray-300 text-left">Detail Code</th>
+                <th class="px-2 py-1 text-left">Title of Account</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${controlData
+                .map(
+                    (control) => `
+                    <tr class="font-bold bg-gray-50">
+                        <td class="px-2 py-1 border-r border-gray-300">${control.id} - ${control.name}</td>
+                        <td class="px-2 py-1 border-r border-gray-300"></td>
+                        <td class="px-2 py-1 border-r border-gray-300"></td>
+                        <td class="px-2 py-1"></td>
+                    </tr>
+                    ${control.subsidaries
+                        .map(
+                            (sub) => `
                             <tr class="font-semibold">
                                 <td class="px-2 py-1 border-r border-gray-300"></td>
                                 <td class="px-2 py-1 border-r border-gray-300">${sub.account_code} - ${sub.name}</td>
@@ -68,24 +67,24 @@ export default function index({ controls_with_sub_and_details }) {
                                 .filter((det) => det.subsidary_id === sub.id)
                                 .map(
                                     (det) => `
-                                <tr class="text-xs">
-                                    <td class="px-2 py-1 border-r border-gray-300"></td>
-                                    <td class="px-2 py-1 border-r border-gray-300"></td>
-                                    <td class="px-2 py-1 border-r border-gray-300">${det.account_code}</td>
-                                    <td class="px-2 py-1">${det.title}</td>
-                                </tr>
-                            `,
+                                    <tr class="text-xs">
+                                        <td class="px-2 py-1 border-r border-gray-300"></td>
+                                        <td class="px-2 py-1 border-r border-gray-300"></td>
+                                        <td class="px-2 py-1 border-r border-gray-300">${det.account_code}</td>
+                                        <td class="px-2 py-1">${det.title}</td>
+                                    </tr>
+                                `,
                                 )
                                 .join('')}
                         `,
-                            )
-                            .join('')}
-                    </tbody>
-                </table>
-            </div>
-        `;
-            })
-            .join('');
+                        )
+                        .join('')}
+                `,
+                )
+                .join('')}
+        </tbody>
+    </table>
+`;
 
         // Inject Tailwind and content
         printWindow.document.write(`
@@ -97,7 +96,7 @@ export default function index({ controls_with_sub_and_details }) {
           <body class="p-6 w-full text-xs lg:m-auto lg:w-[600px]">
             <h1 class="text-2xl font-bold text-center mb-6">Hasnain Enterprises</h1>
             <h2 class="text-lg font-semibold text-center mb-8">Chart Of Accounts</h2>
-            <div class='flex justify-end print:hidden'>
+            <div class='flex justify-end print:hidden my-4'>
                 <button onclick="window.print()" class="px-4 py-2 bg-blue-600 text-white rounded">Print</button>
             </div>
             ${allTables}
