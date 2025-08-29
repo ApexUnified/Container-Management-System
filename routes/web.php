@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountLedgerController;
+use App\Http\Controllers\ChartOfAccountController;
 use App\Http\Controllers\ControlController;
 use App\Http\Controllers\CroController;
 use App\Http\Controllers\CurrencyController;
@@ -106,6 +107,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/trial-balances', [TrialBalanceController::class, 'index'])->name('trial-balances.index');
         Route::post('/trial-balances-generate-report', [TrialBalanceController::class, 'generateReport'])->name('trial-balances.generate-report');
+
+        Route::get('/chart-of-accounts', ChartOfAccountController::class)->name('chart-of-accounts.index');
 
     });
 
