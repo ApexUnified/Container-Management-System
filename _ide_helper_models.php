@@ -258,6 +258,7 @@ namespace App\Models{
  * @property string $container_no
  * @property string|null $vehicle_no
  * @property int|null $cro_id
+ * @property string|null $container_size
  * @property string|null $port_location
  * @property int|null $vendor_id
  * @property int|null $product_id
@@ -281,7 +282,6 @@ namespace App\Models{
  * @property string|null $note
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property string|null $container_size
  * @property-read \App\Models\Cro|null $cro
  * @property-read \App\Models\Currency|null $currency
  * @property-read \App\Models\Detail|null $custom_clearance
@@ -331,16 +331,19 @@ namespace App\Models{
  * @property int $id
  * @property \Illuminate\Support\Carbon $bl_date
  * @property string $bl_no
+ * @property int|null $account_id
  * @property int|null $currency_id
  * @property string $exchange_rate
  * @property array<array-key, mixed> $containers
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\Subsidary|null $account
  * @property-read \App\Models\Currency|null $currency
  * @property-read mixed $containers_collection
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereAccountId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereBlDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereBlNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereContainers($value)

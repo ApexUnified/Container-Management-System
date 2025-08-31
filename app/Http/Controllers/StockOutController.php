@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Currency;
 use App\Models\StockIn;
 use App\Models\StockOut;
+use App\Models\Subsidary;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -33,7 +34,7 @@ class StockOutController extends Controller
                 $query->where('bl_no', $request->input('bl_no'));
             });
 
-        $stock_outs = $stock_outs->paginate(10)->withQueryString();
+        $stock_outs = $stock_outs->with(['account'])->paginate(10)->withQueryString();
 
         // For Checking If Already Exists Or Not In The Stock Out Table
         $all_stock_outs = StockOut::latest()->get();
@@ -49,6 +50,13 @@ class StockOutController extends Controller
 
         $currencies = Currency::all();
 
+        $accounts = Subsidary::where('account_category', 'R')->get()->map(function ($subsidary) {
+            return [
+                'id' => $subsidary->id,
+                'name' => $subsidary->account_code.' - '.$subsidary->name,
+            ];
+        });
+
         return Inertia::render('Transactions/StockOuts/index', [
             'stock_outs' => $stock_outs,
             'stock_ins' => $stock_ins,
@@ -56,6 +64,7 @@ class StockOutController extends Controller
             'container_collection' => $container_collection,
             'bl_date' => old('bl_date') ?? $request->input('bl_date'),
             'bl_no' => old('bl_no') ?? $request->input('bl_no'),
+            'accounts' => $accounts,
         ]);
     }
 
@@ -65,9 +74,11 @@ class StockOutController extends Controller
         $validated_req = $request->validate([
             'bl_date' => ['required', 'date'],
             'bl_no' => ['required', 'unique:stock_outs,bl_no'],
+            'account_id' => ['required', 'exists:subsidaries,id'],
             'exchange_rate' => ['required', 'numeric'],
             'containers' => ['required', 'array'],
             'currency_id' => ['required', 'exists:currencies,id'],
+
         ]);
 
         try {
@@ -115,6 +126,7 @@ class StockOutController extends Controller
         $validated_req = $request->validate([
             'bl_date' => ['required', 'date'],
             'bl_no' => ['required', 'unique:stock_outs,bl_no,'.$id],
+            'account_id' => ['required', 'exists:subsidaries,id'],
             'exchange_rate' => ['required', 'numeric'],
             'containers' => ['required', 'array'],
             'currency_id' => ['required', 'exists:currencies,id'],

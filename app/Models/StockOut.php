@@ -10,6 +10,7 @@ class StockOut extends Model
     protected $fillable = [
         'bl_date',
         'bl_no',
+        'account_id',
         'currency_id',
         'exchange_rate',
         'containers',
@@ -29,6 +30,11 @@ class StockOut extends Model
     public function currency(): BelongsTo
     {
         return $this->belongsTo(Currency::class, 'currency_id', 'id');
+    }
+
+    public function account(): BelongsTo
+    {
+        return $this->belongsTo(Subsidary::class, 'account_id', 'id');
     }
 
     protected $casts = [

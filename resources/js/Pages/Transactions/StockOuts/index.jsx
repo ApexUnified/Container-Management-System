@@ -11,7 +11,13 @@ import 'flatpickr/dist/flatpickr.min.css';
 import SelectInput from '@/Components/SelectInput';
 import Toast from '@/Components/Toast';
 
-export default function index({ stock_ins, stock_outs, currencies, container_collection }) {
+export default function index({
+    stock_ins,
+    stock_outs,
+    currencies,
+    container_collection,
+    accounts,
+}) {
     const { props } = usePage();
 
     const [searchErrors, setSearchErrors] = useState({});
@@ -61,6 +67,7 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
     } = useForm({
         bl_date: '',
         bl_no: '',
+        account_id: '',
         exchange_rate: 0,
         currency_id: '',
         containers: [],
@@ -76,6 +83,7 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
     } = useForm({
         bl_date: '',
         bl_no: '',
+        account_id: '',
         exchange_rate: 0,
         currency_id: '',
         containers: [],
@@ -97,6 +105,7 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
     const [viewData, setViewData] = useState({
         bl_date: '',
         bl_no: '',
+        account: '',
         exchange_rate: 0,
         currency_id: '',
         currency: '',
@@ -194,6 +203,14 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
             { key: 'bl_date', label: 'B/L Date' },
             { key: 'bl_no', label: 'B/L No' },
             {
+                label: 'Account',
+                render: (item) => {
+                    return item?.account
+                        ? item?.account?.account_code + ' - ' + item?.account?.name
+                        : 'N/A';
+                },
+            },
+            {
                 key: 'currency.name',
                 label: 'Currency',
                 badge: (value) => 'bg-blue-500 text-white p-3',
@@ -231,6 +248,7 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                         bl_date: item.bl_date,
                         bl_no: item.bl_no,
                         currency_id: item.currency_id,
+                        account: item.account,
                         currency: item.currency,
                         exchange_rate: item.exchange_rate,
                         containers: item.containers.map((c) => ({
@@ -612,6 +630,21 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                                                     />
 
                                                     <SelectInput
+                                                        InputName={'Accounts'}
+                                                        Id={'account_id'}
+                                                        Name={'account_id'}
+                                                        items={accounts}
+                                                        itemKey={'name'}
+                                                        Required={true}
+                                                        Error={createErrors.account_id}
+                                                        Value={createData.account_id}
+                                                        Placeholder={false}
+                                                        Action={(value) =>
+                                                            setCreateData('account_id', value)
+                                                        }
+                                                    />
+
+                                                    <SelectInput
                                                         InputName={'Currency'}
                                                         Id={'currency_id'}
                                                         Name={'currency_id'}
@@ -936,6 +969,21 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                                                     />
 
                                                     <SelectInput
+                                                        InputName={'Accounts'}
+                                                        Id={'account_id'}
+                                                        Name={'account_id'}
+                                                        items={accounts}
+                                                        itemKey={'name'}
+                                                        Required={true}
+                                                        Error={editErrors.account_id}
+                                                        Value={editData.account_id}
+                                                        Placeholder={false}
+                                                        Action={(value) =>
+                                                            setEditData('account_id', value)
+                                                        }
+                                                    />
+
+                                                    <SelectInput
                                                         InputName={'Currency'}
                                                         Id={'currency_id'}
                                                         Name={'currency_id'}
@@ -1228,6 +1276,10 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
                                                             <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 B/L No
                                                             </th>
+
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
+                                                                Account
+                                                            </th>
                                                             <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Currency
                                                             </th>
@@ -1254,6 +1306,15 @@ export default function index({ stock_ins, stock_outs, currencies, container_col
 
                                                                     <td className="px-4 py-2 text-sm text-gray-800 dark:text-white">
                                                                         {viewData.bl_no}
+                                                                    </td>
+
+                                                                    <td className="px-4 py-2 text-sm text-gray-800 dark:text-white">
+                                                                        {viewData.account
+                                                                            ? viewData.account
+                                                                                  .account_code +
+                                                                              ' - ' +
+                                                                              viewData.account.name
+                                                                            : 'N/A'}
                                                                     </td>
 
                                                                     <td className="px-4 py-2 text-sm text-gray-800 dark:text-white">

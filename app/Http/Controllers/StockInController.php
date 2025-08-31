@@ -124,6 +124,12 @@ class StockInController extends Controller
         //     'vendors ' => $vendors,
         // ];
 
+        $searchable_cros = Cro::get()->map(function ($cro) {
+            return [
+                'cro_no' => $cro->cro_no,
+            ];
+        });
+
         return Inertia::render('Transactions/StockIns/index', [
             'stock_ins' => $stock_ins,
             'vendors' => $vendors,
@@ -137,6 +143,7 @@ class StockInController extends Controller
             'container_no' => old('container_no') ?? $request->input('container_no'),
             'entry_date' => old('entry_date') ?? $request->input('entry_date'),
             's_cro_no' => old('s_cro_no') ?? $request->input('s_cro_no'),
+            'searchable_cros' => $searchable_cros,
         ]);
     }
 
