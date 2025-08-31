@@ -23,7 +23,8 @@ class ProductController extends Controller
     public function store(Request $request)
     {
         $validated_req = $request->validate([
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:150'],
+            'hs_code' => ['nullable', 'string', 'max:150'],
             'unit_id' => ['required', 'integer', 'exists:units,id'],
         ]);
 
@@ -47,9 +48,9 @@ class ProductController extends Controller
                 'server' => 'Product ID is Missing',
             ]);
         }
-
         $validated_req = $request->validate([
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:150'],
+            'hs_code' => ['nullable', 'string', 'max:150'],
             'unit_id' => ['required', 'integer', 'exists:units,id'],
         ]);
 

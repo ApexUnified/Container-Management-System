@@ -164,6 +164,7 @@ namespace App\Models{
  * @property int $unit_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $hs_code
  * @property-read \Illuminate\Database\Eloquent\Collection<int, \App\Models\StockIn> $stock_in
  * @property-read int|null $stock_in_count
  * @property-read \App\Models\Unit $unit
@@ -171,6 +172,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereHsCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|Product whereUnitId($value)
@@ -270,15 +272,16 @@ namespace App\Models{
  * @property int|null $custom_clearance_id
  * @property string|null $custom_clearance_rate
  * @property int|null $freight_forwarder_id
- * @property string $freight_forwarder_rate
- * @property string $fc_amount
- * @property string $exchange_rate
+ * @property string|null $freight_forwarder_rate
+ * @property string|null $fc_amount
+ * @property string|null $exchange_rate
  * @property int|null $currency_id
  * @property int $all_in_one
  * @property string $total_amount
  * @property string|null $note
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string|null $container_size
  * @property-read \App\Models\Cro|null $cro
  * @property-read \App\Models\Currency|null $currency
  * @property-read \App\Models\Detail|null $custom_clearance
@@ -292,6 +295,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn query()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereAllInOne($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereContainerNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereContainerSize($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCroId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCurrencyId($value)

@@ -75,6 +75,7 @@ export default function index({
         container_no: '',
         vehicle_no: '',
         cro_id: '',
+        container_size: '',
         port_location: '',
         vendor_id: '',
         product_id: '',
@@ -85,13 +86,13 @@ export default function index({
         product_rate: 0,
         product_total_amount: 0,
         transporter_id: '',
-        transporter_rate: 0,
+        transporter_rate: '',
         custom_clearance_id: '',
-        custom_clearance_rate: 0,
+        custom_clearance_rate: '',
         freight_forwarder_id: '',
-        freight_forwarder_rate: 0,
-        fc_amount: 0,
-        exchange_rate: 0,
+        freight_forwarder_rate: '',
+        fc_amount: '',
+        exchange_rate: '',
         currency_id: '',
         all_in_one: false,
         total_amount: 0,
@@ -111,6 +112,7 @@ export default function index({
         container_no: '',
         vehicle_no: '',
         cro_id: '',
+        container_size: '',
         port_location: '',
         vendor_id: '',
         product_id: '',
@@ -121,16 +123,16 @@ export default function index({
         product_rate: 0,
         product_total_amount: 0,
         transporter_id: '',
-        transporter_rate: 0,
+        transporter_rate: '',
         custom_clearance_id: '',
-        custom_clearance_rate: 0,
+        custom_clearance_rate: '',
         freight_forwarder_id: '',
-        freight_forwarder_rate: 0,
-        fc_amount: 0,
-        exchange_rate: 0,
+        freight_forwarder_rate: '',
+        fc_amount: '',
+        exchange_rate: '',
         currency_id: '',
         all_in_one: false,
-        total_amount: 0,
+        total_amount: '',
         note: '',
     });
 
@@ -273,9 +275,9 @@ export default function index({
     useEffect(() => {
         if (createData.all_in_one) {
             setCreateData('transporter_id', '');
-            setCreateData('transporter_rate', 0);
+            setCreateData('transporter_rate', '');
             setCreateData('custom_clearance_id', '');
-            setCreateData('custom_clearance_rate', 0);
+            setCreateData('custom_clearance_rate', '');
         }
     }, [createData.all_in_one]);
 
@@ -336,7 +338,7 @@ export default function index({
         if (editData.currency_id && !isNaN(exchangeRate) && !isNaN(fcAmount)) {
             setEditData('freight_forwarder_rate', exchangeRate * fcAmount);
         } else {
-            setEditData('freight_forwarder_rate', 0);
+            setEditData('freight_forwarder_rate', '');
         }
     }, [editData.currency_id, editData.exchange_rate, editData.fc_amount]);
 
@@ -344,9 +346,9 @@ export default function index({
     useEffect(() => {
         if (editData.all_in_one) {
             setEditData('transporter_id', '');
-            setEditData('transporter_rate', 0);
+            setEditData('transporter_rate', '');
             setEditData('custom_clearance_id', '');
-            setEditData('custom_clearance_rate', 0);
+            setEditData('custom_clearance_rate', '');
         }
     }, [editData.all_in_one]);
 
@@ -507,6 +509,7 @@ export default function index({
                 setEditData('container_no', '');
                 setEditData('vehicle_no', '');
                 setEditData('cro_id', '');
+                setEditData('container_size', '');
                 setEditData('port_location', '');
                 setEditData('vendor_id', '');
                 setEditData('product_id', '');
@@ -747,6 +750,24 @@ export default function index({
                                                         }
                                                     />
 
+                                                    <SelectInput
+                                                        InputName={'Container Size'}
+                                                        Id={'container_size'}
+                                                        Name={'container_size'}
+                                                        items={[
+                                                            { name: "20'" },
+                                                            { name: "40'" },
+                                                            { name: 'HC' },
+                                                        ]}
+                                                        itemKey={'name'}
+                                                        Required={true}
+                                                        Error={createErrors.container_size}
+                                                        Value={createData.container_size}
+                                                        Action={(value) =>
+                                                            setCreateData('container_size', value)
+                                                        }
+                                                    />
+
                                                     <Input
                                                         InputName={'Vehicle No'}
                                                         Id={'vehicle_no'}
@@ -782,7 +803,7 @@ export default function index({
                                                         InputName={'Port Location'}
                                                         Id={'port_location'}
                                                         Name={'port_location'}
-                                                        items={[{ name: 'KTGL' }, { name: 'KICT' }]}
+                                                        items={[{ name: 'KDGL' }, { name: 'KICT' }]}
                                                         itemKey={'name'}
                                                         Required={true}
                                                         Error={createErrors.port_location}
@@ -793,7 +814,7 @@ export default function index({
                                                     />
 
                                                     <SelectInput
-                                                        InputName={'Vendor'}
+                                                        InputName={'Supplier'}
                                                         Id={'vendor_id'}
                                                         Name={'vendor_id'}
                                                         items={vendors}
@@ -957,14 +978,27 @@ export default function index({
                                                         items={transporters}
                                                         itemKey={'name'}
                                                         Required={
-                                                            createData.all_in_one ? false : true
+                                                            createData.transporter_id != ''
+                                                                ? true
+                                                                : false
                                                         }
                                                         Error={createErrors.transporter_id}
                                                         Value={createData.transporter_id}
                                                         isDisabled={createData.all_in_one}
-                                                        Action={(value) =>
-                                                            setCreateData('transporter_id', value)
-                                                        }
+                                                        Action={(value) => {
+                                                            if (value != '') {
+                                                                setCreateData(
+                                                                    'transporter_id',
+                                                                    value,
+                                                                );
+                                                            } else {
+                                                                setCreateData('transporter_id', '');
+                                                                setCreateData(
+                                                                    'transporter_rate',
+                                                                    '',
+                                                                );
+                                                            }
+                                                        }}
                                                     />
 
                                                     <Input
@@ -974,9 +1008,14 @@ export default function index({
                                                         Type={'number'}
                                                         Placeholder={'Enter Transporter Amount'}
                                                         Required={
-                                                            createData.all_in_one ? false : true
+                                                            createData.transporter_id != ''
+                                                                ? true
+                                                                : false
                                                         }
-                                                        Disabled={createData.all_in_one}
+                                                        Disabled={
+                                                            createData.transporter_id == '' ||
+                                                            createData.all_in_one
+                                                        }
                                                         Error={createErrors.transporter_rate}
                                                         Value={createData.transporter_rate}
                                                         readOnly={
@@ -998,17 +1037,31 @@ export default function index({
                                                         items={custom_clearances}
                                                         itemKey={'name'}
                                                         Required={
-                                                            createData.all_in_one ? false : true
+                                                            createData.custom_clearance_id != ''
+                                                                ? true
+                                                                : false
                                                         }
                                                         Error={createErrors.custom_clearance_id}
                                                         Value={createData.custom_clearance_id}
                                                         isDisabled={createData.all_in_one}
-                                                        Action={(value) =>
-                                                            setCreateData(
-                                                                'custom_clearance_id',
-                                                                value,
-                                                            )
-                                                        }
+                                                        Action={(value) => {
+                                                            if (value != '') {
+                                                                setCreateData(
+                                                                    'custom_clearance_id',
+                                                                    value,
+                                                                );
+                                                            } else {
+                                                                setCreateData(
+                                                                    'custom_clearance_id',
+                                                                    '',
+                                                                );
+
+                                                                setCreateData(
+                                                                    'custom_clearance_rate',
+                                                                    '',
+                                                                );
+                                                            }
+                                                        }}
                                                     />
 
                                                     <Input
@@ -1020,9 +1073,14 @@ export default function index({
                                                             'Enter Custom Clearance Amount'
                                                         }
                                                         Required={
-                                                            createData.all_in_one ? false : true
+                                                            createData.custom_clearance_id != ''
+                                                                ? true
+                                                                : false
                                                         }
-                                                        Disabled={createData.all_in_one}
+                                                        Disabled={
+                                                            createData.custom_clearance_id == '' ||
+                                                            createData.all_in_one
+                                                        }
                                                         Error={createErrors.custom_clearance_rate}
                                                         Value={createData.custom_clearance_rate}
                                                         readOnly={
@@ -1045,15 +1103,29 @@ export default function index({
                                                         Name={'freight_forwarder_id'}
                                                         items={freight_forwarders}
                                                         itemKey={'name'}
-                                                        Required={true}
+                                                        Required={
+                                                            createData.freight_forwarder_id != ''
+                                                                ? true
+                                                                : false
+                                                        }
                                                         Error={createErrors.freight_forwarder_id}
                                                         Value={createData.freight_forwarder_id}
-                                                        Action={(value) =>
-                                                            setCreateData(
-                                                                'freight_forwarder_id',
-                                                                value,
-                                                            )
-                                                        }
+                                                        Action={(value) => {
+                                                            if (value != '') {
+                                                                setCreateData(
+                                                                    'freight_forwarder_id',
+                                                                    value,
+                                                                );
+                                                            } else {
+                                                                setCreateData(
+                                                                    'freight_forwarder_id',
+                                                                    '',
+                                                                );
+                                                                setCreateData('currency_id', '');
+                                                                setCreateData('fc_amount', '');
+                                                                setCreateData('exchange_rate', '');
+                                                            }
+                                                        }}
                                                     />
 
                                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2">
@@ -1063,7 +1135,16 @@ export default function index({
                                                             Name={'currency_id'}
                                                             items={currencies}
                                                             itemKey={'name'}
-                                                            Required={true}
+                                                            Required={
+                                                                createData.freight_forwarder_id !=
+                                                                ''
+                                                                    ? true
+                                                                    : false
+                                                            }
+                                                            isDisabled={
+                                                                createData.freight_forwarder_id ==
+                                                                ''
+                                                            }
                                                             Error={createErrors.currency_id}
                                                             Value={createData.currency_id}
                                                             Placeholder={false}
@@ -1078,8 +1159,17 @@ export default function index({
                                                             Name={'fc_amount'}
                                                             Type={'number'}
                                                             Placeholder={'Enter F/C Amount'}
-                                                            Required={true}
+                                                            Required={
+                                                                createData.freight_forwarder_id !=
+                                                                ''
+                                                                    ? true
+                                                                    : false
+                                                            }
                                                             Error={createErrors.fc_amount}
+                                                            Disabled={
+                                                                createData.freight_forwarder_id ==
+                                                                ''
+                                                            }
                                                             Value={createData.fc_amount}
                                                             Action={(e) =>
                                                                 setCreateData(
@@ -1095,7 +1185,16 @@ export default function index({
                                                             Name={'exchange_rate'}
                                                             Type={'number'}
                                                             Placeholder={'Enter Exchange Rate'}
-                                                            Required={true}
+                                                            Required={
+                                                                createData.freight_forwarder_id !=
+                                                                ''
+                                                                    ? true
+                                                                    : false
+                                                            }
+                                                            Disabled={
+                                                                createData.freight_forwarder_id ==
+                                                                ''
+                                                            }
                                                             Error={createErrors.exchange_rate}
                                                             Value={createData.exchange_rate}
                                                             Action={(e) =>
@@ -1113,7 +1212,14 @@ export default function index({
                                                         Name={'freight_forwarder_rate'}
                                                         Type={'number'}
                                                         Placeholder={'Freight Forwarder Amount'}
-                                                        Required={true}
+                                                        Required={
+                                                            createData.freight_forwarder_id != ''
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        Disabled={
+                                                            createData.freight_forwarder_id == ''
+                                                        }
                                                         Error={createErrors.freight_forwarder_rate}
                                                         Value={createData.freight_forwarder_rate}
                                                         readOnly={true}
@@ -1137,6 +1243,7 @@ export default function index({
                                                             setCreateData('container_no', '');
                                                             setCreateData('vehicle_no', '');
                                                             setCreateData('cro_id', '');
+                                                            setCreateData('container_size', '');
                                                             setCreateData('port_location', '');
                                                             setCreateData('vendor_id', '');
                                                             setCreateData('product_id', '');
@@ -1212,6 +1319,7 @@ export default function index({
                                                             createData.entry_date == '' ||
                                                             createData.container_no.trim() == '' ||
                                                             createData.cro_id == '' ||
+                                                            createData.container_size == '' ||
                                                             createData.port_location == '' ||
                                                             createData.vendor_id == '' ||
                                                             createData.product_id == '' ||
@@ -1221,20 +1329,25 @@ export default function index({
                                                                 '' ||
                                                             createData.product_rate == '' ||
                                                             createData.product_total_amount == '' ||
-                                                            (!createData.all_in_one &&
-                                                                (createData.transporter_id == '' ||
-                                                                    createData.transporter_rate ==
-                                                                        '' ||
-                                                                    createData.custom_clearance_id ==
-                                                                        '' ||
-                                                                    createData.custom_clearance_rate ==
-                                                                        '')) ||
-                                                            createData.freight_forwarder_id == '' ||
-                                                            createData.freight_forwarder_rate ==
-                                                                '' ||
-                                                            createData.fc_amount == '' ||
-                                                            createData.exchange_rate == '' ||
-                                                            createData.currency_id == ''
+                                                            (createData.transporter_id != '' &&
+                                                                createData.transporter_rate ==
+                                                                    '') ||
+                                                            (createData.custom_clearance_id != '' &&
+                                                                createData.custom_clearance_rate ==
+                                                                    '') ||
+                                                            (createData.freight_forwarder_id !=
+                                                                '' &&
+                                                                createData.freight_forwarder_rate ==
+                                                                    '') ||
+                                                            (createData.freight_forwarder_id !=
+                                                                '' &&
+                                                                createData.fc_amount == '') ||
+                                                            (createData.freight_forwarder_id !=
+                                                                '' &&
+                                                                createData.exchange_rate == '') ||
+                                                            (createData.freight_forwarder_id !=
+                                                                '' &&
+                                                                createData.currency_id == '')
                                                         }
                                                         Icon={
                                                             <svg
@@ -1329,6 +1442,24 @@ export default function index({
                                                         }
                                                     />
 
+                                                    <SelectInput
+                                                        InputName={'Container Size'}
+                                                        Id={'container_size'}
+                                                        Name={'container_size'}
+                                                        items={[
+                                                            { name: "20'" },
+                                                            { name: "40'" },
+                                                            { name: 'HC' },
+                                                        ]}
+                                                        itemKey={'name'}
+                                                        Required={true}
+                                                        Error={editErrors.container_size}
+                                                        Value={editData.container_size}
+                                                        Action={(value) =>
+                                                            setEditData('container_size', value)
+                                                        }
+                                                    />
+
                                                     <Input
                                                         InputName={'Vehicle No'}
                                                         Id={'vehicle_no'}
@@ -1364,7 +1495,7 @@ export default function index({
                                                         InputName={'Port Location'}
                                                         Id={'port_location'}
                                                         Name={'port_location'}
-                                                        items={[{ name: 'KTGL' }, { name: 'KICT' }]}
+                                                        items={[{ name: 'KDGL' }, { name: 'KICT' }]}
                                                         itemKey={'name'}
                                                         Required={true}
                                                         Error={editErrors.port_location}
@@ -1375,7 +1506,7 @@ export default function index({
                                                     />
 
                                                     <SelectInput
-                                                        InputName={'Vendor'}
+                                                        InputName={'Supplier'}
                                                         Id={'vendor_id'}
                                                         Name={'vendor_id'}
                                                         items={vendors}
@@ -1539,14 +1670,25 @@ export default function index({
                                                         items={transporters}
                                                         itemKey={'name'}
                                                         Required={
-                                                            editData.all_in_one ? false : true
+                                                            editData.transporter_id != '' &&
+                                                            editData.transporter_id != null
+                                                                ? true
+                                                                : false
                                                         }
                                                         Error={editErrors.transporter_id}
                                                         Value={editData.transporter_id}
                                                         isDisabled={editData.all_in_one}
-                                                        Action={(value) =>
-                                                            setEditData('transporter_id', value)
-                                                        }
+                                                        Action={(value) => {
+                                                            if (value != '') {
+                                                                setEditData(
+                                                                    'transporter_id',
+                                                                    value,
+                                                                );
+                                                            } else {
+                                                                setEditData('transporter_id', '');
+                                                                setEditData('transporter_rate', '');
+                                                            }
+                                                        }}
                                                     />
 
                                                     <Input
@@ -1555,9 +1697,16 @@ export default function index({
                                                         Name={'transporter_rate'}
                                                         Type={'number'}
                                                         Placeholder={'Enter Transporter Amount'}
-                                                        Disabled={editData.all_in_one}
+                                                        Disabled={
+                                                            editData.transporter_id == '' ||
+                                                            editData.transporter_id == null ||
+                                                            editData.all_in_one
+                                                        }
                                                         Required={
-                                                            editData.all_in_one ? false : true
+                                                            editData.transporter_id != '' &&
+                                                            editData.transporter_id != null
+                                                                ? true
+                                                                : false
                                                         }
                                                         Error={editErrors.transporter_rate}
                                                         Value={editData.transporter_rate}
@@ -1580,17 +1729,32 @@ export default function index({
                                                         items={custom_clearances}
                                                         itemKey={'name'}
                                                         Required={
-                                                            editData.all_in_one ? false : true
+                                                            editData.custom_clearance_id != '' &&
+                                                            editData.custom_clearance_id != null
+                                                                ? true
+                                                                : false
                                                         }
                                                         Error={editErrors.custom_clearance_id}
                                                         Value={editData.custom_clearance_id}
                                                         isDisabled={editData.all_in_one}
-                                                        Action={(value) =>
-                                                            setEditData(
-                                                                'custom_clearance_id',
-                                                                value,
-                                                            )
-                                                        }
+                                                        Action={(value) => {
+                                                            if (value != '') {
+                                                                setEditData(
+                                                                    'custom_clearance_id',
+                                                                    value,
+                                                                );
+                                                            } else {
+                                                                setEditData(
+                                                                    'custom_clearance_id',
+                                                                    '',
+                                                                );
+
+                                                                setEditData(
+                                                                    'custom_clearance_rate',
+                                                                    '',
+                                                                );
+                                                            }
+                                                        }}
                                                     />
 
                                                     <Input
@@ -1601,9 +1765,16 @@ export default function index({
                                                         Placeholder={
                                                             'Enter Custom Clearance Amount'
                                                         }
-                                                        Disabled={editData.all_in_one}
+                                                        Disabled={
+                                                            editData.custom_clearance_id == '' ||
+                                                            editData.custom_clearance_id == null ||
+                                                            editData.all_in_one
+                                                        }
                                                         Required={
-                                                            editData.all_in_one ? false : true
+                                                            editData.custom_clearance_id != '' &&
+                                                            editData.custom_clearance_id != null
+                                                                ? true
+                                                                : false
                                                         }
                                                         Error={editErrors.custom_clearance_rate}
                                                         Value={editData.custom_clearance_rate}
@@ -1627,15 +1798,30 @@ export default function index({
                                                         Name={'freight_forwarder_id'}
                                                         items={freight_forwarders}
                                                         itemKey={'name'}
-                                                        Required={true}
+                                                        Required={
+                                                            editData.freight_forwarder_id != '' &&
+                                                            editData.freight_forwarder_id != null
+                                                                ? true
+                                                                : false
+                                                        }
                                                         Error={editErrors.freight_forwarder_id}
                                                         Value={editData.freight_forwarder_id}
-                                                        Action={(value) =>
-                                                            setEditData(
-                                                                'freight_forwarder_id',
-                                                                value,
-                                                            )
-                                                        }
+                                                        Action={(value) => {
+                                                            if (value != '') {
+                                                                setEditData(
+                                                                    'freight_forwarder_id',
+                                                                    value,
+                                                                );
+                                                            } else {
+                                                                setEditData(
+                                                                    'freight_forwarder_id',
+                                                                    '',
+                                                                );
+                                                                setEditData('currency_id', '');
+                                                                setEditData('fc_amount', '');
+                                                                setEditData('exchange_rate', '');
+                                                            }
+                                                        }}
                                                     />
 
                                                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2">
@@ -1645,7 +1831,22 @@ export default function index({
                                                             Name={'currency_id'}
                                                             items={currencies}
                                                             itemKey={'name'}
-                                                            Required={true}
+                                                            Required={
+                                                                editData.freight_forwarder_id !=
+                                                                    '' &&
+                                                                editData.freight_forwarder_id !=
+                                                                    null
+                                                                    ? true
+                                                                    : false
+                                                            }
+                                                            isDisabled={
+                                                                editData.freight_forwarder_id ==
+                                                                    '' &&
+                                                                editData.freight_forwarder_id ==
+                                                                    null
+                                                                    ? true
+                                                                    : false
+                                                            }
                                                             Error={editErrors.currency_id}
                                                             Value={editData.currency_id}
                                                             Placeholder={false}
@@ -1660,7 +1861,22 @@ export default function index({
                                                             Name={'fc_amount'}
                                                             Type={'number'}
                                                             Placeholder={'Enter F/C Amount'}
-                                                            Required={true}
+                                                            Required={
+                                                                editData.freight_forwarder_id !=
+                                                                    '' &&
+                                                                editData.freight_forwarder_id !=
+                                                                    null
+                                                                    ? true
+                                                                    : false
+                                                            }
+                                                            Disabled={
+                                                                editData.freight_forwarder_id ==
+                                                                    '' &&
+                                                                editData.freight_forwarder_id ==
+                                                                    null
+                                                                    ? true
+                                                                    : false
+                                                            }
                                                             Error={editErrors.fc_amount}
                                                             Value={editData.fc_amount}
                                                             Action={(e) =>
@@ -1677,7 +1893,22 @@ export default function index({
                                                             Name={'exchange_rate'}
                                                             Type={'number'}
                                                             Placeholder={'Enter Exchange Rate'}
-                                                            Required={true}
+                                                            Required={
+                                                                editData.freight_forwarder_id !=
+                                                                    '' &&
+                                                                editData.freight_forwarder_id !=
+                                                                    null
+                                                                    ? true
+                                                                    : false
+                                                            }
+                                                            Disabled={
+                                                                editData.freight_forwarder_id ==
+                                                                    '' &&
+                                                                editData.freight_forwarder_id ==
+                                                                    null
+                                                                    ? true
+                                                                    : false
+                                                            }
                                                             Error={editErrors.exchange_rate}
                                                             Value={editData.exchange_rate}
                                                             Action={(e) =>
@@ -1695,7 +1926,18 @@ export default function index({
                                                         Name={'freight_forwarder_rate'}
                                                         Type={'number'}
                                                         Placeholder={'Freight Forwarder Amount'}
-                                                        Required={true}
+                                                        Required={
+                                                            editData.freight_forwarder_id != '' &&
+                                                            editData.freight_forwarder_id != null
+                                                                ? true
+                                                                : false
+                                                        }
+                                                        Disabled={
+                                                            editData.freight_forwarder_id == '' &&
+                                                            editData.freight_forwarder_id == null
+                                                                ? true
+                                                                : false
+                                                        }
                                                         Error={editErrors.freight_forwarder_rate}
                                                         Value={editData.freight_forwarder_rate}
                                                         readOnly={true}
@@ -1719,6 +1961,7 @@ export default function index({
                                                             setEditData('container_no', '');
                                                             setEditData('vehicle_no', '');
                                                             setEditData('cro_no', '');
+                                                            setEditData('container_size', '');
                                                             setEditData('port_location', '');
                                                             setEditData('vendor_id', '');
                                                             setEditData('product_id', '');
@@ -1786,6 +2029,7 @@ export default function index({
                                                             editData.container_no.trim() == '' ||
                                                             editData.vendor_id == '' ||
                                                             editData.cro_no == '' ||
+                                                            editData.container_size == '' ||
                                                             editData.port_location == '' ||
                                                             editData.product_id == '' ||
                                                             editData.product_weight == '' ||
@@ -1793,19 +2037,48 @@ export default function index({
                                                             editData.product_no_of_bundles == '' ||
                                                             editData.product_rate == '' ||
                                                             editData.product_total_amount == '' ||
-                                                            (!editData.all_in_one &&
-                                                                (editData.transporter_id == '' ||
-                                                                    editData.transporter_rate ==
-                                                                        '' ||
-                                                                    editData.custom_clearance_id ==
-                                                                        '' ||
-                                                                    editData.custom_clearance_rate ==
+                                                            editData.product_rate == '' ||
+                                                            editData.product_total_amount == '' ||
+                                                            (editData.transporter_id != null &&
+                                                                editData.transporter_id !== '' &&
+                                                                (editData.transporter_rate ==
+                                                                    null ||
+                                                                    editData.transporter_rate ===
                                                                         '')) ||
-                                                            editData.freight_forwarder_id == '' ||
-                                                            editData.freight_forwarder_rate == '' ||
-                                                            editData.fc_amount == '' ||
-                                                            editData.exchange_rate == '' ||
-                                                            editData.currency_id == ''
+                                                            (editData.custom_clearance_id != null &&
+                                                                editData.custom_clearance_id !==
+                                                                    '' &&
+                                                                (editData.custom_clearance_rate ==
+                                                                    null ||
+                                                                    editData.custom_clearance_rate ===
+                                                                        '')) ||
+                                                            (editData.freight_forwarder_id !=
+                                                                null &&
+                                                                editData.freight_forwarder_id !==
+                                                                    '' &&
+                                                                (editData.freight_forwarder_rate ==
+                                                                    null ||
+                                                                    editData.freight_forwarder_rate ===
+                                                                        '')) ||
+                                                            (editData.freight_forwarder_id !=
+                                                                null &&
+                                                                editData.freight_forwarder_id !==
+                                                                    '' &&
+                                                                (editData.fc_amount == null ||
+                                                                    editData.fc_amount === '')) ||
+                                                            (editData.freight_forwarder_id !=
+                                                                null &&
+                                                                editData.freight_forwarder_id !==
+                                                                    '' &&
+                                                                (editData.exchange_rate == null ||
+                                                                    editData.exchange_rate ===
+                                                                        '')) ||
+                                                            (editData.freight_forwarder_id !=
+                                                                null &&
+                                                                editData.freight_forwarder_id !==
+                                                                    '' &&
+                                                                (editData.currency_id == null ||
+                                                                    editData.currency_id === ''))
                                                         }
                                                         Icon={
                                                             <svg
@@ -1872,6 +2145,17 @@ export default function index({
 
                                                 <div>
                                                     <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                        Container Size
+                                                    </label>
+                                                    <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
+                                                        <p className="break-words">
+                                                            {viewData?.container_size || 'N/A'}
+                                                        </p>
+                                                    </div>
+                                                </div>
+
+                                                <div>
+                                                    <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
                                                         Vehicle No
                                                     </label>
                                                     <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
@@ -1905,7 +2189,7 @@ export default function index({
 
                                                 <div>
                                                     <label className="mb-1 block text-sm font-medium text-gray-700 dark:text-gray-300">
-                                                        Vendor
+                                                        Supplier
                                                     </label>
                                                     <div className="rounded-md bg-gray-100 px-4 py-2 text-gray-800 dark:bg-gray-700 dark:text-white">
                                                         <p className="break-words">

@@ -37,6 +37,7 @@ export default function index({ products, units }) {
         errors: createErrors,
     } = useForm({
         name: '',
+        hs_code: '',
         unit_id: '',
     });
 
@@ -50,6 +51,7 @@ export default function index({ products, units }) {
     } = useForm({
         id: '',
         name: '',
+        hs_code: '',
         unit_id: '',
     });
 
@@ -65,6 +67,7 @@ export default function index({ products, units }) {
     useEffect(() => {
         const columns = [
             { key: 'name', label: 'Name' },
+            { key: 'hs_code', label: 'HS Code' },
             { key: 'unit.name', label: 'Unit', badge: (value) => 'bg-blue-500 text-white p-3' },
         ];
 
@@ -90,6 +93,7 @@ export default function index({ products, units }) {
         createPost(route('setups.products.store'), {
             onSuccess: () => {
                 setCreateData('name', '');
+                setCreateData('hs_code', '');
             },
         });
     };
@@ -102,6 +106,7 @@ export default function index({ products, units }) {
                 setEditModalOpen(false);
                 setEditData('id', '');
                 setEditData('name', '');
+                setEditData('hs_code', '');
                 setEditData('unit_id', '');
             },
         });
@@ -122,7 +127,7 @@ export default function index({ products, units }) {
                 <Card
                     Content={
                         <>
-                            <div className="flex flex-wrap justify-end my-3">
+                            <div className="my-3 flex flex-wrap justify-end">
                                 <PrimaryButton
                                     CustomClass={'mix-w-[200px]'}
                                     Text={'Create Product'}
@@ -164,9 +169,9 @@ export default function index({ products, units }) {
                             />
 
                             {/* Create Modal */}
-                            <div className="p-6 border-t border-gray-100 dark:border-gray-800">
+                            <div className="border-t border-gray-100 p-6 dark:border-gray-800">
                                 {CreateModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -176,10 +181,10 @@ export default function index({ products, units }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={CreateMethod}
-                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
+                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -191,7 +196,7 @@ export default function index({ products, units }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {createErrors?.server && (
-                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
+                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -199,7 +204,7 @@ export default function index({ products, units }) {
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -211,6 +216,20 @@ export default function index({ products, units }) {
                                                         Value={createData.name}
                                                         Action={(e) =>
                                                             setCreateData('name', e.target.value)
+                                                        }
+                                                    />
+
+                                                    <Input
+                                                        InputName={'HS Code'}
+                                                        Id={'hs_code'}
+                                                        Name={'hs_code'}
+                                                        Type={'text'}
+                                                        Placeholder={'Enter HS Code'}
+                                                        Required={false}
+                                                        Error={createErrors.hs_code}
+                                                        Value={createData.hs_code}
+                                                        Action={(e) =>
+                                                            setCreateData('hs_code', e.target.value)
                                                         }
                                                     />
 
@@ -234,18 +253,19 @@ export default function index({ products, units }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
+                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setCreateModalOpen(false);
                                                             setCreateData('name', '');
+                                                            setCreateData('hs_code', '');
                                                             setCreateData('unit_id', '');
                                                         }}
                                                         Disabled={createProcessing}
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="w-5 h-5"
+                                                                className="h-5 w-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"
@@ -297,7 +317,7 @@ export default function index({ products, units }) {
                                 )}
 
                                 {EditModalOpen && (
-                                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                                         {/* Backdrop */}
                                         <div
                                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -307,10 +327,10 @@ export default function index({ products, units }) {
                                         ></div>
 
                                         {/* Modal content */}
-                                        <div className="relative z-10 w-full max-w-5xl max-h-screen p-6 overflow-y-auto bg-white shadow-xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                                        <div className="relative z-10 max-h-screen w-full max-w-5xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                                             <form
                                                 onSubmit={EditMethod}
-                                                className="grid items-start grid-cols-1 gap-6 md:grid-cols-2"
+                                                className="grid grid-cols-1 items-start gap-6 md:grid-cols-2"
                                             >
                                                 <div className="col-span-2">
                                                     <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
@@ -322,7 +342,7 @@ export default function index({ products, units }) {
                                                 <div className="col-span-2 mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
                                                 {editErrors?.server && (
-                                                    <div className="w-full col-span-2 px-5 py-4 mb-2 text-sm text-red-800 border border-red-300 shadow-sm rounded-xl bg-red-50">
+                                                    <div className="col-span-2 mb-2 w-full rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-sm text-red-800 shadow-sm">
                                                         <div className="mb-1 text-base font-bold text-red-700">
                                                             ⚠️ Error
                                                         </div>
@@ -330,7 +350,7 @@ export default function index({ products, units }) {
                                                     </div>
                                                 )}
 
-                                                <div className="grid grid-cols-1 col-span-2 gap-4 md:grid-cols-2">
+                                                <div className="col-span-2 grid grid-cols-1 gap-4 md:grid-cols-3">
                                                     <Input
                                                         InputName={'Name'}
                                                         Id={'name'}
@@ -342,6 +362,20 @@ export default function index({ products, units }) {
                                                         Value={editData.name}
                                                         Action={(e) =>
                                                             setEditData('name', e.target.value)
+                                                        }
+                                                    />
+
+                                                    <Input
+                                                        InputName={'HS Code'}
+                                                        Id={'hs_code'}
+                                                        Name={'hs_code'}
+                                                        Type={'text'}
+                                                        Placeholder={'Enter HS Code'}
+                                                        Required={false}
+                                                        Error={editErrors.hs_code}
+                                                        Value={editData.hs_code}
+                                                        Action={(e) =>
+                                                            setEditData('hs_code', e.target.value)
                                                         }
                                                     />
 
@@ -362,19 +396,20 @@ export default function index({ products, units }) {
                                                 </div>
 
                                                 {/* Buttons */}
-                                                <div className="flex items-center justify-center col-span-2 gap-4 mt-4">
+                                                <div className="col-span-2 mt-4 flex items-center justify-center gap-4">
                                                     <PrimaryButton
                                                         Action={() => {
                                                             setEditModalOpen(false);
                                                             setEditData('id', '');
                                                             setEditData('name', '');
+                                                            setEditData('hs_code', '');
                                                             setEditData('unit_id', '');
                                                         }}
                                                         Disabled={editProcessing}
                                                         Icon={
                                                             <svg
                                                                 xmlns="http://www.w3.org/2000/svg"
-                                                                className="w-5 h-5"
+                                                                className="h-5 w-5"
                                                                 fill="none"
                                                                 viewBox="0 0 24 24"
                                                                 stroke="currentColor"

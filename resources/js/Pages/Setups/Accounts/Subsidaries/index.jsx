@@ -75,7 +75,7 @@ export default function index({ subsidaries, controls }) {
                 label: 'Account Category',
                 render: (item) => {
                     if (item.account_category === 'V') {
-                        return 'V - Vendor';
+                        return 'V - Supplier';
                     } else if (item.account_category === 'T') {
                         return 'T - Transporter';
                     } else if (item.account_category === 'C') {
@@ -266,7 +266,7 @@ export default function index({ subsidaries, controls }) {
                                                         items={[
                                                             {
                                                                 id: 'V',
-                                                                name: 'V - Vendor',
+                                                                name: 'V - Supplier',
                                                             },
                                                             {
                                                                 id: 'T',
@@ -416,7 +416,7 @@ export default function index({ subsidaries, controls }) {
                                                         items={[
                                                             {
                                                                 id: 'V',
-                                                                name: 'V - Vendor',
+                                                                name: 'V - Supplier',
                                                             },
                                                             {
                                                                 id: 'T',
