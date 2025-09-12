@@ -1,4 +1,4 @@
-name: Deploy to Hostinger (SSH)
+name: Deploy to Hostinger (SSH with Password)
 
 on:
   push:
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '18'
+          node-version: '22'
 
       # Install npm packages & build assets
       - name: Build Assets
@@ -36,8 +36,19 @@ jobs:
           npm install
           npm run build
 
-      # Deploy to Hostinger via SSH
-      - name: Deploy over SSH
+      # Upload files to Hostinger using scp (password auth)
+      - name: Upload via SCP
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          source: './'
+          target: '/home/u610072056/domains/hasnainenterprisesae.com/public_html'
+
+      # Run Laravel commands on Hostinger
+      - name: Run Artisan Commands
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -45,8 +56,7 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd domains/hasnainenterprisesae.com/public_html
-            git pull origin main
+            cd /home/u610072056/domains/hasnainenterprisesae.com/public_html
             composer install --no-dev --optimize-autoloader
             php artisan migrate --force
             php artisan config:cache
