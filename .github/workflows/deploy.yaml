@@ -8,7 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: Configure Hostinger # <-- link to your env name
+    environment: Hostinger
 
     steps:
       # Checkout code
