@@ -41,7 +41,9 @@ jobs:
       - name: Prepare Build Folder
         run: |
           rm -rf build
+          rm -rf public_html/public/build
           cp -r public/build ./build
+          cp -r public/build ./public/build
 
       # Test SSH connection (debug step)
       - name: Test SSH connection
