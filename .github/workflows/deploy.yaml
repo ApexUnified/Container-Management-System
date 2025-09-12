@@ -8,6 +8,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Configure Hostinger # <-- link to your env name
 
     steps:
       # Checkout code
@@ -18,7 +19,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: '8.2'
 
       # Install Composer deps
       - name: Install Composer
@@ -28,7 +29,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: '22'
+          node-version: '18'
 
       # Install npm packages & build assets
       - name: Build Assets
@@ -36,7 +37,19 @@ jobs:
           npm install
           npm run build
 
-      # Upload files to Hostinger using scp (password auth)
+      # Test SSH connection (debug step)
+      - name: Test SSH connection
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            whoami
+            pwd
+
+      # Upload files via SCP
       - name: Upload via SCP
         uses: appleboy/scp-action@v0.1.7
         with:
