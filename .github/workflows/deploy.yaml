@@ -1,0 +1,54 @@
+name: Deploy to Hostinger (SSH)
+
+on:
+  push:
+    branches:
+      - main # deploy only when pushing to main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout code
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Setup PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+
+      # Install Composer deps
+      - name: Install Composer
+        run: composer install --no-dev --optimize-autoloader
+
+      # Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Install npm packages & build assets
+      - name: Build Assets
+        run: |
+          npm install
+          npm run build
+
+      # Deploy to Hostinger via SSH
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd domains/hasnainenterprisesae.com/public_html
+            git pull origin main
+            composer install --no-dev --optimize-autoloader
+            php artisan migrate --force
+            php artisan config:cache
+            php artisan route:cache
+            php artisan view:cache
