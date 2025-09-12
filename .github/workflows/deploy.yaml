@@ -37,12 +37,16 @@ jobs:
           npm install
           npm run build
 
-      # Move build folder one level up (so it's in /build, And In /public/build)
-      - name: Prepare Build Folder
+      # Prepare build + assets for deployment
+      - name: Prepare Build and Assets
         run: |
+          # Clean old copies
           rm -rf build
-          rm -rf public_html/public/build
+          rm -rf assets
+          # Copy Vite build to root (/build)
           cp -r public/build ./build
+          # Copy static assets to root (/assets)
+          cp -r public/assets ./assets
 
       # Test SSH connection (debug step)
       - name: Test SSH connection
@@ -79,6 +83,9 @@ jobs:
             cd /home/u610072056/domains/hasnainenterprisesae.com/public_html
             composer install --no-dev --optimize-autoloader
             php artisan migrate --force
+            php artisan config:clear
+            php artisan route:clear
+            php artisan view:clear
             php artisan config:cache
             php artisan route:cache
             php artisan view:cache
