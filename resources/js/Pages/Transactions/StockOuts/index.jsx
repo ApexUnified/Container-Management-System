@@ -67,6 +67,7 @@ export default function index({
     } = useForm({
         bl_date: '',
         bl_no: '',
+        port_name: '',
         account_id: '',
         exchange_rate: 0,
         currency_id: '',
@@ -83,6 +84,7 @@ export default function index({
     } = useForm({
         bl_date: '',
         bl_no: '',
+        port_name: '',
         account_id: '',
         exchange_rate: 0,
         currency_id: '',
@@ -202,11 +204,12 @@ export default function index({
 
             { key: 'bl_date', label: 'B/L Date' },
             { key: 'bl_no', label: 'B/L No' },
+            { key: 'port_name', label: 'Port Name' },
             {
                 label: 'Account',
                 render: (item) => {
                     return item?.account
-                        ? item?.account?.account_code + ' - ' + item?.account?.name
+                        ? item?.account?.account_code + ' - ' + item?.account?.title
                         : 'N/A';
                 },
             },
@@ -249,6 +252,7 @@ export default function index({
                         bl_no: item.bl_no,
                         currency_id: item.currency_id,
                         account: item.account,
+                        port_name: item.port_name,
                         currency: item.currency,
                         exchange_rate: item.exchange_rate,
                         containers: item.containers.map((c) => ({
@@ -269,7 +273,9 @@ export default function index({
                     setActualData(item);
                     setEditData('id', item.id);
                     setEditData('bl_date', item.bl_date);
+                    setEditData('account_id', item.account_id);
                     setEditData('bl_no', item.bl_no);
+                    setEditData('port_name', item.port_name);
                     setEditData('currency_id', item.currency_id);
                     setEditData('exchange_rate', item.exchange_rate);
                     setEditData(
@@ -432,6 +438,7 @@ export default function index({
                 setEditData('id', '');
                 setEditData('bl_date', '');
                 setEditData('bl_no', '');
+                setEditData('port_name', '');
                 setEditData('currency_id', '');
                 setEditData('exchange_rate', 0);
                 setEditData('containers', []);
@@ -644,6 +651,23 @@ export default function index({
                                                         }
                                                     />
 
+                                                    <Input
+                                                        InputName={'Port Name'}
+                                                        Id={'port_name'}
+                                                        Name={'port_name'}
+                                                        Type={'text'}
+                                                        Placeholder={'Enter Port Name'}
+                                                        Required={true}
+                                                        Error={createErrors.port_name}
+                                                        Value={createData.port_name}
+                                                        Action={(e) =>
+                                                            setCreateData(
+                                                                'port_name',
+                                                                e.target.value,
+                                                            )
+                                                        }
+                                                    />
+
                                                     <SelectInput
                                                         InputName={'Currency'}
                                                         Id={'currency_id'}
@@ -841,6 +865,7 @@ export default function index({
                                                             setCreateModalOpen(false);
                                                             setCreateData('bl_date', '');
                                                             setCreateData('bl_no', '');
+                                                            setCreateData('port_name', '');
                                                             setCreateData('exchange_rate', 0);
                                                             setCreateData('currency_id', '');
                                                             setCreateData('containers', []);
@@ -980,6 +1005,20 @@ export default function index({
                                                         Placeholder={false}
                                                         Action={(value) =>
                                                             setEditData('account_id', value)
+                                                        }
+                                                    />
+
+                                                    <Input
+                                                        InputName={'Port Name'}
+                                                        Id={'port_name'}
+                                                        Name={'port_name'}
+                                                        Type={'text'}
+                                                        Placeholder={'Enter Port Name'}
+                                                        Required={true}
+                                                        Error={editErrors.port_name}
+                                                        Value={editData.port_name}
+                                                        Action={(e) =>
+                                                            setEditData('port_name', e.target.value)
                                                         }
                                                     />
 
@@ -1181,6 +1220,7 @@ export default function index({
                                                             setEditData('id', '');
                                                             setEditData('bl_date', '');
                                                             setEditData('bl_no', '');
+                                                            setEditData('port_name', '');
                                                             setEditData('currency_id', '');
                                                             setEditData('exchange_rate', 0);
                                                             setEditData('containers', []);
@@ -1280,6 +1320,11 @@ export default function index({
                                                             <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Account
                                                             </th>
+
+                                                            <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
+                                                                Port Name
+                                                            </th>
+
                                                             <th className="px-4 py-2 text-left text-sm font-medium text-gray-700 dark:text-white">
                                                                 Currency
                                                             </th>
@@ -1313,8 +1358,13 @@ export default function index({
                                                                             ? viewData.account
                                                                                   .account_code +
                                                                               ' - ' +
-                                                                              viewData.account.name
+                                                                              viewData.account.title
                                                                             : 'N/A'}
+                                                                    </td>
+
+                                                                    <td className="px-4 py-2 text-sm text-gray-800 dark:text-white">
+                                                                        {viewData.port_name ??
+                                                                            'N/A'}
                                                                     </td>
 
                                                                     <td className="px-4 py-2 text-sm text-gray-800 dark:text-white">

@@ -14,6 +14,7 @@ class StockOut extends Model
         'currency_id',
         'exchange_rate',
         'containers',
+        'port_name',
     ];
 
     protected $appends = ['containers_collection'];
@@ -34,7 +35,7 @@ class StockOut extends Model
 
     public function account(): BelongsTo
     {
-        return $this->belongsTo(Subsidary::class, 'account_id', 'id');
+        return $this->belongsTo(Detail::class, 'account_id', 'id');
     }
 
     protected $casts = [

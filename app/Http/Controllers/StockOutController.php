@@ -50,12 +50,17 @@ class StockOutController extends Controller
 
         $currencies = Currency::all();
 
-        $accounts = Subsidary::where('account_category', 'R')->get()->map(function ($subsidary) {
-            return [
-                'id' => $subsidary->id,
-                'name' => $subsidary->account_code.' - '.$subsidary->name,
-            ];
-        });
+        $accounts = Subsidary::where('account_category', 'R')
+            ->with('details')
+            ->get()
+            ->flatMap(function ($subsidary) {
+                return $subsidary->details->map(function ($detail) {
+                    return [
+                        'id' => $detail?->id,
+                        'name' => $detail?->account_code.' - '.$detail?->title,
+                    ];
+                });
+            });
 
         return Inertia::render('Transactions/StockOuts/index', [
             'stock_outs' => $stock_outs,
@@ -78,6 +83,7 @@ class StockOutController extends Controller
             'exchange_rate' => ['required', 'numeric'],
             'containers' => ['required', 'array'],
             'currency_id' => ['required', 'exists:currencies,id'],
+            'port_name' => ['required', 'string', 'max:255'],
 
         ]);
 
@@ -130,6 +136,7 @@ class StockOutController extends Controller
             'exchange_rate' => ['required', 'numeric'],
             'containers' => ['required', 'array'],
             'currency_id' => ['required', 'exists:currencies,id'],
+            'port_name' => ['required', 'string', 'max:255'],
         ]);
 
         // dd($validated_req);

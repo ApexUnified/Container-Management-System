@@ -1,0 +1,5 @@
+Fix: Receivable Wont show in Stock out it will show there a details accounts from subsidary from that recevable account (Done)
+One More Field in stock out `enter port name`. Input (Done)
+
+
+on prod firts migration ill be rollbacked and than again migrate

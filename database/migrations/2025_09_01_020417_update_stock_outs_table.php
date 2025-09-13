@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('stock_outs', function (Blueprint $table) {
-            $table->foreignId('account_id')->nullable()->after('bl_no')->constrained('subsidaries')->nullOnDelete()->cascadeOnUpdate();
+            $table->foreignId('account_id')->nullable()->after('bl_no')->constrained('details')->nullOnDelete()->cascadeOnUpdate();
+            $table->string('port_name')->nullable()->after('account_id');
         });
     }
 
@@ -23,7 +24,7 @@ return new class extends Migration
     {
         Schema::table('stock_outs', function (Blueprint $table) {
             $table->dropForeign(['account_id']);
-            $table->dropColumn('account_id');
+            $table->dropColumn('account_id', 'port_name');
         });
     }
 };

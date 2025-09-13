@@ -332,12 +332,13 @@ namespace App\Models{
  * @property \Illuminate\Support\Carbon $bl_date
  * @property string $bl_no
  * @property int|null $account_id
+ * @property string|null $port_name
  * @property int|null $currency_id
  * @property string $exchange_rate
  * @property array<array-key, mixed> $containers
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
- * @property-read \App\Models\Subsidary|null $account
+ * @property-read \App\Models\Detail|null $account
  * @property-read \App\Models\Currency|null $currency
  * @property-read mixed $containers_collection
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut newModelQuery()
@@ -351,6 +352,7 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereCurrencyId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereExchangeRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut wherePortName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereUpdatedAt($value)
  */
 	class StockOut extends \Eloquent {}
