@@ -341,6 +341,7 @@ namespace App\Models{
  * @property-read \App\Models\Detail|null $account
  * @property-read \App\Models\Currency|null $currency
  * @property-read mixed $containers_collection
+ * @property-read \App\Models\StockOutInvoice|null $invoice
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut query()
@@ -356,6 +357,42 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOut whereUpdatedAt($value)
  */
 	class StockOut extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property int $stock_out_id
+ * @property string $invoice_no
+ * @property \Illuminate\Support\Carbon $invoice_date
+ * @property string $port_name
+ * @property string $customer_name
+ * @property string|null $customer_address
+ * @property string $payment_term
+ * @property string $hs_code
+ * @property array<array-key, mixed> $items
+ * @property array<array-key, mixed> $totals
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \App\Models\StockOut $stockOut
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereCustomerAddress($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereCustomerName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereHsCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereInvoiceDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereInvoiceNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereItems($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice wherePaymentTerm($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice wherePortName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereStockOutId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereTotals($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereUpdatedAt($value)
+ */
+	class StockOutInvoice extends \Eloquent {}
 }
 
 namespace App\Models{

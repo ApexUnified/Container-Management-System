@@ -10,6 +10,8 @@ import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
 import SelectInput from '@/Components/SelectInput';
 import Toast from '@/Components/Toast';
+import axios from 'axios';
+import Swal from 'sweetalert2';
 
 export default function index({
     stock_ins,
@@ -19,6 +21,11 @@ export default function index({
     accounts,
 }) {
     const { props } = usePage();
+
+    const { asset } = usePage().props;
+
+    // Application Logo Sate
+    const [ApplicationLogo, setApplicationLogo] = useState(asset + 'assets/images/Logo/Logo.png');
 
     const [searchErrors, setSearchErrors] = useState({});
 
@@ -173,129 +180,6 @@ export default function index({
         }, 500);
     }, []);
 
-    // Columns
-    useEffect(() => {
-        const columns = [
-            {
-                label: "Container No's",
-                render: (item) => {
-                    return (
-                        <div
-                            className="cursor-pointer"
-                            onClick={() => {
-                                setViewModalOpen(true);
-                                setViewData(item);
-                            }}
-                        >
-                            {item.containers.map((item, index) => {
-                                return (
-                                    <p
-                                        key={index}
-                                        className="text-sm font-semibold text-blue-500 underline"
-                                    >
-                                        {item.container_no}
-                                    </p>
-                                );
-                            })}
-                        </div>
-                    );
-                },
-            },
-
-            { key: 'bl_date', label: 'B/L Date' },
-            { key: 'bl_no', label: 'B/L No' },
-            { key: 'port_name', label: 'Port Name' },
-            {
-                label: 'Account',
-                render: (item) => {
-                    return item?.account
-                        ? item?.account?.account_code + ' - ' + item?.account?.title
-                        : 'N/A';
-                },
-            },
-            {
-                key: 'currency.name',
-                label: 'Currency',
-                badge: (value) => 'bg-blue-500 text-white p-3',
-            },
-            { key: 'exchange_rate', label: 'Exchange Rate' },
-            {
-                label: 'Amount In FC',
-                render: (item) => {
-                    return (
-                        <div>
-                            {item.containers.map((item, index) => {
-                                return (
-                                    <p key={index} className="text-sm font-semibold">
-                                        {item.total_amount}
-                                    </p>
-                                );
-                            })}
-                        </div>
-                    );
-                },
-            },
-        ];
-
-        const actions = [
-            {
-                label: 'View',
-                type: 'button',
-                onClick: (item) => {
-                    router.reload('stock_ins');
-                    setViewModalOpen(true);
-                    setActualData(item);
-                    setViewData((prev) => ({
-                        ...prev,
-                        id: item.id,
-                        bl_date: item.bl_date,
-                        bl_no: item.bl_no,
-                        currency_id: item.currency_id,
-                        account: item.account,
-                        port_name: item.port_name,
-                        currency: item.currency,
-                        exchange_rate: item.exchange_rate,
-                        containers: item.containers.map((c) => ({
-                            container_id: c.container_id,
-                            total_amount: c.total_amount,
-                            container_no: c.container_no,
-                        })),
-                    }));
-                },
-            },
-
-            {
-                label: 'Edit',
-                type: 'button',
-                onClick: (item) => {
-                    router.reload('stock_ins');
-                    setEditModalOpen(true);
-                    setActualData(item);
-                    setEditData('id', item.id);
-                    setEditData('bl_date', item.bl_date);
-                    setEditData('account_id', item.account_id);
-                    setEditData('bl_no', item.bl_no);
-                    setEditData('port_name', item.port_name);
-                    setEditData('currency_id', item.currency_id);
-                    setEditData('exchange_rate', item.exchange_rate);
-                    setEditData(
-                        'containers',
-                        item.containers.map((item) => {
-                            return {
-                                container_id: item.container_id,
-                                total_amount: item.total_amount,
-                                container_no: item.container_no,
-                            };
-                        }),
-                    );
-                },
-            },
-        ];
-
-        setCustomActions(actions);
-        setColumns(columns);
-    }, []);
-
     // For Create
     useEffect(() => {
         if (createData.exchange_rate != 0 && createData.currency_id != '') {
@@ -445,6 +329,252 @@ export default function index({
             },
         });
     };
+
+    const [generateInvoiceModalOpen, setGenerateInvoiceModalOpen] = useState(false);
+    const [invoiceData, setInvoiceData] = useState({});
+    const [invoiceDataLoader, setInvoiceDataLoader] = useState(false);
+
+    const getDataForInvoice = (stock_out_id) => {
+        // setTimeout(() => {
+        //     setInvoiceDataLoader(false);
+        // }, 2000);
+
+        // For Checking Just
+        // router.post(route('transactions.stock-out.generate-invoice'), {
+        //     stock_out_id: stock_out_id,
+        // });
+
+        axios
+            .post(route('transactions.stock-out.generate-invoice'), { stock_out_id: stock_out_id })
+            .then((response) => {
+                if (response.data.status) {
+                    setInvoiceData(response.data.data);
+                    router.reload('stock_outs');
+                } else {
+                    setInvoiceData({});
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.data.message,
+                        showConfirmButton: true,
+                    });
+                }
+            })
+            .catch((error) => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Error fetching invoice data:' + error,
+                    showConfirmButton: true,
+                });
+                setInvoiceData({});
+            })
+            .finally(() => {
+                setInvoiceDataLoader(false);
+            });
+    };
+
+    const invoiceRef = useRef();
+
+    const handlePrint = () => {
+        const content = invoiceRef.current.innerHTML;
+
+        const printWindow = window.open('', '_blank');
+
+        printWindow.document.open();
+        printWindow.document.write(`
+    <html>
+      <head>
+        <title>Invoice Print</title>
+        <!-- Tailwind CSS CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+          body {
+            margin: 40px;
+            background: #fff !important;
+            color: #000 !important;
+          }
+          /* Hide any original print buttons from content */
+          .no-print {
+            display: none !important;
+          }
+          /* Prevent dark mode styles */
+          .dark\\:bg-gray-800,
+          .dark\\:border-white\\/80 {
+            background-color: #fff !important;
+            border-color: #000 !important;
+          }
+          /* Style for the manual print button */
+          #print-btn {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            background: #2563eb;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: sans-serif;
+            font-size: 14px;
+          }
+          #print-btn:hover {
+            background: #1d4ed8;
+          }
+        </style>
+      </head>
+      <body>
+        <button id="print-btn" class="print:hidden" onclick="window.print()">
+            Print
+        </button>
+        <div class="p-10">
+          ${content}
+        </div>
+      </body>
+    </html>
+  `);
+        printWindow.document.close();
+    };
+
+    // Columns
+    useEffect(() => {
+        const columns = [
+            {
+                label: "Container No's",
+                render: (item) => {
+                    return (
+                        <div
+                            className="cursor-pointer"
+                            onClick={() => {
+                                setViewModalOpen(true);
+                                setViewData(item);
+                            }}
+                        >
+                            {item.containers.map((item, index) => {
+                                return (
+                                    <p
+                                        key={index}
+                                        className="text-sm font-semibold text-blue-500 underline"
+                                    >
+                                        {item.container_no}
+                                    </p>
+                                );
+                            })}
+                        </div>
+                    );
+                },
+            },
+
+            { key: 'bl_date', label: 'B/L Date' },
+            { key: 'bl_no', label: 'B/L No' },
+            { key: 'port_name', label: 'Port Name' },
+            {
+                label: 'Account',
+                render: (item) => {
+                    return item?.account
+                        ? item?.account?.account_code + ' - ' + item?.account?.title
+                        : 'N/A';
+                },
+            },
+            {
+                key: 'currency.name',
+                label: 'Currency',
+                badge: (value) => 'bg-blue-500 text-white p-3',
+            },
+            { key: 'exchange_rate', label: 'Exchange Rate' },
+            {
+                label: 'Amount In FC',
+                render: (item) => {
+                    return (
+                        <div>
+                            {item.containers.map((item, index) => {
+                                return (
+                                    <p key={index} className="text-sm font-semibold">
+                                        {item.total_amount}
+                                    </p>
+                                );
+                            })}
+                        </div>
+                    );
+                },
+            },
+        ];
+
+        const actions = [
+            {
+                label: 'Generate Invoice',
+                type: 'button',
+                onClick: (item) => {
+                    setGenerateInvoiceModalOpen(true);
+                    getDataForInvoice(item.id);
+                    setInvoiceDataLoader(true);
+                },
+            },
+            {
+                label: 'View',
+                type: 'button',
+                onClick: (item) => {
+                    router.reload('stock_ins');
+                    setViewModalOpen(true);
+                    setActualData(item);
+                    setViewData((prev) => ({
+                        ...prev,
+                        id: item.id,
+                        bl_date: item.bl_date,
+                        bl_no: item.bl_no,
+                        currency_id: item.currency_id,
+                        account: item.account,
+                        port_name: item.port_name,
+                        currency: item.currency,
+                        exchange_rate: item.exchange_rate,
+                        containers: item.containers.map((c) => ({
+                            container_id: c.container_id,
+                            total_amount: c.total_amount,
+                            container_no: c.container_no,
+                        })),
+                    }));
+                },
+            },
+
+            {
+                label: 'Edit',
+                type: 'button',
+                onClick: (item) => {
+                    router.reload('stock_ins');
+
+                    if (item.invoice) {
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Info',
+                            text: 'Invoice already generated for this stock out and cannot be edited.',
+                        });
+                    } else {
+                        setEditModalOpen(true);
+                        setActualData(item);
+                        setEditData('id', item.id);
+                        setEditData('bl_date', item.bl_date);
+                        setEditData('account_id', item.account_id);
+                        setEditData('bl_no', item.bl_no);
+                        setEditData('port_name', item.port_name);
+                        setEditData('currency_id', item.currency_id);
+                        setEditData('exchange_rate', item.exchange_rate);
+                        setEditData(
+                            'containers',
+                            item.containers.map((item) => {
+                                return {
+                                    container_id: item.container_id,
+                                    total_amount: item.total_amount,
+                                    container_no: item.container_no,
+                                };
+                            }),
+                        );
+                    }
+                },
+            },
+        ];
+
+        setCustomActions(actions);
+        setColumns(columns);
+    }, []);
 
     return (
         <>
@@ -1449,6 +1579,375 @@ export default function index({
                         </>
                     }
                 />
+
+                {/* Invoice Modal */}
+                {generateInvoiceModalOpen && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                        {/* Backdrop */}
+                        <div
+                            className="fixed inset-0 backdrop-blur-[32px]"
+                            onClick={() => setGenerateInvoiceModalOpen(false)}
+                        ></div>
+
+                        {/* Modal content */}
+                        <div className="relative z-10 max-h-screen w-full max-w-screen-lg overflow-y-auto rounded-2xl bg-white p-6 text-gray-700 shadow-xl dark:bg-gray-800 dark:text-white/80 sm:p-8">
+                            <div className="mx-auto max-w-4xl bg-white p-8 font-sans dark:bg-gray-800">
+                                {invoiceDataLoader && (
+                                    <div className="flex flex-col items-center justify-center gap-6 py-20">
+                                        <p className="text-center text-2xl">
+                                            Please Wait While We Are Generating Your Invoice
+                                        </p>
+
+                                        <div role="status">
+                                            <svg
+                                                aria-hidden="true"
+                                                className="h-10 w-10 animate-spin fill-blue-600 text-gray-200 dark:text-gray-600"
+                                                viewBox="0 0 100 101"
+                                                fill="none"
+                                                xmlns="http://www.w3.org/2000/svg"
+                                            >
+                                                <path
+                                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                                    fill="currentColor"
+                                                />
+                                                <path
+                                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                                    fill="currentFill"
+                                                />
+                                            </svg>
+                                            <span className="sr-only">Loading...</span>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {!invoiceDataLoader && Object.values(invoiceData).length > 0 && (
+                                    <div ref={invoiceRef}>
+                                        <button
+                                            onClick={handlePrint}
+                                            className="no-print mb-4 rounded-2xl bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 print:hidden"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                strokeWidth={1.5}
+                                                stroke="currentColor"
+                                                className="size-6"
+                                            >
+                                                <path
+                                                    strokeLinecap="round"
+                                                    strokeLinejoin="round"
+                                                    d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z"
+                                                />
+                                            </svg>
+                                        </button>
+
+                                        {/* Header */}
+                                        <div className="mb-8 flex items-start justify-between">
+                                            <div className="flex items-center gap-4">
+                                                {/* Logo */}
+                                                <div className="relative">
+                                                    <div className="h-[100px] w-[100px] bg-white">
+                                                        <img
+                                                            src={ApplicationLogo}
+                                                            alt="Logo"
+                                                            className="h-full w-full object-cover"
+                                                        />
+                                                    </div>
+                                                </div>
+                                                <h1 className="text-3xl font-bold text-gray-800">
+                                                    Hasnain Enterprises
+                                                </h1>
+                                            </div>
+                                            <div className="text-right text-sm">
+                                                <div className="mb-1 flex items-center gap-2">
+                                                    <span>📧</span>
+                                                    <span>hr.enterprises5655@gmail.com</span>
+                                                </div>
+                                                <div className="flex items-center gap-2">
+                                                    <span>📞</span>
+                                                    <span>+92-21-35308637-38</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Invoice Title */}
+                                        <div className="mb-8 text-center">
+                                            <h2 className="text-xl font-bold">
+                                                COMMERCIAL INVOICE
+                                            </h2>
+                                        </div>
+
+                                        {/* Invoice Details */}
+                                        <div className="mb-6 flex justify-between">
+                                            <div>
+                                                <div className="mb-4">
+                                                    <strong>INVOICE NO:</strong>{' '}
+                                                    {invoiceData?.invoice_no ?? 'N/A'}
+                                                </div>
+                                                <div className="mb-6">
+                                                    Shipped in good order and condition per:{' '}
+                                                    <strong>By Sea</strong> _____ From Karachi to:{' '}
+                                                    <strong>
+                                                        {invoiceData?.port_name ?? 'N/A'}
+                                                    </strong>
+                                                </div>
+
+                                                <div className="mb-2">
+                                                    <strong>CONSIGNEE</strong>
+                                                </div>
+                                                <div className="mb-1 text-lg font-bold underline decoration-2 underline-offset-2">
+                                                    {invoiceData?.customer_name ?? 'N/A'}
+                                                </div>
+                                                <div className="mb-4">
+                                                    {' '}
+                                                    {invoiceData?.customer_address ?? ''}
+                                                </div>
+
+                                                <div className="mb-2">
+                                                    <strong>PAYMENT TERM:</strong>{' '}
+                                                    {invoiceData?.payment_term ?? 'N/A'}
+                                                </div>
+                                                <div>
+                                                    <strong>HS CODE:</strong>{' '}
+                                                    {invoiceData?.hs_code ?? 'N/A'}
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <strong>Dated:</strong> {invoiceData.invoice_date}
+                                            </div>
+                                        </div>
+
+                                        <div className="mb-8 overflow-x-auto">
+                                            {/* Invoice Table */}
+                                            <div className="hidden min-w-full sm:block">
+                                                {/* Table Header */}
+                                                <div className="border-b-2 border-black bg-gray-50 dark:border-white/80 dark:bg-gray-800">
+                                                    <div className="grid grid-cols-9 gap-2 p-3 text-center text-xs font-bold">
+                                                        <div className="border-r border-gray-300">
+                                                            CONT NO.
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            PRODUCT NAME
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            WT. IN KGS
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            WT IN MANN
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            BUNDLES
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            TOT. VALUE
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            F/C
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            EXCH. RATE
+                                                        </div>
+                                                        <div>AMT. IN AED</div>
+                                                    </div>
+                                                </div>
+
+                                                {/* Table Rows */}
+                                                <div className="border-b border-black">
+                                                    {invoiceData.items.map((item, index) => {
+                                                        return (
+                                                            <div
+                                                                key={index}
+                                                                className="grid grid-cols-9 gap-2 border-b border-gray-200 p-3 text-center text-xs"
+                                                            >
+                                                                <div className="break-all border-r border-gray-200">
+                                                                    {item.container_no ?? 'N/A'}
+                                                                </div>
+                                                                <div className="break-all border-r border-gray-200">
+                                                                    {item.product_name ?? 'N/A'}
+                                                                </div>
+                                                                <div className="break-all border-r border-gray-200">
+                                                                    {item?.weight_in_kgs ?? 'N/A'}
+                                                                </div>
+                                                                <div className="break-all border-r border-gray-200">
+                                                                    {item?.weight_in_mann ?? 'N/A'}
+                                                                </div>
+                                                                <div className="break-all border-r border-gray-200">
+                                                                    {item?.bundles ?? 'N/A'}
+                                                                </div>
+                                                                <div className="break-all border-r border-gray-200">
+                                                                    {item?.total_container_amount ??
+                                                                        'N/A'}
+                                                                </div>
+                                                                <div className="break-all border-r border-gray-200">
+                                                                    {item?.fc ?? 'N/A'}
+                                                                </div>
+                                                                <div className="break-all border-r border-gray-200">
+                                                                    {item?.exchange_rate ?? 'N/A'}
+                                                                </div>
+                                                                <div>
+                                                                    {item?.total_amount ?? 'N/A'}
+                                                                </div>
+                                                            </div>
+                                                        );
+                                                    })}
+                                                </div>
+
+                                                {/* Total Row */}
+                                                <div className="border-t-2 border-black bg-gray-100 dark:border-white/80 dark:bg-gray-800">
+                                                    <div className="grid grid-cols-9 gap-2 p-3 text-center text-xs font-bold">
+                                                        <div className="col-span-2 text-left">
+                                                            TOTAL
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            {invoiceData?.totals
+                                                                ?.total_weight_kgs ?? 'N/A'}
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            {invoiceData?.totals
+                                                                ?.total_weight_mann ?? 'N/A'}
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            {invoiceData?.totals?.total_bundles ??
+                                                                'N/A'}
+                                                        </div>
+                                                        <div className="border-r border-gray-300">
+                                                            {invoiceData?.totals
+                                                                ?.total_container_amount ?? 'N/A'}
+                                                        </div>
+                                                        <div className="border-r border-gray-300"></div>
+                                                        <div className="border-r border-gray-300"></div>
+                                                        <div className="text-right font-bold">
+                                                            {invoiceData?.totals?.total_fc_amount ??
+                                                                'N/A'}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Mobile View - Alternative Table Layout */}
+                                            <div className="mt-6 block sm:hidden">
+                                                {invoiceData.items.map((item, index) => (
+                                                    <div
+                                                        key={index}
+                                                        className="mb-4 rounded-lg border border-gray-300 bg-gray-50 p-4"
+                                                    >
+                                                        <div className="grid grid-cols-2 gap-2 text-xs">
+                                                            <div>
+                                                                <strong>CONT NO.:</strong>{' '}
+                                                                {item.container_no ?? 'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                <strong>PRODUCT:</strong>{' '}
+                                                                {item.product_name ?? 'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                <strong>WT. IN KGS:</strong>{' '}
+                                                                {item.weight_in_kgs ?? 'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                <strong>WT IN MANN:</strong>{' '}
+                                                                {item.weight_in_mann ?? 'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                <strong>BUNDLES:</strong>{' '}
+                                                                {item.bundles ?? 'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                <strong>TOT. VALUE:</strong>{' '}
+                                                                {item.total_container_amount ??
+                                                                    'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                <strong>F/C:</strong>{' '}
+                                                                {item.fc ?? 'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                <strong>EXCH. RATE:</strong>{' '}
+                                                                {item.exchange_rate ?? 'N/A'}
+                                                            </div>
+                                                            <div className="col-span-2 mt-2 text-center">
+                                                                <strong>
+                                                                    AMT. IN AED:{' '}
+                                                                    {item.total_amount ?? 'N/A'}
+                                                                </strong>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))}
+
+                                                <div className="rounded-lg border-2 border-black bg-gray-100 p-4">
+                                                    <div className="text-center font-bold">
+                                                        <div className="mb-2">TOTAL SUMMARY</div>
+                                                        <div className="grid grid-cols-2 gap-2 text-xs">
+                                                            <div>
+                                                                Total Weight (KGS):{' '}
+                                                                {invoiceData?.totals
+                                                                    ?.total_weight_kgs ?? 'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                Total Weight (MANN):{' '}
+                                                                {invoiceData?.totals
+                                                                    ?.total_weight_mann ?? 'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                Total Bundles:{' '}
+                                                                {invoiceData?.totals
+                                                                    ?.total_bundles ?? 'N/A'}
+                                                            </div>
+                                                            <div>
+                                                                Total Value:{' '}
+                                                                {invoiceData?.totals
+                                                                    ?.total_container_amount ??
+                                                                    'N/A'}
+                                                            </div>
+                                                            <div className="col-span-2 mt-2 text-lg">
+                                                                <strong>
+                                                                    TOTAL: AED Value{' '}
+                                                                    {invoiceData?.totals
+                                                                        ?.total_fc_amount ?? 'N/A'}
+                                                                </strong>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        {/* Signature Section */}
+                                        {/* <div className="flex justify-end mb-8">
+                                            <div className="text-center">
+                                                <div className="mb-2 text-lg font-bold text-blue-600">
+                                                    Hasnain Enterprises
+                                                </div>
+                                                <div className="mb-2 text-2xl text-blue-600 font-script">
+                                                    Abdullah
+                                                </div>
+                                                <div className="font-bold text-blue-600">
+                                                    Proprietor
+                                                </div>
+                                                <div className="mt-4 text-sm">
+                                                    FOR: <strong>HASNAIN ENTERPRISES</strong>
+                                                </div>
+                                            </div>
+                                        </div> */}
+
+                                        {/* Footer Address */}
+                                        <div className="mt-8 border-t-2 border-yellow-600 pt-4">
+                                            <div className="text-center text-sm">
+                                                The Plaza, Office No.118, Plot No. G-7, Block 9, KDA
+                                                Scheme No.5,
+                                                <br />
+                                                Kehkashan Clifton, Karachi Central.
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
             </AuthenticatedLayout>
         </>
     );

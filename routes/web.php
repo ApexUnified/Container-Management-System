@@ -89,6 +89,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::delete('/stock-in-destroy-by-selectetion', [StockInController::class, 'destroyBySelection'])->name('stock-in.destroybyselection');
 
         Route::resource('/stock-out', StockOutController::class)->except(['show', 'edit', 'create']);
+        Route::post('/stock-out-generate-invoice', [StockOutController::class, 'generateInvoice'])->name('stock-out.generate-invoice');
         Route::delete('/stock-out-destroy-by-selectetion', [StockOutController::class, 'destroyBySelection'])->name('stock-out.destroybyselection');
 
         Route::resource('/vouchers', VoucherController::class)->except(['show', 'edit', 'create']);

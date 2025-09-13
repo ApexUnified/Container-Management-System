@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class StockOut extends Model
 {
@@ -25,7 +26,7 @@ class StockOut extends Model
     {
         $container_ids = collect(json_decode($this->attributes['containers'], true))->pluck('container_id')->toArray();
 
-        return StockIn::whereIn('id', $container_ids)->get();
+        return StockIn::with('product')->whereIn('id', $container_ids)->get();
     }
 
     public function currency(): BelongsTo
@@ -36,6 +37,11 @@ class StockOut extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Detail::class, 'account_id', 'id');
+    }
+
+    public function invoice(): HasOne
+    {
+        return $this->hasOne(StockOutInvoice::class, 'stock_out_id', 'id');
     }
 
     protected $casts = [
