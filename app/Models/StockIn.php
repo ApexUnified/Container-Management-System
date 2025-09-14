@@ -79,6 +79,10 @@ class StockIn extends Model
 
     public function getEntryDateAttribute()
     {
-        return Carbon::parse($this->attributes['entry_date'])->format('Y-m-d');
+        return Carbon::parse($this->attributes['entry_date'])->format('d-m-Y');
     }
+
+    protected $casts = [
+        'entry_date' => 'date',
+    ];
 }

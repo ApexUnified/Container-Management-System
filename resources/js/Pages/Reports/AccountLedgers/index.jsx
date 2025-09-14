@@ -98,7 +98,7 @@ export default function index({ details }) {
         setTimeout(() => {
             if (flatpickerRefFromDate.current) {
                 flatpickr(flatpickerRefFromDate.current, {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         setData('from_date', dateStr);
@@ -108,7 +108,7 @@ export default function index({ details }) {
 
             if (flatpickerRefToDate.current) {
                 flatpickr(flatpickerRefToDate.current, {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         setData('to_date', dateStr);
@@ -332,7 +332,7 @@ export default function index({ details }) {
                 Content={
                     <>
                         <form onSubmit={submit}>
-                            <div className="grid grid-cols-1 gap-5 p-4 my-10 md:grid-cols-2">
+                            <div className="my-10 grid grid-cols-1 gap-5 p-4 md:grid-cols-2">
                                 <Input
                                     InputName={'From Date'}
                                     Id={'from_date'}
@@ -421,9 +421,9 @@ export default function index({ details }) {
                 }
             />
 
-            <div className="p-6 border-t border-gray-100 dark:border-gray-800">
+            <div className="border-t border-gray-100 p-6 dark:border-gray-800">
                 {ledgerReportModalOpen && currentAccount && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                         {/* Backdrop */}
                         <div
                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -431,8 +431,8 @@ export default function index({ details }) {
                         ></div>
 
                         {/* Modal content */}
-                        <div className="relative z-10 w-full max-h-screen p-6 overflow-y-auto bg-white shadow-xl max-w-7xl rounded-2xl dark:bg-gray-800 sm:p-8">
-                            <div className="min-h-screen p-8 bg-white">
+                        <div className="relative z-10 max-h-screen w-full max-w-7xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
+                            <div className="min-h-screen bg-white p-8">
                                 <div className="mx-auto max-w-7xl">
                                     {/* Header */}
                                     <div className="mb-8 text-center">
@@ -445,9 +445,9 @@ export default function index({ details }) {
                                     </div>
 
                                     {/* Account Selection */}
-                                    <div className="flex flex-wrap items-center justify-between gap-4 my-5">
+                                    <div className="my-5 flex flex-wrap items-center justify-between gap-4">
                                         {/* Select Input */}
-                                        <div className="flex-1 min-w-0">
+                                        <div className="min-w-0 flex-1">
                                             <SelectInput
                                                 key={selectedAccountCode}
                                                 InputName={'Select Account'}
@@ -491,7 +491,7 @@ export default function index({ details }) {
                                     </div>
 
                                     {/* Report Header Info */}
-                                    <div className="p-4 mb-6 border border-gray-300 bg-gray-50">
+                                    <div className="mb-6 border border-gray-300 bg-gray-50 p-4">
                                         <div className="grid grid-cols-2 gap-4 text-sm md:grid-cols-4">
                                             <div>
                                                 <span className="font-semibold">Account Code:</span>
@@ -528,25 +528,25 @@ export default function index({ details }) {
                                     <div className="overflow-x-auto border border-gray-300">
                                         <table className="w-full text-sm">
                                             <thead>
-                                                <tr className="bg-gray-100 border-b border-gray-300">
-                                                    <th className="px-3 py-2 font-semibold text-left border-r border-gray-300">
+                                                <tr className="border-b border-gray-300 bg-gray-100">
+                                                    <th className="border-r border-gray-300 px-3 py-2 text-left font-semibold">
                                                         V Dt
                                                     </th>
-                                                    <th className="px-3 py-2 font-semibold text-left border-r border-gray-300">
+                                                    <th className="border-r border-gray-300 px-3 py-2 text-left font-semibold">
                                                         Inv # / Voucher #
                                                     </th>
 
-                                                    <th className="px-3 py-2 font-semibold text-left border-r border-gray-300">
+                                                    <th className="border-r border-gray-300 px-3 py-2 text-left font-semibold">
                                                         Narration
                                                     </th>
 
-                                                    <th className="px-3 py-2 font-semibold text-right border-r border-gray-300">
+                                                    <th className="border-r border-gray-300 px-3 py-2 text-right font-semibold">
                                                         Debit
                                                     </th>
-                                                    <th className="px-3 py-2 font-semibold text-right border-r border-gray-300">
+                                                    <th className="border-r border-gray-300 px-3 py-2 text-right font-semibold">
                                                         Credit
                                                     </th>
-                                                    <th className="px-3 py-2 font-semibold text-right">
+                                                    <th className="px-3 py-2 text-right font-semibold">
                                                         Balance
                                                     </th>
                                                 </tr>
@@ -562,30 +562,30 @@ export default function index({ details }) {
                                                         <Fragment key={index}>
                                                             {index == 0 && !isOpeningBalance && (
                                                                 <tr key={index + 1}>
-                                                                    <td className="px-3 py-2 text-xs border-r border-gray-300">
+                                                                    <td className="border-r border-gray-300 px-3 py-2 text-xs">
                                                                         {transaction.entry_date !=
                                                                         ''
                                                                             ? transaction.entry_date
                                                                             : '-'}
                                                                     </td>
 
-                                                                    <td className="px-3 py-2 text-xs border-r border-gray-300">
+                                                                    <td className="border-r border-gray-300 px-3 py-2 text-xs">
                                                                         -
                                                                     </td>
 
-                                                                    <td className="px-3 py-2 text-xs border-r border-gray-300">
+                                                                    <td className="border-r border-gray-300 px-3 py-2 text-xs">
                                                                         Opening Balance
                                                                     </td>
 
-                                                                    <td className="px-3 py-2 font-mono text-xs font-semibold text-right">
+                                                                    <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
                                                                         -
                                                                     </td>
 
-                                                                    <td className="px-3 py-2 font-mono text-xs font-semibold text-right">
+                                                                    <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
                                                                         -
                                                                     </td>
 
-                                                                    <td className="px-3 py-2 font-mono text-xs font-semibold text-right">
+                                                                    <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
                                                                         {formatBalance(
                                                                             transaction?.opening_balance,
                                                                         ) ?? '-'}
@@ -596,34 +596,34 @@ export default function index({ details }) {
                                                                 key={index + 2}
                                                                 className="border-b border-gray-200 hover:bg-gray-50"
                                                             >
-                                                                <td className="px-3 py-2 text-xs border-r border-gray-300">
+                                                                <td className="border-r border-gray-300 px-3 py-2 text-xs">
                                                                     {transaction.entry_date != ''
                                                                         ? transaction.entry_date
                                                                         : '-'}
                                                                 </td>
-                                                                <td className="px-3 py-2 text-xs border-r border-gray-300">
+                                                                <td className="border-r border-gray-300 px-3 py-2 text-xs">
                                                                     {transaction.id || '-'}
                                                                 </td>
 
-                                                                <td className="max-w-xs px-3 py-2 text-xs border-r border-gray-300">
+                                                                <td className="max-w-xs border-r border-gray-300 px-3 py-2 text-xs">
                                                                     {transaction.narration || '-'}
                                                                 </td>
 
-                                                                <td className="px-3 py-2 font-mono text-xs text-right border-r border-gray-300">
+                                                                <td className="border-r border-gray-300 px-3 py-2 text-right font-mono text-xs">
                                                                     {transaction.debit
                                                                         ? formatCurrency(
                                                                               transaction.debit,
                                                                           )
                                                                         : '-'}
                                                                 </td>
-                                                                <td className="px-3 py-2 font-mono text-xs text-right border-r border-gray-300">
+                                                                <td className="border-r border-gray-300 px-3 py-2 text-right font-mono text-xs">
                                                                     {transaction.credit
                                                                         ? formatCurrency(
                                                                               transaction.credit,
                                                                           )
                                                                         : '-'}
                                                                 </td>
-                                                                <td className="px-3 py-2 font-mono text-xs font-semibold text-right">
+                                                                <td className="px-3 py-2 text-right font-mono text-xs font-semibold">
                                                                     {formatBalance(
                                                                         transaction.runningBalance,
                                                                     )}
@@ -634,14 +634,14 @@ export default function index({ details }) {
                                                 })}
 
                                                 {/* Total Row */}
-                                                <tr className="font-semibold bg-gray-100 border-t-2 border-gray-400">
+                                                <tr className="border-t-2 border-gray-400 bg-gray-100 font-semibold">
                                                     <td
-                                                        className="px-3 py-2 text-xs border-r border-gray-300"
+                                                        className="border-r border-gray-300 px-3 py-2 text-xs"
                                                         colSpan="3"
                                                     >
                                                         Total Dr & Cr :
                                                     </td>
-                                                    <td className="px-3 py-2 font-mono text-xs text-right border-r border-gray-300">
+                                                    <td className="border-r border-gray-300 px-3 py-2 text-right font-mono text-xs">
                                                         {formatCurrency(
                                                             currentAccount.transactions.reduce(
                                                                 (sum, t) =>
@@ -653,7 +653,7 @@ export default function index({ details }) {
                                                             ),
                                                         )}
                                                     </td>
-                                                    <td className="px-3 py-2 font-mono text-xs text-right border-r border-gray-300">
+                                                    <td className="border-r border-gray-300 px-3 py-2 text-right font-mono text-xs">
                                                         {formatCurrency(
                                                             currentAccount.transactions.reduce(
                                                                 (sum, t) =>
@@ -672,7 +672,7 @@ export default function index({ details }) {
                                     </div>
 
                                     {/* Summary Section */}
-                                    <div className="p-4 mt-6 border border-blue-200 rounded-lg bg-blue-50">
+                                    <div className="mt-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
                                         <h3 className="mb-2 font-semibold text-gray-800">
                                             Account Summary
                                         </h3>
@@ -760,14 +760,14 @@ export default function index({ details }) {
                                     <div className="mt-6 text-center">
                                         <button
                                             onClick={() => setLedgerReportModalOpen(false)}
-                                            className="px-6 py-2 text-white bg-blue-600 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            className="rounded-md bg-blue-600 px-6 py-2 text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                                         >
                                             Close
                                         </button>
                                     </div>
 
                                     {/* Footer */}
-                                    <div className="mt-8 text-xs text-center text-gray-500">
+                                    <div className="mt-8 text-center text-xs text-gray-500">
                                         <p>Page No: 1 | Generated on: {currentAccount.now}</p>
                                     </div>
                                 </div>

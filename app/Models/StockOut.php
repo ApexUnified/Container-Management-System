@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -44,8 +45,13 @@ class StockOut extends Model
         return $this->hasOne(StockOutInvoice::class, 'stock_out_id', 'id');
     }
 
+    public function getBlDateAttribute()
+    {
+        return $this->attributes['bl_date'] ? Carbon::parse($this->attributes['bl_date'])->format('d-m-Y') : null;
+    }
+
     protected $casts = [
-        'bl_date' => 'date:Y-m-d',
+        'bl_date' => 'date',
         'containers' => 'array',
     ];
 }

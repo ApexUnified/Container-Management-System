@@ -81,11 +81,12 @@ class Voucher extends Model
 
     public function getPaymentDateAttribute()
     {
-        return Carbon::parse($this->attributes['payment_date'])->format('Y-m-d');
+        return Carbon::parse($this->attributes['payment_date'])->format('d-m-Y');
     }
 
     protected $casts = [
         'bank_details' => 'array',
         'cash_details' => 'array',
+        'payment_date' => 'date',
     ];
 }

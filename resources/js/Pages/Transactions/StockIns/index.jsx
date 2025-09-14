@@ -173,7 +173,7 @@ export default function index({
         setTimeout(() => {
             if (flatpickerForCreateForm.current) {
                 flatpickr(flatpickerForCreateForm.current, {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         if (selectedDates[0]) {
@@ -185,7 +185,7 @@ export default function index({
 
             if (flatpickerForEditForm.current) {
                 flatpickr(flatpickerForEditForm.current, {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         if (selectedDates[0]) {
@@ -203,12 +203,12 @@ export default function index({
             if (flatpickerForEntryDateSearch.current) {
                 flatpickr(flatpickerForEntryDateSearch.current, {
                     mode: 'range',
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         if (selectedDates.length === 2) {
-                            const fromDate = this.formatDate(selectedDates[0], 'Y-m-d');
-                            const toDate = this.formatDate(selectedDates[1], 'Y-m-d');
+                            const fromDate = this.formatDate(selectedDates[0], 'd-m-Y');
+                            const toDate = this.formatDate(selectedDates[1], 'd-m-Y');
                             setEntryDate(`${fromDate} to ${toDate}`);
                         } else if (selectedDates.length === 1) {
                             setEntryDate('');

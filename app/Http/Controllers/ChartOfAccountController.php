@@ -21,7 +21,7 @@ class ChartOfAccountController extends Controller
             ->orderBy('id', 'asc')
             ->get()
             ->map(function ($control) {
-                $control->now = now()->format('d/m/y');
+                $control->now = now()->format('d-m-Y');
 
                 return $control;
             });

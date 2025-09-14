@@ -20,8 +20,8 @@ class TrialBalanceController extends Controller
     public function generateReport(Request $request)
     {
         $validated_req = $request->validate([
-            'from_date' => ['required', 'date:Y-m-d'],
-            'to_date' => ['required', 'date:Y-m-d', 'after_or_equal:from_date'],
+            'from_date' => ['required', 'date:d-m-Y'],
+            'to_date' => ['required', 'date:d-m-Y', 'after_or_equal:from_date'],
             'cols' => ['required', 'in:2,6'],
         ], [
             'to_date.after_or_equal' => 'To date must be greater than or equal to From date',
@@ -290,7 +290,7 @@ class TrialBalanceController extends Controller
                         'closing_balance' => $all_total_closing_balances,
 
                     ],
-                    'now' => now()->format('Y-m-d'),
+                    'now' => now()->format('d-m-Y'),
                     'from_date' => $from_date,
                     'to_date' => $to_date,
                     'columns' => $columns,

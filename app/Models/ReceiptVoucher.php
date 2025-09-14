@@ -68,7 +68,7 @@ class ReceiptVoucher extends Model
 
     public function getReceiptDateAttribute()
     {
-        return Carbon::parse($this->attributes['receipt_date'])->format('Y-m-d');
+        return Carbon::parse($this->attributes['receipt_date'])->format('d-m-Y');
     }
 
     public static function booted()
@@ -85,6 +85,6 @@ class ReceiptVoucher extends Model
     protected $casts = [
         'bank_details' => 'array',
         'cash_details' => 'array',
-        'receipt_date' => 'date:Y-m-d',
+        'receipt_date' => 'date',
     ];
 }

@@ -29,8 +29,8 @@ class AccountLedgerController extends Controller
     {
 
         $request->validate([
-            'from_date' => ['required', 'date:Y-m-d'],
-            'to_date' => ['required', 'date:Y-m-d', 'after_or_equal:from_date'],
+            'from_date' => ['required', 'date:d-m-Y'],
+            'to_date' => ['required', 'date:d-m-Y', 'after_or_equal:from_date'],
             'from_account_code' => ['required'],
             'to_account_code' => ['required', 'after_or_equal:from_account_code'],
         ], [
@@ -480,9 +480,9 @@ class AccountLedgerController extends Controller
                 $account_opening = $opening_balances[$accountCode] ?? 0;
                 $data = [
                     'account_code' => $accountCode,
-                    'now' => Carbon::now()->format('d/m/Y'),
-                    'from_date' => Carbon::parse($request->from_date)->format('d/m/Y'),
-                    'to_date' => Carbon::parse($request->to_date)->format('d/m/Y'),
+                    'now' => Carbon::now()->format('d-m-Y'),
+                    'from_date' => Carbon::parse($request->from_date)->format('d-m-Y'),
+                    'to_date' => Carbon::parse($request->to_date)->format('d-m-Y'),
                     'account_title' => $items->first()['account_title'] ?? 'N/A',
                     'transactions' => $items->map(fn ($item) => [
                         'id' => $item['id'],
@@ -500,9 +500,9 @@ class AccountLedgerController extends Controller
                     $detail = Detail::where('account_code', $accountCode)->first();
                     $data = [
                         'account_code' => $accountCode,
-                        'now' => Carbon::now()->format('d/m/Y'),
-                        'from_date' => Carbon::parse($request->from_date)->format('d/m/Y'),
-                        'to_date' => Carbon::parse($request->to_date)->format('d/m/Y'),
+                        'now' => Carbon::now()->format('d-m-Y'),
+                        'from_date' => Carbon::parse($request->from_date)->format('d-m-Y'),
+                        'to_date' => Carbon::parse($request->to_date)->format('d-m-Y'),
                         'account_title' => $detail->title ?? 'N/A',
                         'transactions' => [
                             [

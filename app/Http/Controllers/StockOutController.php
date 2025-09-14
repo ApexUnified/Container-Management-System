@@ -285,7 +285,7 @@ class StockOutController extends Controller
             ];
 
             $invoiceData = [
-                'invoice_date' => $stock_out->bl_date->format('Y-m-d'),
+                'invoice_date' => $stock_out->bl_date,
                 'port_name' => $stock_out->port_name,
                 'customer_name' => $stock_out->account->title,
                 'customer_address' => $stock_out->account->address,
@@ -301,7 +301,7 @@ class StockOutController extends Controller
                 $invoice = StockOutInvoice::create([
                     'stock_out_id' => $request->input('stock_out_id'),
                     'invoice_no' => 'HS-'.now()->format('y').str_pad($invoice_no, 3, '0', STR_PAD_LEFT),
-                    'invoice_date' => $stock_out->bl_date->format('Y-m-d'),
+                    'invoice_date' => $stock_out->bl_date,
                     'port_name' => $stock_out->port_name,
                     'customer_name' => $stock_out->account->title,
                     'customer_address' => $stock_out->account->address,

@@ -137,7 +137,7 @@ export default function index({
         setTimeout(() => {
             if (flatpickerForCreateForm.current) {
                 flatpickr(flatpickerForCreateForm.current, {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         if (selectedDates[0]) {
@@ -149,7 +149,7 @@ export default function index({
 
             if (flatpickerForEditForm.current) {
                 flatpickr(flatpickerForEditForm.current, {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         if (selectedDates[0]) {
@@ -166,7 +166,7 @@ export default function index({
         setTimeout(() => {
             if (flatpickerForEntryDateSearch.current) {
                 flatpickr(flatpickerForEntryDateSearch.current, {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         if (selectedDates.length > 0) {
@@ -1696,7 +1696,7 @@ export default function index({
                                                 <div className="mb-2">
                                                     <strong>CONSIGNEE</strong>
                                                 </div>
-                                                <div className="mb-1 text-lg font-bold underline decoration-2 underline-offset-2">
+                                                <div className="mb-1 text-lg font-bold">
                                                     {invoiceData?.customer_name ?? 'N/A'}
                                                 </div>
                                                 <div className="mb-4">

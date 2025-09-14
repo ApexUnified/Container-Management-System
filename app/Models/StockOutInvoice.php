@@ -26,7 +26,7 @@ class StockOutInvoice extends Model
     }
 
     protected $casts = [
-        'invoice_date' => 'date:Y-m-d',
+        'invoice_date' => 'date',
         'items' => 'array',
         'totals' => 'array',
     ];

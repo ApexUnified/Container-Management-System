@@ -254,7 +254,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $entry_date
+ * @property \Illuminate\Support\Carbon $entry_date
  * @property string $container_no
  * @property string|null $vehicle_no
  * @property int|null $cro_id
@@ -528,7 +528,7 @@ namespace App\Models{
 namespace App\Models{
 /**
  * @property int $id
- * @property string $payment_date
+ * @property \Illuminate\Support\Carbon $payment_date
  * @property string|null $payment_no
  * @property string|null $paid_to
  * @property string|null $payment_details

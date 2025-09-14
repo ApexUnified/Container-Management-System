@@ -29,7 +29,7 @@ export default function index() {
         setTimeout(() => {
             if (flatpickerRefFromDate.current) {
                 flatpickr(flatpickerRefFromDate.current, {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         setData('from_date', dateStr);
@@ -39,7 +39,7 @@ export default function index() {
 
             if (flatpickerRefToDate.current) {
                 flatpickr(flatpickerRefToDate.current, {
-                    dateFormat: 'Y-m-d',
+                    dateFormat: 'd-m-Y',
                     disableMobile: true,
                     onChange: function (selectedDates, dateStr) {
                         setData('to_date', dateStr);
