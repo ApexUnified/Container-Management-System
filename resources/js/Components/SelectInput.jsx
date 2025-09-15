@@ -13,6 +13,7 @@ export default function SelectInput({
     Action,
     Value,
     itemKey,
+    valueKey,
     Multiple = false,
     Placeholder = true,
     isDisabled = false,
@@ -109,7 +110,7 @@ export default function SelectInput({
 
     useEffect(() => {
         const modified_options = items.map((item) => ({
-            value: item.id ?? item[itemKey],
+            value: item[valueKey] ?? item.id ?? item[itemKey],
             label: item[itemKey].length > 50 ? item[itemKey].slice(0, 50) + '...' : item[itemKey],
         }));
 

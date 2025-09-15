@@ -8,7 +8,7 @@ import { Head, useForm } from '@inertiajs/react';
 import React, { useEffect, useRef } from 'react';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
-export default function Index({ account_setting }) {
+export default function Index({ account_setting, account_codes }) {
     const { data, setData, post, processing, errors } = useForm({
         vendor_expense_code: account_setting?.vendor_expense_code || '',
         transporter_expense_code: account_setting?.transporter_expense_code || '',
@@ -53,13 +53,13 @@ export default function Index({ account_setting }) {
 
     return (
         <AuthenticatedLayout>
-            <Head title="Setups - Account Setting" />
+            <Head title="Setups - Accounts Setting" />
 
             <BreadCrumb
-                header={'Setups - Account Setting'}
+                header={'Setups - Accounts Setting'}
                 parent={'Dashboard'}
                 parent_link={route('dashboard')}
-                child={'Account Setting'}
+                child={'Accounts Setting'}
             />
 
             <Card
@@ -67,70 +67,83 @@ export default function Index({ account_setting }) {
                     <>
                         <form onSubmit={submit}>
                             <div className="my-10 grid grid-cols-1 gap-5 p-4 md:grid-cols-3">
-                                <Input
+                                <SelectInput
                                     InputName={'Vendor Expense Code'}
                                     Id={'vendor_expense_code'}
                                     Name={'vendor_expense_code'}
                                     Placeholder={'Vendor Expense Code'}
-                                    Type={'text'}
                                     Error={errors?.vendor_expense_code}
                                     Value={data?.vendor_expense_code}
+                                    valueKey={'account_code'}
+                                    items={account_codes}
+                                    itemKey={'name'}
                                     Required={false}
-                                    Action={(e) => setData('vendor_expense_code', e.target.value)}
+                                    Action={(value) => setData('vendor_expense_code', value)}
                                 />
 
-                                <Input
+                                <SelectInput
                                     InputName={'Transporter Expense Code'}
                                     Id={'transporter_expense_code'}
                                     Name={'transporter_expense_code'}
                                     Placeholder={'Transporter Expense Code'}
-                                    Type={'text'}
+                                    items={account_codes}
+                                    itemKey={'name'}
                                     Error={errors?.transporter_expense_code}
                                     Value={data?.transporter_expense_code}
+                                    valueKey={'account_code'}
                                     Required={false}
-                                    Action={(e) =>
-                                        setData('transporter_expense_code', e.target.value)
-                                    }
+                                    Action={(value) => setData('transporter_expense_code', value)}
                                 />
 
-                                <Input
+                                <SelectInput
                                     InputName={'Custom Clearance Expense Code'}
                                     Id={'custom_clearance_expense_code'}
                                     Name={'custom_clearance_expense_code'}
                                     Placeholder={'Custom Clearance Expense Code'}
-                                    Type={'text'}
+                                    items={account_codes}
+                                    itemKey={'name'}
                                     Error={errors?.custom_clearance_expense_code}
                                     Value={data?.custom_clearance_expense_code}
+                                    valueKey={'account_code'}
                                     Required={false}
-                                    Action={(e) =>
-                                        setData('custom_clearance_expense_code', e.target.value)
+                                    Action={(value) =>
+                                        setData('custom_clearance_expense_code', value)
                                     }
                                 />
 
-                                <Input
+                                <SelectInput
                                     InputName={'Freight Expense Code'}
                                     Id={'freight_expense_code'}
                                     Name={'freight_expense_code'}
                                     Placeholder={'Freight Expense Code'}
-                                    Type={'text'}
+                                    items={account_codes}
+                                    itemKey={'name'}
                                     Error={errors?.freight_expense_code}
                                     Value={data?.freight_expense_code}
+                                    valueKey={'account_code'}
                                     Required={false}
-                                    Action={(e) => setData('freight_expense_code', e.target.value)}
+                                    Action={(value) => setData('freight_expense_code', value)}
                                 />
 
-                                <Input
+                                <SelectInput
                                     InputName={'Income Code'}
                                     Id={'income_code'}
                                     Name={'income_code'}
                                     Placeholder={'Income Code'}
-                                    Type={'text'}
+                                    items={account_codes}
+                                    itemKey={'name'}
+                                    valueKey={'account_code'}
                                     Error={errors?.income_code}
                                     Value={data?.income_code}
                                     Required={false}
-                                    Action={(e) => setData('income_code', e.target.value)}
+                                    Action={(value) => setData('income_code', value)}
                                 />
+                            </div>
 
+                            <div className="text-center text-lg dark:text-white/80">
+                                <p>Fiscal Period</p>
+                            </div>
+                            <div className="my-5 grid grid-cols-1 gap-5 p-4 md:grid-cols-2">
                                 <Input
                                     InputName={'Fiscal Date From'}
                                     Id={'fiscal_date_from'}
@@ -160,7 +173,7 @@ export default function Index({ account_setting }) {
 
                             <PrimaryButton
                                 CustomClass={'w-[250px] h-[50px] p-4 mx-auto'}
-                                Text={'Save Account Setting'}
+                                Text={'Save Accounts Setting'}
                                 Type={'submit'}
                                 Processing={processing}
                                 Spinner={processing}
