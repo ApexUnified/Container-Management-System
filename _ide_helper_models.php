@@ -14,6 +14,35 @@
 namespace App\Models{
 /**
  * @property int $id
+ * @property string|null $vendor_expense_code
+ * @property string|null $transporter_expense_code
+ * @property string|null $custom_clearance_expense_code
+ * @property string|null $freight_expense_code
+ * @property string|null $income_code
+ * @property \Illuminate\Support\Carbon $fiscal_date_from
+ * @property \Illuminate\Support\Carbon $fiscal_date_to
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereCustomClearanceExpenseCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereFiscalDateFrom($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereFiscalDateTo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereFreightExpenseCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereIncomeCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereTransporterExpenseCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|AccountSetting whereVendorExpenseCode($value)
+ */
+	class AccountSetting extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
  * @property string $name
  * @property string|null $nature_of_account
  * @property \Illuminate\Support\Carbon|null $created_at

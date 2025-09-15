@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountSetting;
 use App\Models\ReceiptVoucher;
 use App\Models\StockIn;
 use App\Models\Subsidary;
@@ -14,7 +15,9 @@ class TrialBalanceController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Reports/TrialBalances/index');
+        $account_setting = AccountSetting::select(['fiscal_date_from', 'fiscal_date_to'])->first();
+
+        return Inertia::render('Reports/TrialBalances/index', compact('account_setting'));
     }
 
     public function generateReport(Request $request)

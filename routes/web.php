@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountLedgerController;
+use App\Http\Controllers\AccountSettingController;
 use App\Http\Controllers\ChartOfAccountController;
 use App\Http\Controllers\ControlController;
 use App\Http\Controllers\CroController;
@@ -77,6 +78,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         });
 
+        // Account Setting
+        Route::get('/account-setting', [AccountSettingController::class, 'index'])->name('account-setting.index');
+        Route::post('/account-setting', [AccountSettingController::class, 'save'])->name('account-setting.save');
     });
 
     // Transactions Route Group

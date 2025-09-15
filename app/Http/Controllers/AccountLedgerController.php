@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountSetting;
 use App\Models\Detail;
 use App\Models\ReceiptVoucher;
 use App\Models\StockIn;
@@ -22,7 +23,9 @@ class AccountLedgerController extends Controller
             ];
         });
 
-        return Inertia::render('Reports/AccountLedgers/index', compact('details'));
+        $account_setting = AccountSetting::select(['fiscal_date_from', 'fiscal_date_to'])->first();
+
+        return Inertia::render('Reports/AccountLedgers/index', compact('details', 'account_setting'));
     }
 
     public function generateReport(Request $request)

@@ -11,14 +11,14 @@ import 'flatpickr/dist/flatpickr.min.css';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 
-export default function index() {
+export default function index({ account_setting }) {
     const [trialBalanceModalOpen, setTrialBalanceModalOpen] = useState(false);
     const [trialBalanceData, setTrialBalanceData] = useState({});
     const [processing, setProcessing] = useState(false);
     const [errors, setErrors] = useState({});
     const { data, setData } = useForm({
-        from_date: '',
-        to_date: '',
+        from_date: account_setting?.fiscal_date_from || '',
+        to_date: account_setting?.fiscal_date_to || '',
         cols: '',
     });
 
