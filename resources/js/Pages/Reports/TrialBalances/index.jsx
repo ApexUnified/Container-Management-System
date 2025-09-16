@@ -53,6 +53,7 @@ export default function index({ account_setting }) {
         e.preventDefault();
 
         setProcessing(true);
+        // router.post(route('reports.trial-balances.generate-report'), data);
         axios
             .post(route('reports.trial-balances.generate-report'), data)
             .then((res) => {
@@ -257,14 +258,14 @@ export default function index({ account_setting }) {
                             </div>
 
                             {/* Content Area */}
-                            <div className="max-h-[calc(95vh-140px)] overflow-auto bg-gray-50/50">
+                            <div className="max-h-[90vh] overflow-auto bg-gray-50/50">
                                 <div className="p-8">
                                     {/* Enhanced Table */}
                                     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
                                         <div className="max-h-[700px] overflow-x-auto">
                                             <table className="w-full">
                                                 {/* Table Header */}
-                                                <thead className="sticky top-0 z-20 bg-gradient-to-r from-gray-800 to-gray-700 text-white">
+                                                <thead className="z-20 bg-gradient-to-r from-gray-800 to-gray-700 text-white">
                                                     <tr className="bg-gradient-to-r from-gray-800 to-gray-700 text-white">
                                                         <th className="px-4 py-4 text-left text-sm font-semibold">
                                                             Account Code

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountSetting;
 use App\Models\Cro;
 use App\Models\Currency;
 use App\Models\Detail;
@@ -194,6 +195,30 @@ class StockInController extends Controller
                 throw new Exception("This CRO No is Full and you can't add more containers in it");
             }
 
+            $account_setting = AccountSetting::first();
+            if (! empty($account_setting)) {
+                if (! empty($account_setting->vendor_expense_code) && $request->filled('vendor_id')) {
+                    $validated_req['vendor_expense_code'] = $account_setting->vendor_expense_code;
+                } else {
+                    $validated_req['vendor_expense_code'] = null;
+                }
+                if (! empty($account_setting->freight_expense_code) && $request->filled('freight_forwarder_id')) {
+                    $validated_req['freight_forwarder_expense_code'] = $account_setting->freight_expense_code;
+                } else {
+                    $validated_req['freight_forwarder_expense_code'] = null;
+                }
+                if (! empty($account_setting->transporter_expense_code) && $request->filled('transporter_id')) {
+                    $validated_req['transporter_expense_code'] = $account_setting->transporter_expense_code;
+                } else {
+                    $validated_req['transporter_expense_code'] = null;
+                }
+                if (! empty($account_setting->custom_clearance_expense_code) && $request->filled('custom_clearance_id')) {
+                    $validated_req['custom_clearance_expense_code'] = $account_setting->custom_clearance_expense_code;
+                } else {
+                    $validated_req['custom_clearance_expense_code'] = null;
+                }
+            }
+
             if (StockIn::create($validated_req)) {
                 return back()->with('success', 'Stock In Added Successfully');
             }
@@ -247,6 +272,30 @@ class StockInController extends Controller
 
             if (empty($stock_in)) {
                 throw new Exception('Stock In Not Found');
+            }
+
+            $account_setting = AccountSetting::first();
+            if (! empty($account_setting)) {
+                if (! empty($account_setting->vendor_expense_code) && $request->filled('vendor_id')) {
+                    $validated_req['vendor_expense_code'] = $account_setting->vendor_expense_code;
+                } else {
+                    $validated_req['vendor_expense_code'] = null;
+                }
+                if (! empty($account_setting->freight_expense_code) && $request->filled('freight_forwarder_id')) {
+                    $validated_req['freight_forwarder_expense_code'] = $account_setting->freight_expense_code;
+                } else {
+                    $validated_req['freight_forwarder_expense_code'] = null;
+                }
+                if (! empty($account_setting->transporter_expense_code) && $request->filled('transporter_id')) {
+                    $validated_req['transporter_expense_code'] = $account_setting->transporter_expense_code;
+                } else {
+                    $validated_req['transporter_expense_code'] = null;
+                }
+                if (! empty($account_setting->custom_clearance_expense_code) && $request->filled('custom_clearance_id')) {
+                    $validated_req['custom_clearance_expense_code'] = $account_setting->custom_clearance_expense_code;
+                } else {
+                    $validated_req['custom_clearance_expense_code'] = null;
+                }
             }
 
             if ($stock_in->update($validated_req)) {

@@ -48,7 +48,7 @@ class AccountLedgerController extends Controller
                 return response()->json(['status' => false, 'message' => 'From account code must be less than or equal to To account code']);
             }
 
-            $containers_data = StockIn::whereBetween('entry_date', [$request->from_date, $request->to_date])
+            $containers_data = StockIn::whereBetween('entry_date', [Carbon::parse($request->from_date)->format('Y-m-d'), Carbon::parse($request->to_date)->format('Y-m-d')])
                 ->when($fromCode && $toCode, function ($query) use ($fromCode, $toCode) {
                     $query->where(function ($sub) use ($fromCode, $toCode) {
                         // if codes are same → exact match, else → range
@@ -142,7 +142,7 @@ class AccountLedgerController extends Controller
                 return $entries; // flatMap will flatten this array automatically
             });
 
-            $payment_vouchers = Voucher::whereBetween('payment_date', [$request->from_date, $request->to_date])
+            $payment_vouchers = Voucher::whereBetween('payment_date', [Carbon::parse($request->from_date)->format('Y-m-d'), Carbon::parse($request->to_date)->format('Y-m-d')])
                 ->where(function ($query) use ($fromCode, $toCode) {
                     $query->whereHas('account_detail', function ($q) use ($fromCode, $toCode) {
                         $q->whereBetween('code', [$fromCode, $toCode]);
@@ -195,7 +195,7 @@ class AccountLedgerController extends Controller
                 return $entries; // flatMap ensures all entries are included
             });
 
-            $receipt_vouchers = ReceiptVoucher::whereBetween('receipt_date', [$request->from_date, $request->to_date])
+            $receipt_vouchers = ReceiptVoucher::whereBetween('receipt_date', [Carbon::parse($request->from_date)->format('Y-m-d'), Carbon::parse($request->to_date)->format('Y-m-d')])
                 ->where(function ($query) use ($fromCode, $toCode) {
                     $query->whereHas('account_detail', function ($q) use ($fromCode, $toCode) {
                         $q->whereBetween('code', [$fromCode, $toCode]);
@@ -275,8 +275,7 @@ class AccountLedgerController extends Controller
 
             $grouped = $merged_data->groupBy(fn ($item) => $item['account_code'] ?? 'no_account');
 
-            // dd($grouped);
-            $previous_containers = StockIn::whereDate('entry_date', '<', $request->from_date)
+            $previous_containers = StockIn::whereDate('entry_date', '<', Carbon::parse($request->from_date)->format('Y-m-d'))
                 ->when($fromCode && $toCode, function ($query) use ($fromCode, $toCode) {
                     $query->where(function ($sub) use ($fromCode, $toCode) {
                         $filter = function ($q) use ($fromCode, $toCode) {
@@ -298,7 +297,7 @@ class AccountLedgerController extends Controller
                 ->with(['vendor', 'transporter', 'freight_forwarder', 'custom_clearance'])
                 ->get();
 
-            $previous_vouchers = Voucher::whereDate('payment_date', '<', $request->from_date)
+            $previous_vouchers = Voucher::whereDate('payment_date', '<', Carbon::parse($request->from_date)->format('Y-m-d'))
                 ->where(function ($query) use ($fromCode, $toCode) {
                     $query->whereHas('account_detail', function ($q) use ($fromCode, $toCode) {
                         $q->whereBetween('code', [$fromCode, $toCode]);
@@ -314,7 +313,7 @@ class AccountLedgerController extends Controller
                 })
                 ->get();
 
-            $previous_receipt_vouchers = ReceiptVoucher::whereDate('receipt_date', '<', $request->from_date)
+            $previous_receipt_vouchers = ReceiptVoucher::whereDate('receipt_date', '<', Carbon::parse($request->from_date)->format('Y-m-d'))
                 ->where(function ($query) use ($fromCode, $toCode) {
                     $query->whereHas('account_detail', function ($q) use ($fromCode, $toCode) {
                         $q->whereBetween('code', [$fromCode, $toCode]);
@@ -477,7 +476,7 @@ class AccountLedgerController extends Controller
                 ->merge($grouped);
 
             $final_data = $allGrouped->map(function ($items, $accountCode) use ($request, $opening_balances) {
-                // dd($items);
+
                 $items = $items->sortBy('entry_date')->values();
 
                 $account_opening = $opening_balances[$accountCode] ?? 0;

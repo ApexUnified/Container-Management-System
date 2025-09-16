@@ -29,6 +29,12 @@ class StockIn extends Model
         'custom_clearance_rate',
         'freight_forwarder_id',
         'freight_forwarder_rate',
+
+        'vendor_expense_code',
+        'freight_forwarder_expense_code',
+        'transporter_expense_code',
+        'custom_clearance_expense_code',
+
         'fc_amount',
         'exchange_rate',
         'currency_id',

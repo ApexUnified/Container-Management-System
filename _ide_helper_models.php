@@ -290,6 +290,7 @@ namespace App\Models{
  * @property string|null $container_size
  * @property string|null $port_location
  * @property int|null $vendor_id
+ * @property string|null $vendor_expense_code
  * @property int|null $product_id
  * @property string $product_weight
  * @property int|null $product_unit_id
@@ -298,10 +299,13 @@ namespace App\Models{
  * @property string $product_rate
  * @property string $product_total_amount
  * @property int|null $transporter_id
+ * @property string|null $transporter_expense_code
  * @property string|null $transporter_rate
  * @property int|null $custom_clearance_id
+ * @property string|null $custom_clearance_expense_code
  * @property string|null $custom_clearance_rate
  * @property int|null $freight_forwarder_id
+ * @property string|null $freight_forwarder_expense_code
  * @property string|null $freight_forwarder_rate
  * @property string|null $fc_amount
  * @property string|null $exchange_rate
@@ -328,11 +332,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCroId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCurrencyId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCustomClearanceExpenseCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCustomClearanceId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereCustomClearanceRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereEntryDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereExchangeRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereFcAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereFreightForwarderExpenseCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereFreightForwarderId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereFreightForwarderRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereId($value)
@@ -346,10 +352,12 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductWeight($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereProductWeightInMan($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereTransporterExpenseCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereTransporterId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereTransporterRate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereVehicleNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereVendorExpenseCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockIn whereVendorId($value)
  */
 	class StockIn extends \Eloquent {}
