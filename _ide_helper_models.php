@@ -405,6 +405,8 @@ namespace App\Models{
  * @property string $port_name
  * @property string $customer_name
  * @property string|null $customer_address
+ * @property string|null $account_code
+ * @property string|null $income_code
  * @property string $payment_term
  * @property string $hs_code
  * @property array<array-key, mixed> $items
@@ -415,11 +417,13 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereAccountCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereCustomerAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereCustomerName($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereHsCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereIncomeCode($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereInvoiceDate($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereInvoiceNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|StockOutInvoice whereItems($value)

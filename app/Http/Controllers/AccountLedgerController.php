@@ -6,6 +6,7 @@ use App\Models\AccountSetting;
 use App\Models\Detail;
 use App\Models\ReceiptVoucher;
 use App\Models\StockIn;
+use App\Models\StockOutInvoice;
 use App\Models\Voucher;
 use Carbon\Carbon;
 use Exception;
@@ -69,13 +70,21 @@ class AccountLedgerController extends Controller
                 ->orderBy('entry_date', 'asc')
                 ->with(['product', 'unit', 'vendor', 'transporter', 'freight_forwarder', 'custom_clearance'])
                 ->get();
+            // dd($containers_data->toArray());
 
             $containers_transformed = $containers_data->flatMap(function ($container) use ($fromCode, $toCode) {
                 $checkRange = fn ($code) => $fromCode === $toCode ? $code === $fromCode : ($code >= $fromCode && $code <= $toCode);
 
                 $entries = [];
 
+                $vendor_expense_code = str_replace('-', '', $container->vendor_expense_code);
+                $transporter_expense_code = str_replace('-', '', $container->transporter_expense_code);
+                $custom_clearance_expense_code = str_replace('-', '', $container->custom_clearance_expense_code);
+                $freight_forwarder_expense_code = str_replace('-', '', $container->freight_forwarder_expense_code);
+
                 if ($checkRange($container->vendor->code ?? null)) {
+                    $vendor_code_matched = $container->vendor->account_code == $container->vendor_expense_code;
+
                     $entries[] = [
                         'id' => $container->id,
                         'account_code' => $container->vendor->account_code,
@@ -87,11 +96,31 @@ class AccountLedgerController extends Controller
                                        'MANN: '.$container->product_weight_in_man.', '.
                                        $container->product_no_of_bundles.' BUNDLES',
                         'credit' => $container->product_total_amount,
-                        'debit' => null,
+                        'debit' => $vendor_code_matched ? $container->product_total_amount : null,
+                    ];
+                }
+
+                if ($checkRange($vendor_expense_code)) {
+                    $detail = Detail::where('account_code', $container->vendor_expense_code)->first();
+
+                    $entries[] = [
+                        'id' => $container->id,
+                        'account_code' => $container->vendor_expense_code,
+                        'account_title' => $detail->title ?? 'Vendor Expense',
+                        'opening_balance' => $detail->opening_balance ?? 0,
+                        'entry_date' => $container->entry_date,
+                        'narration' => 'CONTNO: '.$container->container_no.', '.$container->product->name.', '.
+                                       $container->product_weight.' '.$container->unit->name.', '.
+                                       'MANN: '.$container->product_weight_in_man.', '.
+                                       $container->product_no_of_bundles.' BUNDLES',
+                        'credit' => null,
+                        'debit' => $container->product_total_amount,
                     ];
                 }
 
                 if ($checkRange($container->transporter->code ?? null)) {
+                    $transporter_code_matched = $container->transporter->account_code == $container->transporter_expense_code;
+
                     $entries[] = [
                         'id' => $container->id,
                         'account_code' => $container->transporter->account_code,
@@ -103,11 +132,31 @@ class AccountLedgerController extends Controller
                                        'MANN: '.$container->product_weight_in_man.', '.
                                        $container->product_no_of_bundles.' BUNDLES',
                         'credit' => $container->transporter_rate,
-                        'debit' => null,
+                        'debit' => $transporter_code_matched ? $container->transporter_rate : null,
+                    ];
+                }
+
+                if ($checkRange($transporter_expense_code)) {
+                    $detail = Detail::where('account_code', $container->transporter_expense_code)->first();
+
+                    $entries[] = [
+                        'id' => $container->id,
+                        'account_code' => $container->transporter_expense_code,
+                        'account_title' => $detail->title ?? 'Transporter Expense',
+                        'opening_balance' => $detail->opening_balance ?? 0,
+                        'entry_date' => $container->entry_date,
+                        'narration' => 'CONTNO: '.$container->container_no.', '.$container->product->name.', '.
+                                       $container->product_weight.' '.$container->unit->name.', '.
+                                       'MANN: '.$container->product_weight_in_man.', '.
+                                       $container->product_no_of_bundles.' BUNDLES',
+                        'credit' => null,
+                        'debit' => $container->transporter_rate,
                     ];
                 }
 
                 if ($checkRange($container->freight_forwarder->code ?? null)) {
+                    $freight_forwarder_code_matched = $container->freight_forwarder->account_code == $container->freight_forwarder_expense_code;
+
                     $entries[] = [
                         'id' => $container->id,
                         'account_code' => $container->freight_forwarder->account_code,
@@ -119,11 +168,31 @@ class AccountLedgerController extends Controller
                                        'MANN: '.$container->product_weight_in_man.', '.
                                        $container->product_no_of_bundles.' BUNDLES',
                         'credit' => $container->freight_forwarder_rate,
-                        'debit' => null,
+                        'debit' => $freight_forwarder_code_matched ? $container->freight_forwarder_rate : null,
+                    ];
+                }
+
+                if ($checkRange($freight_forwarder_expense_code)) {
+                    $detail = Detail::where('account_code', $container->freight_forwarder_expense_code)->first();
+
+                    $entries[] = [
+                        'id' => $container->id,
+                        'account_code' => $container->freight_forwarder_expense_code,
+                        'account_title' => $detail->title ?? 'Freight Forwarder Expense',
+                        'opening_balance' => $detail->opening_balance ?? 0,
+                        'entry_date' => $container->entry_date,
+                        'narration' => 'CONTNO: '.$container->container_no.', '.$container->product->name.', '.
+                                       $container->product_weight.' '.$container->unit->name.', '.
+                                       'MANN: '.$container->product_weight_in_man.', '.
+                                       $container->product_no_of_bundles.' BUNDLES',
+                        'credit' => null,
+                        'debit' => $container->freight_forwarder_rate,
                     ];
                 }
 
                 if ($checkRange($container->custom_clearance->code ?? null)) {
+                    $custom_clearance_code_matched = $container->custom_clearance->account_code == $container->custom_clearance_expense_code;
+
                     $entries[] = [
                         'id' => $container->id,
                         'account_code' => $container->custom_clearance->account_code,
@@ -135,7 +204,25 @@ class AccountLedgerController extends Controller
                                        'MANN: '.$container->product_weight_in_man.', '.
                                        $container->product_no_of_bundles.' BUNDLES',
                         'credit' => $container->custom_clearance_rate,
-                        'debit' => null,
+                        'debit' => $custom_clearance_code_matched ? $container->custom_clearance_rate : null,
+                    ];
+                }
+
+                if ($checkRange($custom_clearance_expense_code)) {
+                    $detail = Detail::where('account_code', $container->custom_clearance_expense_code)->first();
+
+                    $entries[] = [
+                        'id' => $container->id,
+                        'account_code' => $container->custom_clearance_expense_code,
+                        'account_title' => $detail->title ?? 'Custom Clearance Expense',
+                        'opening_balance' => $detail->opening_balance ?? 0,
+                        'entry_date' => $container->entry_date,
+                        'narration' => 'CONTNO: '.$container->container_no.', '.$container->product->name.', '.
+                                       $container->product_weight.' '.$container->unit->name.', '.
+                                       'MANN: '.$container->product_weight_in_man.', '.
+                                       $container->product_no_of_bundles.' BUNDLES',
+                        'credit' => null,
+                        'debit' => $container->custom_clearance_rate,
                     ];
                 }
 
@@ -524,9 +611,47 @@ class AccountLedgerController extends Controller
                 return $data;
 
             })
-
                 ->values()
                 ->filter(fn ($item) => $item['account_code'] != 'no_account');
+
+            $final_data = $final_data->map(function ($account) use ($request) {
+                $stockInvoices = StockOutInvoice::whereBetween('invoice_date', [$request->date('from_date'), $request->date('to_date')])->where(function ($q) use ($account) {
+                    $q->where('account_code', $account['account_code'])
+                        ->orWhere('income_code', $account['account_code']);
+                })->get();
+
+                if ($stockInvoices->isNotEmpty()) {
+                    foreach ($stockInvoices as $invoice) {
+                        if ($invoice->account_code === $account['account_code']) {
+                            $account['transactions'][] = [
+                                'id' => $invoice->invoice_no,
+                                'entry_date' => Carbon::parse($invoice->invoice_date)->format('d-m-Y'),
+                                'opening_balance' => $account['transactions'][0]['opening_balance'] ?? 0,
+                                'narration' => 'Stock Out (Debit)',
+                                'credit' => 0,
+                                'debit' => $invoice->totals['total_container_amount'],
+                            ];
+                        }
+
+                        if ($invoice->income_code === $account['account_code']) {
+                            $account['transactions'][] = [
+                                'id' => $invoice->invoice_no,
+                                'entry_date' => Carbon::parse($invoice->invoice_date)->format('d-m-Y'),
+                                'opening_balance' => $account['transactions'][0]['opening_balance'] ?? 0,
+                                'narration' => 'Stock Out (Debit)',
+                                'credit' => $invoice->totals['total_container_amount'],
+                                'debit' => 0,
+                            ];
+                        }
+                    }
+                }
+
+                // calculate totals
+                $account['total_credit'] = collect($account['transactions'])->sum('credit');
+                $account['total_debit'] = collect($account['transactions'])->sum('debit');
+
+                return $account;
+            });
 
             return response()->json(['status' => true, 'data' => $final_data]);
         } catch (Exception $e) {

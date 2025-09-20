@@ -52,8 +52,8 @@ export default function index({ account_setting }) {
     const submit = (e) => {
         e.preventDefault();
 
-        setProcessing(true);
         // router.post(route('reports.trial-balances.generate-report'), data);
+        setProcessing(true);
         axios
             .post(route('reports.trial-balances.generate-report'), data)
             .then((res) => {

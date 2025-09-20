@@ -4,7 +4,7 @@ import Input from '@/Components/Input';
 import PrimaryButton from '@/Components/PrimaryButton';
 import SelectInput from '@/Components/SelectInput';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, useForm } from '@inertiajs/react';
+import { Head, router, useForm } from '@inertiajs/react';
 import axios from 'axios';
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -121,6 +121,7 @@ export default function index({ details, account_setting }) {
     const submit = (e) => {
         setErrors({});
         e.preventDefault();
+        // router.post(route('reports.account-ledgers.generate-report'), data);
         setProcessing(true);
         axios
             .post(route('reports.account-ledgers.generate-report'), data)

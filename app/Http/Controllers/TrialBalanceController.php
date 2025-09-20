@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AccountSetting;
 use App\Models\ReceiptVoucher;
 use App\Models\StockIn;
+use App\Models\StockOutInvoice;
 use App\Models\Subsidary;
 use App\Models\Voucher;
 use Carbon\Carbon;
@@ -124,45 +125,96 @@ class TrialBalanceController extends Controller
                                 }
                             }
 
+                            // --- Opening Balance Containers ---
                             if (! blank($containers['as_vendor'])) {
                                 foreach ($containers['as_vendor'] as $c) {
-                                    $opening_balance['credit'] += (float) ($c['product_total_amount'] ?? 0);
 
-                                    if ($c['vendor_expense_code'] == $account->account_code) {
-
-                                        $opening_balance['debit'] += (float) ($c['product_total_amount'] ?? 0);
+                                    if ($account->id == $c['vendor_id']) {
+                                        $opening_balance['credit'] += (float) ($c['product_total_amount'] ?? 0);
                                     }
 
+                                    if (! empty($c['vendor_expense_code']) && $account->account_code == $c['vendor_expense_code']) {
+                                        $opening_balance['debit'] += (float) ($c['product_total_amount'] ?? 0);
+                                    }
                                 }
                             }
+
                             if (! blank($containers['as_transporter'])) {
                                 foreach ($containers['as_transporter'] as $c) {
-                                    $opening_balance['credit'] += (float) ($c['transporter_rate'] ?? 0);
+                                    if ($account->id == $c['transporter_id']) {
+                                        $opening_balance['credit'] += (float) ($c['transporter_rate'] ?? 0);
+                                    }
 
-                                    if ($c['transporter_expense_code'] == $account->account_code) {
-
+                                    if (! empty($c['transporter_expense_code']) && $account->account_code == $c['transporter_expense_code']) {
                                         $opening_balance['debit'] += (float) ($c['transporter_rate'] ?? 0);
                                     }
                                 }
                             }
+
                             if (! blank($containers['as_custom_clearance'])) {
                                 foreach ($containers['as_custom_clearance'] as $c) {
-                                    $opening_balance['credit'] += (float) ($c['custom_clearance_rate'] ?? 0);
+                                    if ($account->id == $c['custom_clearance_id']) {
+                                        $opening_balance['credit'] += (float) ($c['custom_clearance_rate'] ?? 0);
+                                    }
 
-                                    if ($c['custom_clearance_expense_code'] == $account->account_code) {
-
+                                    if (! empty($c['custom_clearance_expense_code']) && $account->account_code == $c['custom_clearance_expense_code']) {
                                         $opening_balance['debit'] += (float) ($c['custom_clearance_rate'] ?? 0);
                                     }
                                 }
                             }
+
                             if (! blank($containers['as_freight_forwarder'])) {
                                 foreach ($containers['as_freight_forwarder'] as $c) {
-                                    $opening_balance['credit'] += (float) ($c['freight_forwarder_rate'] ?? 0);
+                                    if ($account->id == $c['freight_forwarder_id']) {
+                                        $opening_balance['credit'] += (float) ($c['freight_forwarder_rate'] ?? 0);
+                                    }
 
-                                    if ($c['freight_forwarder_expense_code'] == $account->account_code) {
-
+                                    if (! empty($c['freight_forwarder_expense_code']) && $account->account_code == $c['freight_forwarder_expense_code']) {
                                         $opening_balance['debit'] += (float) ($c['freight_forwarder_rate'] ?? 0);
                                     }
+                                }
+                            }
+
+                            $expense_containers = [
+                                'vendor' => StockIn::whereDate('entry_date', '<', $from_date)
+                                    ->where('vendor_expense_code', $account->account_code)
+                                    ->get(),
+
+                                'transporter' => StockIn::whereDate('entry_date', '<', $from_date)
+                                    ->where('transporter_expense_code', $account->account_code)
+                                    ->get(),
+
+                                'custom_clearance' => StockIn::whereDate('entry_date', '<', $from_date)
+                                    ->where('custom_clearance_expense_code', $account->account_code)
+                                    ->get(),
+
+                                'freight_forwarder' => StockIn::whereDate('entry_date', '<', $from_date)
+                                    ->where('freight_forwarder_expense_code', $account->account_code)
+                                    ->get(),
+                            ];
+
+                            // Expense accounts (separate)
+                            foreach ($expense_containers['vendor'] as $c) {
+                                $opening_balance['debit'] += (float) ($c['product_total_amount'] ?? 0);
+                            }
+                            foreach ($expense_containers['transporter'] as $c) {
+                                $opening_balance['debit'] += (float) ($c['transporter_rate'] ?? 0);
+                            }
+                            foreach ($expense_containers['custom_clearance'] as $c) {
+                                $opening_balance['debit'] += (float) ($c['custom_clearance_rate'] ?? 0);
+                            }
+                            foreach ($expense_containers['freight_forwarder'] as $c) {
+                                $opening_balance['debit'] += (float) ($c['freight_forwarder_rate'] ?? 0);
+                            }
+
+                            $stockInvoices = StockOutInvoice::whereDate('invoice_date', '<', Carbon::parse($from_date)->format('Y-m-d'))->get();
+
+                            foreach ($stockInvoices as $i) {
+                                if ($account->account_code == $i->account_code) {
+                                    $opening_balance['debit'] += (float) ($i->totals['total_container_amount'] ?? 0);
+                                }
+                                if ($account->account_code == $i->income_code) {
+                                    $opening_balance['credit'] += (float) ($i->totals['total_container_amount'] ?? 0);
                                 }
                             }
 
@@ -177,6 +229,26 @@ class TrialBalanceController extends Controller
                                 'as_custom_clearance' => StockIn::with('custom_clearance')->whereBetween('entry_date', [$from_date, $to_date])->where('custom_clearance_id', $account->id)->orderBy('entry_date')->get(),
                                 'as_freight_forwarder' => StockIn::with('freight_forwarder')->whereBetween('entry_date', [$from_date, $to_date])->where('freight_forwarder_id', $account->id)->orderBy('entry_date')->get(),
                             ];
+
+                            $to_date_expense_containers = [
+                                'vendor' => StockIn::whereBetween('entry_date', [$from_date, $to_date])
+                                    ->where('vendor_expense_code', $account->account_code)
+                                    ->get(),
+
+                                'transporter' => StockIn::whereBetween('entry_date', [$from_date, $to_date])
+                                    ->where('transporter_expense_code', $account->account_code)
+                                    ->get(),
+
+                                'custom_clearance' => StockIn::whereBetween('entry_date', [$from_date, $to_date])
+                                    ->where('custom_clearance_expense_code', $account->account_code)
+                                    ->get(),
+
+                                'freight_forwarder' => StockIn::whereBetween('entry_date', [$from_date, $to_date])
+                                    ->where('freight_forwarder_expense_code', $account->account_code)
+                                    ->get(),
+                            ];
+
+                            // dump(collect($to_date_transaction_containers)->toArray());
 
                             $to_date_transactions = ['debit' => 0, 'credit' => 0];
 
@@ -226,9 +298,11 @@ class TrialBalanceController extends Controller
 
                             if (! blank($to_date_transaction_containers['as_vendor'])) {
                                 foreach ($to_date_transaction_containers['as_vendor'] as $c) {
-                                    $to_date_transactions['credit'] += (float) ($c['product_total_amount'] ?? 0);
 
-                                    if ($c['vendor_expense_code'] == $account->account_code) {
+                                    if ($account->id == $c['vendor_id']) {
+                                        $to_date_transactions['credit'] += (float) ($c['product_total_amount'] ?? 0);
+                                    }
+                                    if (! empty($c['vendor_expense_code']) && $c['vendor_expense_code'] == $account->account_code) {
 
                                         $to_date_transactions['debit'] += (float) ($c['product_total_amount'] ?? 0);
                                     }
@@ -236,9 +310,10 @@ class TrialBalanceController extends Controller
                             }
                             if (! blank($to_date_transaction_containers['as_transporter'])) {
                                 foreach ($to_date_transaction_containers['as_transporter'] as $c) {
-                                    $to_date_transactions['credit'] += (float) ($c['transporter_rate'] ?? 0);
-
-                                    if ($c['transporter_expense_code'] == $account->account_code) {
+                                    if ($account->id == $c['transporter_id']) {
+                                        $to_date_transactions['credit'] += (float) ($c['transporter_rate'] ?? 0);
+                                    }
+                                    if (! empty($c['transporter_expense_code']) && $c['transporter_expense_code'] == $account->account_code) {
 
                                         $to_date_transactions['debit'] += (float) ($c['transporter_rate'] ?? 0);
                                     }
@@ -246,9 +321,11 @@ class TrialBalanceController extends Controller
                             }
                             if (! blank($to_date_transaction_containers['as_custom_clearance'])) {
                                 foreach ($to_date_transaction_containers['as_custom_clearance'] as $c) {
-                                    $to_date_transactions['credit'] += (float) ($c['custom_clearance_rate'] ?? 0);
+                                    if ($account->id == $c['custom_clearance_id']) {
+                                        $to_date_transactions['credit'] += (float) ($c['custom_clearance_rate'] ?? 0);
+                                    }
 
-                                    if ($c['custom_clearance_expense_code'] == $account->account_code) {
+                                    if (! empty($c['custom_clearance_expense_code']) && $c['custom_clearance_expense_code'] == $account->account_code) {
 
                                         $to_date_transactions['debit'] += (float) ($c['custom_clearance_rate'] ?? 0);
                                     }
@@ -256,14 +333,49 @@ class TrialBalanceController extends Controller
                             }
                             if (! blank($to_date_transaction_containers['as_freight_forwarder'])) {
                                 foreach ($to_date_transaction_containers['as_freight_forwarder'] as $c) {
-                                    $to_date_transactions['credit'] += (float) ($c['freight_forwarder_rate'] ?? 0);
+                                    if ($account->id == $c['freight_forwarder_id']) {
+                                        $to_date_transactions['credit'] += (float) ($c['freight_forwarder_rate'] ?? 0);
+                                    }
 
-                                    if ($c['freight_forwarder_expense_code'] == $account->account_code) {
+                                    if (! empty($c['freight_forwarder_expense_code']) && $c['freight_forwarder_expense_code'] == $account->account_code) {
 
                                         $to_date_transactions['debit'] += (float) ($c['freight_forwarder_rate'] ?? 0);
                                     }
                                 }
                             }
+
+                            foreach ($to_date_expense_containers['vendor'] as $c) {
+                                $to_date_transactions['debit'] += (float) ($c['product_total_amount'] ?? 0);
+                            }
+                            foreach ($to_date_expense_containers['transporter'] as $c) {
+                                $to_date_transactions['debit'] += (float) ($c['transporter_rate'] ?? 0);
+                            }
+                            foreach ($to_date_expense_containers['custom_clearance'] as $c) {
+                                $to_date_transactions['debit'] += (float) ($c['custom_clearance_rate'] ?? 0);
+                            }
+                            foreach ($to_date_expense_containers['freight_forwarder'] as $c) {
+                                $to_date_transactions['debit'] += (float) ($c['freight_forwarder_rate'] ?? 0);
+                            }
+
+                            $to_date_stockInvoices = StockOutInvoice::whereBetween('invoice_date', [Carbon::parse($from_date)->format('Y-m-d'), Carbon::parse($to_date)->format('Y-m-d')])
+                                ->get();
+
+                            if ($to_date_stockInvoices->isNotEmpty()) {
+                                foreach ($to_date_stockInvoices as $i) {
+                                    if ($i->account_code == $account->account_code) {
+                                        // dump($account->account_code == $i->account_code);
+                                        $to_date_transactions['debit'] += (float) ($i->totals['total_container_amount'] ?? 0);
+
+                                    }
+
+                                    if ($i->income_code == $account->account_code) {
+                                        // dump($account->account_code == $i->account_code);
+                                        $to_date_transactions['credit'] += (float) ($i->totals['total_container_amount'] ?? 0);
+                                    }
+                                }
+                            }
+
+                            // dump($account->account_code);
 
                             $total_to_date_transactions['credit'] += $to_date_transactions['credit'];
                             $total_to_date_transactions['debit'] += $to_date_transactions['debit'];
@@ -318,14 +430,8 @@ class TrialBalanceController extends Controller
 
                     return $results;
                 });
-            // dd($subsidaries->toArray(), [
-            //     'totals' => [
-            //         'opening_balance' => $all_total_opening_balances,
-            //         'to_date_transactions' => $all_total_to_date_transactions,
-            //         'closing_balance' => $all_total_closing_balances,
-            //         'now' => now()->format('Y-m-d'),
-            //     ],
-            // ]);
+
+            // dd($subsidaries->toArray());
 
             return response()->json([
                 'status' => true,

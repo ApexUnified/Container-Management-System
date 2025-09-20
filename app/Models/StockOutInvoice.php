@@ -14,6 +14,8 @@ class StockOutInvoice extends Model
         'port_name',
         'customer_name',
         'customer_address',
+        'income_code',
+        'account_code',
         'payment_term',
         'hs_code',
         'items',

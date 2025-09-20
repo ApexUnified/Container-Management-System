@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccountSetting;
 use App\Models\Currency;
 use App\Models\StockIn;
 use App\Models\StockOut;
@@ -304,6 +305,8 @@ class StockOutController extends Controller
                     'invoice_date' => $stock_out->bl_date,
                     'port_name' => $stock_out->port_name,
                     'customer_name' => $stock_out->account->title,
+                    'account_code' => $stock_out->account->account_code,
+                    'income_code' => AccountSetting::first()->income_code ?? null,
                     'customer_address' => $stock_out->account->address,
                     'payment_term' => 'D/P',
                     'hs_code' => $hs_code,
