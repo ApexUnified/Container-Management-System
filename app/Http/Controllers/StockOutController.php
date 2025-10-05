@@ -244,6 +244,7 @@ class StockOutController extends Controller
         try {
             $request->validate([
                 'stock_out_id' => ['required', 'exists:stock_outs,id'],
+                'currency' => ['required'],
             ]);
 
             $stock_out = StockOut::with(['account', 'currency'])
@@ -316,6 +317,7 @@ class StockOutController extends Controller
             }
 
             $invoiceData['invoice_no'] = $invoice->invoice_no;
+            $invoiceData['currency_type'] = $request->input('currency');
 
             DB::commit();
 

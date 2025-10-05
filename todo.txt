@@ -1,5 +1,27 @@
-Fix: Receivable Wont show in Stock out it will show there a details accounts from subsidary from that recevable account (Done)
-One More Field in stock out `enter port name`. Input (Done)
+reports
+=======
+purchase report
+stockIn report
+Stock Out invoice in PKR / AED
+B/L wise reports
+Container wise Profit Report
 
 
-on prod firts migration ill be rollbacked and than again migrate
+Data entry options
+-------------------
+stock received in Dubai
+Fine and Extra Charges Per container
+Invoice
+
+
+
+purchase reprot
+---------------
+Cont #  Purchase Date  Size Vehicle# CRO  VEndorName  ProductName Unit Wt  Wt(Mann) Bundles Rate VAlue
+  x         xxxxx       xx     xxx    xx   xx         xxxxx       xx     xxx    xx   xxxxxxxxx    xxxx    
+  x         xxxxx       xx     xxx    xx   xx         xxxxx       xx     xxx    xx   xxxxxxxxx    xxxx    
+  x         xxxxx       xx     xxx    xx   xx         xxxxx       xx     xxx    xx   xxxxxxxxx    xxxx    
+  x         xxxxx       xx     xxx    xx   xx         xxxxx       xx     xxx    xx   xxxxxxxxx    xxxx    
+
+
+

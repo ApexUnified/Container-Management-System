@@ -1,0 +1,22 @@
+reports required
+
+purchases list
+B/L wise report
+
+customer ledger report Foriegn currency
+and PKR also required.
+
+new option for Dubai work
+-------------------------
+Stock received from Head office
+Invoice Generation
+Fine and Other charges per Container
+
+
+reports
+--------
+stock received Dubai report
+Expenses List
+Invoice printing
+
+Complete container wise Profit calculation sheet

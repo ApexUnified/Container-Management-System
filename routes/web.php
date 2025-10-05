@@ -10,6 +10,7 @@ use App\Http\Controllers\CustomClearanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\PurchaseReportController;
 use App\Http\Controllers\ReceiptVoucherController;
 use App\Http\Controllers\ShippingLineController;
 use App\Http\Controllers\StockInController;
@@ -114,6 +115,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/trial-balances-generate-report', [TrialBalanceController::class, 'generateReport'])->name('trial-balances.generate-report');
 
         Route::get('/chart-of-accounts', ChartOfAccountController::class)->name('chart-of-accounts.index');
+
+        Route::get('/purchase-report', [PurchaseReportController::class, 'index'])->name('purchase-report.index');
+        Route::post('/purchase-report', [PurchaseReportController::class, 'generateReport'])->name('purchase-report.generate-report');
 
     });
 

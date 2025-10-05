@@ -132,6 +132,11 @@ export default function index({
     const flatpickerForEditForm = useRef(null);
     const flatpickerForEntryDateSearch = useRef(null);
 
+    // Country Selection States
+    const [selectedCurrency, setSelectedCurrency] = useState('');
+    const [currencySelectionModal, setCurrencySelectionModal] = useState(false);
+    const [selectedContainerID, setSelectedContainerID] = useState('');
+
     // flatpicker init useEffect
     useEffect(() => {
         setTimeout(() => {
@@ -345,7 +350,10 @@ export default function index({
         // });
 
         axios
-            .post(route('transactions.stock-out.generate-invoice'), { stock_out_id: stock_out_id })
+            .post(route('transactions.stock-out.generate-invoice'), {
+                stock_out_id: stock_out_id,
+                currency: selectedCurrency,
+            })
             .then((response) => {
                 if (response.data.status) {
                     setInvoiceData(response.data.data);
@@ -375,6 +383,24 @@ export default function index({
     };
 
     const invoiceRef = useRef();
+
+    const handleInvoiceGeneration = () => {
+        if (selectedCurrency === '') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Please Select Currency',
+                showConfirmButton: true,
+            });
+            return;
+        }
+
+        setCurrencySelectionModal(false);
+        setGenerateInvoiceModalOpen(true);
+        getDataForInvoice(selectedContainerID);
+        setInvoiceDataLoader(true);
+        setSelectedContainerID('');
+    };
 
     const handlePrint = () => {
         const content = invoiceRef.current.innerHTML;
@@ -504,9 +530,8 @@ export default function index({
                 label: 'Generate Invoice',
                 type: 'button',
                 onClick: (item) => {
-                    setGenerateInvoiceModalOpen(true);
-                    getDataForInvoice(item.id);
-                    setInvoiceDataLoader(true);
+                    setSelectedContainerID(item.id);
+                    setCurrencySelectionModal(true);
                 },
             },
             {
@@ -1582,15 +1607,15 @@ export default function index({
 
                 {/* Invoice Modal */}
                 {generateInvoiceModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                    <div className="fixed inset-0 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                         {/* Backdrop */}
                         <div
-                            className="fixed inset-0 backdrop-blur-[32px]"
+                            className="fixed inset-0"
                             onClick={() => setGenerateInvoiceModalOpen(false)}
                         ></div>
 
                         {/* Modal content */}
-                        <div className="relative z-10 max-h-screen w-full max-w-screen-lg overflow-y-auto rounded-2xl bg-white p-6 text-gray-700 shadow-xl dark:bg-gray-800 dark:text-white/80 sm:p-8">
+                        <div className="relative max-h-screen w-full max-w-screen-lg overflow-y-auto rounded-2xl bg-white p-6 text-gray-700 shadow-xl dark:bg-gray-800 dark:text-white/80 sm:p-8">
                             <div className="mx-auto max-w-4xl bg-white p-8 font-sans dark:bg-gray-800">
                                 {invoiceDataLoader && (
                                     <div className="flex flex-col items-center justify-center gap-6 py-20">
@@ -1643,7 +1668,7 @@ export default function index({
                                         </button>
 
                                         {/* Header */}
-                                        <div className="mb-8 flex items-start justify-between">
+                                        <div className="mb-8 flex flex-wrap items-start justify-between">
                                             <div className="flex items-center gap-4">
                                                 {/* Logo */}
                                                 <div className="relative">
@@ -1724,7 +1749,9 @@ export default function index({
                                             <div className="hidden min-w-full sm:block">
                                                 {/* Table Header */}
                                                 <div className="border-b-2 border-black bg-gray-50 dark:border-white/80 dark:bg-gray-800">
-                                                    <div className="grid grid-cols-9 gap-2 p-3 text-center text-xs font-bold">
+                                                    <div
+                                                        className={`grid ${invoiceData.currency_type == 'foreign' ? 'grid-cols-9' : 'grid-cols-6'} gap-2 p-3 text-center text-xs font-bold`}
+                                                    >
                                                         <div className="border-r border-gray-300">
                                                             CONT NO.
                                                         </div>
@@ -1743,13 +1770,18 @@ export default function index({
                                                         <div className="border-r border-gray-300">
                                                             TOT. VALUE
                                                         </div>
-                                                        <div className="border-r border-gray-300">
-                                                            F/C
-                                                        </div>
-                                                        <div className="border-r border-gray-300">
-                                                            EXCH. RATE
-                                                        </div>
-                                                        <div>AMT. IN AED</div>
+                                                        {invoiceData?.currency_type ==
+                                                            'foreign' && (
+                                                            <>
+                                                                <div className="border-r border-gray-300">
+                                                                    F/C
+                                                                </div>
+                                                                <div className="border-r border-gray-300">
+                                                                    EXCH. RATE
+                                                                </div>
+                                                                <div>AMT. IN AED</div>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </div>
 
@@ -1759,7 +1791,7 @@ export default function index({
                                                         return (
                                                             <div
                                                                 key={index}
-                                                                className="grid grid-cols-9 gap-2 border-b border-gray-200 p-3 text-center text-xs"
+                                                                className={`grid ${invoiceData.currency_type == 'foreign' ? 'grid-cols-9' : 'grid-cols-6'} gap-2 border-b border-gray-200 p-3 text-center text-xs`}
                                                             >
                                                                 <div className="break-all border-r border-gray-200">
                                                                     {item.container_no ?? 'N/A'}
@@ -1780,15 +1812,23 @@ export default function index({
                                                                     {item?.total_container_amount ??
                                                                         'N/A'}
                                                                 </div>
-                                                                <div className="break-all border-r border-gray-200">
-                                                                    {item?.fc ?? 'N/A'}
-                                                                </div>
-                                                                <div className="break-all border-r border-gray-200">
-                                                                    {item?.exchange_rate ?? 'N/A'}
-                                                                </div>
-                                                                <div>
-                                                                    {item?.total_amount ?? 'N/A'}
-                                                                </div>
+
+                                                                {invoiceData?.currency_type ==
+                                                                    'foreign' && (
+                                                                    <>
+                                                                        <div className="break-all border-r border-gray-200">
+                                                                            {item?.fc ?? 'N/A'}
+                                                                        </div>
+                                                                        <div className="break-all border-r border-gray-200">
+                                                                            {item?.exchange_rate ??
+                                                                                'N/A'}
+                                                                        </div>
+                                                                        <div>
+                                                                            {item?.total_amount ??
+                                                                                'N/A'}
+                                                                        </div>
+                                                                    </>
+                                                                )}
                                                             </div>
                                                         );
                                                     })}
@@ -1816,12 +1856,17 @@ export default function index({
                                                             {invoiceData?.totals
                                                                 ?.total_container_amount ?? 'N/A'}
                                                         </div>
-                                                        <div className="border-r border-gray-300"></div>
-                                                        <div className="border-r border-gray-300"></div>
-                                                        <div className="text-right font-bold">
-                                                            {invoiceData?.totals?.total_fc_amount ??
-                                                                'N/A'}
-                                                        </div>
+                                                        {invoiceData.currency_type == 'foreign' && (
+                                                            <>
+                                                                <div className="border-r border-gray-300"></div>
+                                                                <div className="border-r border-gray-300"></div>
+
+                                                                <div className="text-right font-bold">
+                                                                    {invoiceData?.totals
+                                                                        ?.total_fc_amount ?? 'N/A'}
+                                                                </div>
+                                                            </>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </div>
@@ -1831,7 +1876,7 @@ export default function index({
                                                 {invoiceData.items.map((item, index) => (
                                                     <div
                                                         key={index}
-                                                        className="mb-4 rounded-lg border border-gray-300 bg-gray-50 p-4"
+                                                        className="mb-4 rounded-lg border border-gray-300 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-800"
                                                     >
                                                         <div className="grid grid-cols-2 gap-2 text-xs">
                                                             <div>
@@ -1859,25 +1904,33 @@ export default function index({
                                                                 {item.total_container_amount ??
                                                                     'N/A'}
                                                             </div>
-                                                            <div>
-                                                                <strong>F/C:</strong>{' '}
-                                                                {item.fc ?? 'N/A'}
-                                                            </div>
-                                                            <div>
-                                                                <strong>EXCH. RATE:</strong>{' '}
-                                                                {item.exchange_rate ?? 'N/A'}
-                                                            </div>
-                                                            <div className="col-span-2 mt-2 text-center">
-                                                                <strong>
-                                                                    AMT. IN AED:{' '}
-                                                                    {item.total_amount ?? 'N/A'}
-                                                                </strong>
-                                                            </div>
+
+                                                            {invoiceData.currency_type ==
+                                                                'foreign' && (
+                                                                <>
+                                                                    <div>
+                                                                        <strong>F/C:</strong>{' '}
+                                                                        {item.fc ?? 'N/A'}
+                                                                    </div>
+                                                                    <div>
+                                                                        <strong>EXCH. RATE:</strong>{' '}
+                                                                        {item.exchange_rate ??
+                                                                            'N/A'}
+                                                                    </div>
+                                                                    <div className="col-span-2 mt-2 text-center">
+                                                                        <strong>
+                                                                            AMT. IN AED:{' '}
+                                                                            {item.total_amount ??
+                                                                                'N/A'}
+                                                                        </strong>
+                                                                    </div>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 ))}
 
-                                                <div className="rounded-lg border-2 border-black bg-gray-100 p-4">
+                                                <div className="rounded-lg border-2 border-black bg-gray-100 p-4 dark:border-gray-700 dark:bg-gray-800">
                                                     <div className="text-center font-bold">
                                                         <div className="mb-2">TOTAL SUMMARY</div>
                                                         <div className="grid grid-cols-2 gap-2 text-xs">
@@ -1902,13 +1955,19 @@ export default function index({
                                                                     ?.total_container_amount ??
                                                                     'N/A'}
                                                             </div>
-                                                            <div className="col-span-2 mt-2 text-lg">
-                                                                <strong>
-                                                                    TOTAL: AED Value{' '}
-                                                                    {invoiceData?.totals
-                                                                        ?.total_fc_amount ?? 'N/A'}
-                                                                </strong>
-                                                            </div>
+                                                            {invoiceData.currency_type ==
+                                                                'foreign' && (
+                                                                <>
+                                                                    <div className="col-span-2 mt-2 text-lg">
+                                                                        <strong>
+                                                                            TOTAL: AED Value{' '}
+                                                                            {invoiceData?.totals
+                                                                                ?.total_fc_amount ??
+                                                                                'N/A'}
+                                                                        </strong>
+                                                                    </div>
+                                                                </>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -1944,6 +2003,78 @@ export default function index({
                                         </div>
                                     </div>
                                 )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+                {/* Currency Selection Modal */}
+                {currencySelectionModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
+                        {/* Backdrop */}
+                        <div
+                            className="fixed inset-0 bg-black/30 backdrop-blur-sm transition-all duration-300"
+                            onClick={() => {
+                                setCurrencySelectionModal(false);
+                                setSelectedContainerID('');
+                            }}
+                        />
+
+                        {/* Modal Content */}
+                        <div className="relative z-10 w-full max-w-md overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-2xl">
+                            {/* Header */}
+                            <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-6 py-4 shadow-lg">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="text-lg font-bold text-white">
+                                        Select Currency
+                                    </h2>
+                                    <button
+                                        onClick={() => {
+                                            setCurrencySelectionModal(false);
+                                            setSelectedContainerID('');
+                                        }}
+                                        className="flex h-8 w-8 items-center justify-center rounded-xl bg-white/20 text-white transition-colors duration-200 hover:bg-white/30"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Body */}
+                            <div className="bg-gray-50/50 p-6">
+                                <label className="mb-2 block text-sm font-medium text-gray-700">
+                                    Choose Currency
+                                </label>
+                                <select
+                                    value={selectedCurrency}
+                                    onChange={(e) => setSelectedCurrency(e.target.value)}
+                                    className="w-full rounded-xl border border-gray-300 bg-white px-3 py-2 text-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
+                                >
+                                    <option value="" hidden>
+                                        Select Currency
+                                    </option>
+                                    <option value="pkr">PKR - Pakistani Rupee</option>
+                                    <option value="foreign">Foreign - Currency</option>
+                                </select>
+                            </div>
+
+                            {/* Footer Buttons */}
+                            <div className="flex justify-end gap-3 border-t border-gray-200 bg-white px-6 py-4">
+                                <button
+                                    onClick={() => {
+                                        setCurrencySelectionModal(false);
+                                        setSelectedContainerID('');
+                                    }}
+                                    className="rounded-xl border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    onClick={() => handleInvoiceGeneration()}
+                                    className="rounded-xl bg-blue-600 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-700"
+                                >
+                                    Confirm
+                                </button>
                             </div>
                         </div>
                     </div>

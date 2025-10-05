@@ -555,6 +555,15 @@ export default function Sidebar({
                                                     Chart Of Accounts
                                                 </Link>
                                             </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route('reports.purchase-report.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'reports.purchase-report.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    Purchase Report
+                                                </Link>
+                                            </li>
                                         </ul>
                                     </div>
                                 </li>
