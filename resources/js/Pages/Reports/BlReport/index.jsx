@@ -29,6 +29,7 @@ const index = ({ blData }) => {
 
         post(route('reports.bl-report.generate-report'));
     };
+    // test
 
     const printRef = useRef(null);
 
