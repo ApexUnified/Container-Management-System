@@ -1,0 +1,27 @@
+
+StockIn Report
+-------------
+Cont #   PurchaseDate  Veh#  Vendorname ProductName Wt  wt(mann) Bundles Rate VAlue  Transportername Trans.amount  C/Cl Name C/cl Amount F/Frwder Name Freight Amount  TotalVAlue
+xxx           xxxx     xxxx   xxxxx        xxxx     xx    xxxx      xxx   xxx  xxxx      xxxxxxxxx      xxxxxxx      xxxxxxx   xxxxxxxx      xxxxxxx        xxxxxxxx      99999999
+xxx           xxxx     xxxx   xxxxx        xxxx     xx    xxxx      xxx   xxx  xxxx      xxxxxxxxx      xxxxxxx      xxxxxxx   xxxxxxxx      xxxxxxx        xxxxxxxx      99999999
+xxx           xxxx     xxxx   xxxxx        xxxx     xx    xxxx      xxx   xxx  xxxx      xxxxxxxxx      xxxxxxx      xxxxxxx   xxxxxxxx      xxxxxxx        xxxxxxxx      99999999
+xxx           xxxx     xxxx   xxxxx        xxxx     xx    xxxx      xxx   xxx  xxxx      xxxxxxxxx      xxxxxxx      xxxxxxx   xxxxxxxx      xxxxxxx        xxxxxxxx      99999999
+xxx           xxxx     xxxx   xxxxx        xxxx     xx    xxxx      xxx   xxx  xxxx      xxxxxxxxx      xxxxxxx      xxxxxxx   xxxxxxxx      xxxxxxx        xxxxxxxx      99999999
+
+
+
+
+B/L Wise REport
+---------------
+
+----------------------------------------------------------------------------------------------------------
+B/L No   B/L Date    portname  No of Containers in B/L   Total VAlue of B/L in PKR      Total VAlue of B/L in AED
+----------------------------------------------------------------------------------------------------------
+xxxx      xxxxx        xxxxx   xxxxxxxxxxxxx                xxxxxxxxxxxxxx                  xxxxxxxxxxxx    
+xxxx      xxxxx        xxxxx   xxxxxxxxxxxxx                xxxxxxxxxxxxxx                  xxxxxxxxxxxx    
+xxxx      xxxxx        xxxxx   xxxxxxxxxxxxx                xxxxxxxxxxxxxx                  xxxxxxxxxxxx    
+xxxx      xxxxx        xxxxx   xxxxxxxxxxxxx                xxxxxxxxxxxxxx                  xxxxxxxxxxxx    
+xxxx      xxxxx        xxxxx   xxxxxxxxxxxxx                xxxxxxxxxxxxxx                  xxxxxxxxxxxx    
+xxxx      xxxxx        xxxxx   xxxxxxxxxxxxx                xxxxxxxxxxxxxx                  xxxxxxxxxxxx    
+                          
+

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AccountLedgerController;
 use App\Http\Controllers\AccountSettingController;
+use App\Http\Controllers\BlReportController;
 use App\Http\Controllers\ChartOfAccountController;
 use App\Http\Controllers\ControlController;
 use App\Http\Controllers\CroController;
@@ -14,6 +15,7 @@ use App\Http\Controllers\PurchaseReportController;
 use App\Http\Controllers\ReceiptVoucherController;
 use App\Http\Controllers\ShippingLineController;
 use App\Http\Controllers\StockInController;
+use App\Http\Controllers\StockInReportController;
 use App\Http\Controllers\StockOutController;
 use App\Http\Controllers\SubsidaryController;
 use App\Http\Controllers\TransporterController;
@@ -118,6 +120,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::get('/purchase-report', [PurchaseReportController::class, 'index'])->name('purchase-report.index');
         Route::post('/purchase-report', [PurchaseReportController::class, 'generateReport'])->name('purchase-report.generate-report');
+
+        Route::get('/stockin-report', [StockInReportController::class, 'index'])->name('stockin-report.index');
+        Route::post('/stockin-report', [StockInReportController::class, 'generateReport'])->name('stockin-report.generate-report');
+
+        Route::get('/bl-report', [BlReportController::class, 'index'])->name('bl-report.index');
+        Route::post('/bl-report', [BlReportController::class, 'generateReport'])->name('bl-report.generate-report');
 
     });
 

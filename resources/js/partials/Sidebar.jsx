@@ -564,6 +564,24 @@ export default function Sidebar({
                                                     Purchase Report
                                                 </Link>
                                             </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route('reports.stockin-report.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'reports.stockin-report.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    StockIn Report
+                                                </Link>
+                                            </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route('reports.bl-report.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'reports.bl-report.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    B/L Report
+                                                </Link>
+                                            </li>
                                         </ul>
                                     </div>
                                 </li>
