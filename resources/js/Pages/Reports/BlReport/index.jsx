@@ -11,7 +11,8 @@ import PrimaryButton from '@/Components/PrimaryButton';
 
 const index = ({ blData }) => {
     const { data, setData, errors, post, processing } = useForm({
-        bl_no: '',
+        from_bl_no: '',
+        to_bl_no: '',
     });
 
     const [blReportData, setBlReportData] = useState([]);
@@ -133,17 +134,29 @@ const index = ({ blData }) => {
                 Content={
                     <>
                         <form onSubmit={submit}>
-                            <div className="my-10 grid grid-cols-1 gap-5 p-4 md:grid-cols-1">
+                            <div className="my-10 grid grid-cols-1 gap-5 p-4 md:grid-cols-2">
                                 <Input
-                                    InputName={'BL No'}
-                                    Id={'bl_no'}
-                                    Name={'bl_no'}
-                                    Placeholder={'BL Date'}
+                                    InputName={'From B/L No'}
+                                    Id={'from_bl_no'}
+                                    Name={'from_bl_no'}
+                                    Placeholder={'From B/L No'}
                                     Type={'text'}
-                                    Error={errors?.bl_no}
-                                    Value={data?.bl_no}
-                                    Required={true}
-                                    Action={(e) => setData('bl_no', e.target.value)}
+                                    Error={errors?.from_bl_no}
+                                    Value={data?.from_bl_no}
+                                    Required={false}
+                                    Action={(e) => setData('from_bl_no', e.target.value)}
+                                />
+
+                                <Input
+                                    InputName={'To B/L No'}
+                                    Id={'to_bl_no'}
+                                    Name={'to_bl_no'}
+                                    Placeholder={'To B/L No'}
+                                    Type={'text'}
+                                    Error={errors?.to_bl_no}
+                                    Value={data?.to_bl_no}
+                                    Required={false}
+                                    Action={(e) => setData('to_bl_no', e.target.value)}
                                 />
                             </div>
 
@@ -153,7 +166,11 @@ const index = ({ blData }) => {
                                 Type={'submit'}
                                 Processing={processing}
                                 Spinner={processing}
-                                Disabled={processing || data?.bl_no === ''}
+                                Disabled={
+                                    processing ||
+                                    (data?.to_bl_no !== '' && data?.from_bl_no === '') ||
+                                    (data?.from_bl_no !== '' && data?.to_bl_no === '')
+                                }
                                 Icon={
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
