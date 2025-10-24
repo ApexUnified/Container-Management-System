@@ -10,6 +10,10 @@ use App\Http\Controllers\CurrencyController;
 use App\Http\Controllers\CustomClearanceController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DetailController;
+use App\Http\Controllers\DubaiExpenseController;
+use App\Http\Controllers\DubaiExpenseSettingController;
+use App\Http\Controllers\DubaiExpenseTransactionController;
+use App\Http\Controllers\ExtraChargesExpenseController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\PurchaseReportController;
 use App\Http\Controllers\ReceiptVoucherController;
@@ -84,6 +88,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Account Setting
         Route::get('/account-setting', [AccountSettingController::class, 'index'])->name('account-setting.index');
         Route::post('/account-setting', [AccountSettingController::class, 'save'])->name('account-setting.save');
+
+        // Dubai Expense Routes
+        Route::resource('/dubai-expenses', DubaiExpenseController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/dubai-expenses-destroy-by-selectetion', [DubaiExpenseController::class, 'destroyBySelection'])->name('dubai-expenses.destroybyselection');
+
+        // Dubai Expense Setting Routes
+        Route::get('/dubai-expense-setting', [DubaiExpenseSettingController::class, 'index'])->name('dubai-expense-setting.index');
+        Route::post('/dubai-expense-setting', [DubaiExpenseSettingController::class, 'save'])->name('dubai-expense-setting.save');
+
+        // Extra Charges Expense Routes
+        Route::resource('/extra-charges-expenses', ExtraChargesExpenseController::class)->except(['show', 'edit', 'create']);
+        Route::delete('/extra-charges-destroy-by-selectetion', [ExtraChargesExpenseController::class, 'destroyBySelection'])->name('extra-charges-expenses.destroybyselection');
     });
 
     // Transactions Route Group
@@ -105,6 +121,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         Route::resource('/receipt-vouchers', ReceiptVoucherController::class)->except(['show', 'edit', 'create']);
         Route::delete('/receipt-vouchers-destroy-by-selectetion', [ReceiptVoucherController::class, 'destroyBySelection'])->name('receipt-vouchers.destroybyselection');
+
+        // Dubai Expense Transaction Routes
+        Route::resource('/dubai-expense-transactions', DubaiExpenseTransactionController::class)->except(['show', 'edit', 'create', 'update']);
+
+        Route::post('/dubai-expense-transactions-find-containers', [DubaiExpenseTransactionController::class, 'findContainers'])->name('dubai-expense-transactions.find-containers');
+
+        Route::delete('/dubai-expense-transactions-destroy-by-selectetion', [DubaiExpenseTransactionController::class, 'destroyBySelection'])->name('dubai-expense-transactions.destroybyselection');
     });
 
     // Report Routes Group

@@ -190,6 +190,96 @@ namespace App\Models{
 /**
  * @property int $id
  * @property string $name
+ * @property string|null $type
+ * @property string|null $amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpense newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpense newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpense query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpense whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpense whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpense whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpense whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpense whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpense whereUpdatedAt($value)
+ */
+	class DubaiExpense extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseSetting newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseSetting newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseSetting query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseSetting whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseSetting whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseSetting whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseSetting whereUpdatedAt($value)
+ */
+	class DubaiExpenseSetting extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $bl_no
+ * @property int $containers_count
+ * @property string $bl_date
+ * @property string $weight_in_tons
+ * @property string $total_amount
+ * @property string $mofa_amount
+ * @property string $applied_mofa
+ * @property string $applied_vat
+ * @property string $containers
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereAppliedMofa($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereAppliedVat($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereBlDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereBlNo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereContainers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereContainersCount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereMofaAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereWeightInTons($value)
+ */
+	class DubaiExpenseTransaction extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
+ * @property string|null $amount
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExtraChargesExpense newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExtraChargesExpense newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExtraChargesExpense query()
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExtraChargesExpense whereAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExtraChargesExpense whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExtraChargesExpense whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExtraChargesExpense whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|ExtraChargesExpense whereUpdatedAt($value)
+ */
+	class ExtraChargesExpense extends \Eloquent {}
+}
+
+namespace App\Models{
+/**
+ * @property int $id
+ * @property string $name
  * @property int $unit_id
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at

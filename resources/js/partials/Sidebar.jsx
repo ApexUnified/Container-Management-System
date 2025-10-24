@@ -88,7 +88,7 @@ export default function Sidebar({
                     </button>
                 </div>
 
-                <div className="no-scrollbar flex flex-1 flex-col overflow-y-auto duration-300 ease-linear">
+                <div className="flex flex-col flex-1 overflow-y-auto duration-300 ease-linear no-scrollbar">
                     <nav>
                         <div>
                             <h3 className="mb-4 text-xs uppercase leading-[20px] text-gray-400">
@@ -109,7 +109,7 @@ export default function Sidebar({
                                 </svg>
                             </h3>
 
-                            <ul className="mb-6 flex flex-col gap-4">
+                            <ul className="flex flex-col gap-4 mb-6">
                                 <li>
                                     <Link
                                         href={route('dashboard')}
@@ -363,6 +363,37 @@ export default function Sidebar({
                                                     Account Setting
                                                 </Link>
                                             </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route('setups.dubai-expenses.index')}
+                                                    className={`menu-dropdown-item group ${route().current() === 'setups.dubai-expenses.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    Dubai Expense
+                                                </Link>
+                                            </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route(
+                                                        'setups.dubai-expense-setting.index',
+                                                    )}
+                                                    className={`menu-dropdown-item group ${route().current() === 'setups.dubai-expense-setting.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    Dubai Expense Setting
+                                                </Link>
+                                            </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route(
+                                                        'setups.extra-charges-expenses.index',
+                                                    )}
+                                                    className={`menu-dropdown-item group ${route().current() === 'setups.extra-charges-expenses.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    Extra Charges Expense
+                                                </Link>
+                                            </li>
                                         </ul>
                                     </div>
                                 </li>
@@ -467,6 +498,17 @@ export default function Sidebar({
                                                     className={`menu-dropdown-item group ${route().current() === 'transactions.receipt-vouchers.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
                                                 >
                                                     Receipt Vouchers
+                                                </Link>
+                                            </li>
+
+                                            <li>
+                                                <Link
+                                                    href={route(
+                                                        'transactions.dubai-expense-transactions.index',
+                                                    )}
+                                                    className={`menu-dropdown-item group ${route().current() === 'transactions.dubai-expense-transactions.index' ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'}`}
+                                                >
+                                                    Dubai Expense
                                                 </Link>
                                             </li>
                                         </ul>
