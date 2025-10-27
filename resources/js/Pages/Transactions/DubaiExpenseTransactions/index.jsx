@@ -42,8 +42,8 @@ export default function index({ expenses = {}, expense_setting }) {
     const [processing, setProcessing] = useState(false);
     const [bl_results, setBlResults] = useState({});
 
-    const [selectedBlExpenses, setSelectedBlExpenses] = useState([]);
-    const [selectedTonExpenses, setSelectedTonExpenses] = useState([]);
+    const [selectedBlExpenses, setSelectedBlExpenses] = useState(null);
+    const [selectedTonExpenses, setSelectedTonExpenses] = useState(null);
 
     const [totalAmount, setTotalAmount] = useState(0);
     const [containerExpenses, setContainerExpenses] = useState({
@@ -400,7 +400,7 @@ export default function index({ expenses = {}, expense_setting }) {
                     Content={
                         <>
                             <form onSubmit={findContainers}>
-                                <div className="flex items-center gap-2 px-10 mx-auto mt-4">
+                                <div className="mx-auto mt-4 flex items-center gap-2 px-10">
                                     <Input
                                         InputName={'B/L No'}
                                         Id={'bl_no'}
@@ -441,7 +441,7 @@ export default function index({ expenses = {}, expense_setting }) {
                 />
 
                 {viewModalOpen && (
-                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+                    <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
                         {/* Backdrop */}
                         <div
                             className="fixed inset-0 backdrop-blur-[32px]"
@@ -451,7 +451,7 @@ export default function index({ expenses = {}, expense_setting }) {
                         ></div>
 
                         {/* Modal Box */}
-                        <div className="relative z-10 w-full max-h-screen p-6 overflow-y-auto bg-white shadow-xl max-w-screen-2xl rounded-2xl dark:bg-gray-800 sm:p-8">
+                        <div className="relative z-10 max-h-screen w-full max-w-screen-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                             <h3 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
                                 Dubai Expense
                             </h3>
@@ -462,7 +462,7 @@ export default function index({ expenses = {}, expense_setting }) {
                             {/* Main Content */}
                             <div className="space-y-8">
                                 {/* Header Info Section */}
-                                <div className="grid grid-cols-1 gap-4 p-4 border border-gray-200 rounded-xl bg-gray-50 dark:border-gray-700 dark:bg-gray-900/30 sm:grid-cols-2 lg:grid-cols-4">
+                                <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/30 sm:grid-cols-2 lg:grid-cols-4">
                                     <div>
                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
                                             B/L No
@@ -497,27 +497,27 @@ export default function index({ expenses = {}, expense_setting }) {
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 gap-4 mt-4 sm:grid-cols-2">
+                                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
                                     <SelectInput
                                         InputName="B/L Level Expenses"
                                         Id="bl_expenses"
-                                        Multiple={true}
+                                        Multiple={false}
                                         items={blExpenses}
                                         itemKey="name"
                                         valueKey="name"
                                         Placeholder="Select BL Expenses"
-                                        Value={selectedBlExpenses.map((e) => e.name)}
+                                        Value={selectedBlExpenses?.[0]?.name}
                                         Action={(value) => handleBLExpenseSelect(value)}
                                     />
                                     <SelectInput
                                         InputName="Ton-Based Expenses"
                                         Id="ton_expenses"
-                                        Multiple={true}
+                                        Multiple={false}
                                         items={tonExpenses}
                                         itemKey="name"
                                         valueKey="name"
                                         Placeholder="Select Ton Expenses"
-                                        Value={selectedTonExpenses.map((e) => e.name)}
+                                        Value={selectedTonExpenses?.[0]?.name}
                                         Action={(value) => handleTonExpenseSelect(value)}
                                     />
                                 </div>
@@ -528,8 +528,8 @@ export default function index({ expenses = {}, expense_setting }) {
                                 {/* Table Section */}
                                 {containerExpenses?.containers &&
                                 containerExpenses.containers.length > 0 ? (
-                                    <div className="relative overflow-visible border border-gray-200 rounded-lg dark:border-gray-700">
-                                        <table className="min-w-full text-sm text-left text-gray-700 dark:text-gray-300">
+                                    <div className="relative overflow-visible rounded-lg border border-gray-200 dark:border-gray-700">
+                                        <table className="min-w-full text-left text-sm text-gray-700 dark:text-gray-300">
                                             <thead className="bg-gray-100 dark:bg-gray-700">
                                                 <tr>
                                                     <th className="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">
@@ -541,7 +541,7 @@ export default function index({ expenses = {}, expense_setting }) {
                                                     <th className="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">
                                                         Expense Type
                                                     </th>
-                                                    <th className="px-4 py-3 font-semibold text-right text-gray-900 dark:text-gray-100">
+                                                    <th className="px-4 py-3 text-right font-semibold text-gray-900 dark:text-gray-100">
                                                         Total Amount
                                                     </th>
                                                 </tr>
@@ -553,11 +553,11 @@ export default function index({ expenses = {}, expense_setting }) {
                                                             key={item.container_id}
                                                             className="transition hover:bg-gray-50 dark:hover:bg-gray-800"
                                                         >
-                                                            <td className="px-4 py-4 text-sm text-left text-gray-900 dark:text-gray-100">
+                                                            <td className="px-4 py-4 text-left text-sm text-gray-900 dark:text-gray-100">
                                                                 {index + 1}
                                                             </td>
 
-                                                            <td className="px-4 py-4 font-medium text-left text-gray-900 dark:text-gray-100">
+                                                            <td className="px-4 py-4 text-left font-medium text-gray-900 dark:text-gray-100">
                                                                 {item.container_no}
                                                             </td>
 
@@ -590,7 +590,7 @@ export default function index({ expenses = {}, expense_setting }) {
                                                                 </div>
                                                             </td>
 
-                                                            <td className="px-4 py-4 font-semibold text-right text-green-500 dark:text-green-400">
+                                                            <td className="px-4 py-4 text-right font-semibold text-green-500 dark:text-green-400">
                                                                 {parseFloat(item.total_amount || 0)}
                                                             </td>
                                                         </tr>
@@ -603,7 +603,7 @@ export default function index({ expenses = {}, expense_setting }) {
                                                 <tr className="border-t border-gray-200 dark:border-gray-700">
                                                     <td
                                                         colSpan="3"
-                                                        className="px-6 py-3 text-sm font-semibold text-right text-gray-800 dark:text-gray-200"
+                                                        className="px-6 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
                                                     >
                                                         MOFA:
                                                     </td>
@@ -625,11 +625,11 @@ export default function index({ expenses = {}, expense_setting }) {
                                                 <tr className="border-t border-gray-200 dark:border-gray-700">
                                                     <td
                                                         colSpan="3"
-                                                        className="px-6 py-3 text-sm font-semibold text-right text-gray-800 dark:text-gray-200"
+                                                        className="px-6 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
                                                     >
                                                         VAT (5%):
                                                     </td>
-                                                    <td className="px-6 py-3 text-sm font-bold text-right text-yellow-600 dark:text-yellow-400">
+                                                    <td className="px-6 py-3 text-right text-sm font-bold text-yellow-600 dark:text-yellow-400">
                                                         {parseFloat(
                                                             containerExpenses.applied_vat || 0,
                                                         ).toLocaleString('en-US', {
@@ -643,11 +643,11 @@ export default function index({ expenses = {}, expense_setting }) {
                                                 <tr className="border-t border-gray-200 dark:border-gray-700">
                                                     <td
                                                         colSpan="3"
-                                                        className="px-6 py-3 text-sm font-semibold text-right text-gray-800 dark:text-gray-200"
+                                                        className="px-6 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
                                                     >
                                                         Grand Total:
                                                     </td>
-                                                    <td className="px-6 py-3 text-sm font-bold text-right text-green-600 dark:text-green-400">
+                                                    <td className="px-6 py-3 text-right text-sm font-bold text-green-600 dark:text-green-400">
                                                         {parseFloat(totalAmount || 0)} AED
                                                     </td>
                                                 </tr>
@@ -662,7 +662,7 @@ export default function index({ expenses = {}, expense_setting }) {
                             </div>
 
                             {/* Buttons */}
-                            <div className="flex flex-col-reverse items-center justify-end gap-4 mt-8 sm:flex-row">
+                            <div className="mt-8 flex flex-col-reverse items-center justify-end gap-4 sm:flex-row">
                                 <PrimaryButton
                                     Action={() => setBlResults({})}
                                     Text="Close"
