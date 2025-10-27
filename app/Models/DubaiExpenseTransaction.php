@@ -17,6 +17,10 @@ class DubaiExpenseTransaction extends Model
         'mofa_amount',
         'applied_mofa',
         'applied_vat',
+        'extra_charges_expenses',
+        'total_amount_after_extra_charges',
+        'bl_expenses',
+        'ton_expenses',
 
     ];
 
@@ -27,8 +31,10 @@ class DubaiExpenseTransaction extends Model
         return Carbon::parse($this->attributes['bl_date'])->format('d-m-Y');
     }
 
-    public function getContainersAttribute()
-    {
-        return json_decode($this->attributes['containers'], true);
-    }
+    protected $casts = [
+        'containers' => 'array',
+        'extra_charges_expenses' => 'array',
+        'bl_expenses' => 'array',
+        'ton_expenses' => 'array',
+    ];
 }

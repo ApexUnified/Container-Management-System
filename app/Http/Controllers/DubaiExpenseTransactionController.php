@@ -25,7 +25,7 @@ class DubaiExpenseTransactionController extends Controller
 
     public function store(Request $request)
     {
-
+        // dd($request->all());
         try {
             $validated_req = $request->validate([
                 'data.bl_no' => ['required', 'string', 'max:255'],
@@ -39,13 +39,12 @@ class DubaiExpenseTransactionController extends Controller
                 'data.containers' => ['required', 'array'],
             ]);
 
-            $validated_req['data']['containers'] = json_encode($validated_req['data']['containers']);
             $validated_req['data']['bl_date'] = date('Y-m-d H:i:s', strtotime($validated_req['data']['bl_date']));
 
             $exists = DubaiExpenseTransaction::where('bl_no', $validated_req['data']['bl_no'])->first();
 
             if (! empty($exists)) {
-                $exists->update($validated_req['data']);
+                $exists->update(array_merge($validated_req['data'], ['extra_charges_expenses' => null, 'total_amount_after_extra_charges' => null, 'bl_expenses' => $request->input('data.bl_expenses', []), 'ton_expenses' => $request->input('data.ton_expenses', [])]));
 
                 return back()->with('success', 'Dubai Expense Transaction updated successfully.');
             }
@@ -61,21 +60,6 @@ class DubaiExpenseTransactionController extends Controller
             return back()->with('error', $e->getMessage());
         }
 
-    }
-
-    // public function update(Request $request, string $id)
-    // {
-    //     //
-    // }
-
-    public function destroy(string $id)
-    {
-        //
-    }
-
-    public function destroyBySelection(Request $request)
-    {
-        //
     }
 
     public function findContainers(Request $request)
@@ -96,7 +80,7 @@ class DubaiExpenseTransactionController extends Controller
                     return $cont->product_weight;
                 })->sum() / 1000;
 
-                $container->weight_in_tons = $weight_in_tons;
+                $container->weight_in_tons = number_format($weight_in_tons, 2, '.', '.');
 
                 return $container;
             });

@@ -9,63 +9,53 @@ import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import SelectInput from '@/Components/SelectInput';
 
-export default function index({ expenses = {}, expense_setting }) {
-    const { props } = usePage();
-    // const {
-    //     data: data,
-    //     setData: setData,
-    //     post: post,
-    //     errors: errors,
-    //     processing: processing,
-    // } = useForm({
-    //     bl_no: '',
-    // });
-
-    const [blExpenses, setBlExpenses] = useState([]);
-    const [tonExpenses, setTonExpenses] = useState([]);
-    const [containerExpensesList, setContainerExpensesList] = useState([]);
-
-    useEffect(() => {
-        if (Object.values(expenses).length === 0) return;
-
-        const blExpenses = expenses?.filter((e) => e.type === 'bl');
-        const tonExpenses = expenses?.filter((e) => e.type === 'ton');
-        const containerExpensesList = expenses?.filter((e) => e.type === 'container');
-
-        setBlExpenses(blExpenses);
-        setTonExpenses(tonExpenses);
-        setContainerExpensesList(containerExpensesList);
-    }, [expenses]);
-
+export default function index({ expenses = [] }) {
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [blNo, setBlNo] = useState('');
     const [processing, setProcessing] = useState(false);
     const [bl_results, setBlResults] = useState({});
 
-    const [selectedBlExpenses, setSelectedBlExpenses] = useState(null);
-    const [selectedTonExpenses, setSelectedTonExpenses] = useState(null);
-
     const [totalAmount, setTotalAmount] = useState(0);
+    const [totalAmountAfterExtraCharges, setTotalAmountAfterExtraCharges] = useState(0);
+
+    const [weigthInTon, setWeigthInTon] = useState(0);
+    const [blExpenses, setBlExpenses] = useState([]);
+    const [tonExpenses, setTonExpenses] = useState([]);
+
     const [containerExpenses, setContainerExpenses] = useState({
         containers: [],
-        bl_no: '',
-        bl_date: '',
-        containers_count: 0,
-        weight_in_tons: 0,
         total_amount: 0,
-        mofa_amount: expense_setting?.amount || 0,
-        applied_mofa: 0,
-        applied_vat: 0,
+        total_amount_after_extra_charges: 0,
     });
 
     const findContainers = (e) => {
         e.preventDefault();
+        setTotalAmountAfterExtraCharges(0);
         setProcessing(true);
         axios
-            .post(route('transactions.dubai-expense-transactions.find-containers'), { bl_no: blNo })
+            .post(route('transactions.extra-charges-expense-transactions.find-containers'), {
+                bl_no: blNo,
+            })
             .then((response) => {
                 if (response.data.status) {
+                    const dubai_expense_transactions_total_amount =
+                        response?.data?.total_amount ?? 0;
+
+                    const bl_expenses = response?.data?.bl_expenses ?? [];
+                    const ton_expenses = response?.data?.ton_expenses ?? [];
+                    const weight_in_tons = response?.data?.weight_in_tons ?? 0;
+
+                    setBlExpenses(bl_expenses);
+                    setTonExpenses(ton_expenses);
+                    setWeigthInTon(weight_in_tons);
+
+                    setContainerExpenses((prevContainerExpenses) => ({
+                        ...prevContainerExpenses,
+                        total_amount: parseFloat(dubai_expense_transactions_total_amount) || 0,
+                    }));
                     setBlResults(response.data.data);
+
+                    setTotalAmount(parseFloat(dubai_expense_transactions_total_amount) || 0);
                 } else {
                     Swal.fire({
                         icon: 'error',
@@ -92,62 +82,44 @@ export default function index({ expenses = {}, expense_setting }) {
                 ...c,
                 base_amount: parseFloat(c.total_amount || 0),
             }));
-
-            const amount = containersWithBase.reduce((sum, item) => {
-                return sum + parseFloat(item.base_amount || 0);
-            }, 0);
-
-            setTotalAmount(parseFloat(amount));
-
-            setContainerExpenses({
-                bl_no: bl_results.bl_no,
-                bl_date: bl_results.bl_date,
-                containers_count: bl_results.containers_count,
-                weight_in_tons: bl_results.weight_in_tons,
+            setContainerExpenses((prev) => ({
+                ...prev,
                 containers: containersWithBase,
-                total_amount: parseFloat(amount),
-                mofa_amount: expense_setting?.amount || 0,
-                applied_mofa: 0,
-                applied_vat: 0,
-            });
+            }));
 
             setViewModalOpen(true);
         } else {
             setContainerExpenses({
                 containers: [],
-                bl_no: '',
-                bl_date: '',
-                containers_count: 0,
-                weight_in_tons: 0,
                 total_amount: 0,
-                mofa_amount: expense_setting?.amount || 0,
-                applied_mofa: 0,
-                applied_vat: 0,
+                total_amount_after_extra_charges: 0,
             });
             setViewModalOpen(false);
-            setSelectedBlExpenses([]);
-            setSelectedTonExpenses([]);
         }
     }, [bl_results]);
 
     const handleExpenseSelect = async (containerId, selectedExpenseNames) => {
         const current = structuredClone(containerExpenses);
-
         if (!current?.containers?.length) return;
+
+        let totalExtraAdded = 0;
 
         const updatedContainers = await Promise.all(
             current.containers.map(async (container) => {
-                if (container.container_id !== containerId) return container;
+                if (container.container_id !== containerId) {
+                    // Still include this container’s extras in total
+                    const containerExtra = container.extra_charges_expenses || [];
+                    const sum = containerExtra.reduce((s, e) => s + (parseFloat(e.amount) || 0), 0);
+                    totalExtraAdded += sum;
+                    return container;
+                }
 
-                const previous = container.container_expenses || [];
-                const baseAmount = parseFloat(container.base_amount || 0);
+                const previous = container.extra_charges_expenses || [];
+                const baseTotal = parseFloat(container.base_amount || container.total_amount || 0);
 
-                // Build list of newly selected container expenses
+                // 🧩 Build selected extras
                 let selectedExpenseObjects = expenses
-                    .filter(
-                        (exp) =>
-                            exp.type === 'container' && selectedExpenseNames.includes(exp.name),
-                    )
+                    .filter((exp) => selectedExpenseNames.includes(exp.name))
                     .map((exp) => {
                         const old = previous.find((p) => p.name === exp.name);
                         return {
@@ -156,7 +128,7 @@ export default function index({ expenses = {}, expense_setting }) {
                         };
                     });
 
-                // Prompt for missing ones
+                // 🧾 Ask for missing values
                 for (let exp of selectedExpenseObjects.filter((e) => e.amount === '')) {
                     const { value, isConfirmed } = await Swal.fire({
                         title: `Enter amount for ${exp.name}`,
@@ -178,205 +150,63 @@ export default function index({ expenses = {}, expense_setting }) {
                     }
                 }
 
-                // Calculate total
-                const expenseTotal = selectedExpenseObjects.reduce(
+                // 🧮 Merge with existing + remove deselected
+                const mergedExpenses = previous
+                    .filter((exp) => selectedExpenseNames.includes(exp.name))
+                    .concat(
+                        selectedExpenseObjects.filter(
+                            (exp) => !previous.some((p) => p.name === exp.name),
+                        ),
+                    );
+
+                if (mergedExpenses.length === 0) {
+                    // remove key if no expenses for this container
+                    const { extra_charges_expenses, ...rest } = container;
+                    return { ...rest, total_amount: baseTotal };
+                }
+
+                const extraChargesTotal = mergedExpenses.reduce(
                     (sum, exp) => sum + (parseFloat(exp.amount) || 0),
                     0,
                 );
-
-                const newTotal = baseAmount + expenseTotal;
+                totalExtraAdded += extraChargesTotal;
 
                 return {
                     ...container,
-                    container_expenses: selectedExpenseObjects,
-                    total_amount: parseFloat(newTotal),
+                    extra_charges_expenses: mergedExpenses,
+                    total_amount: baseTotal + extraChargesTotal,
                 };
             }),
         );
 
-        const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(
-            { ...current, containers: updatedContainers },
-            current.bl_expenses || [],
-            current.ton_expenses || [],
+        // 🧩 Check if *any* container still has extra charges
+        const anyExtras = updatedContainers.some(
+            (c) => c.extra_charges_expenses && c.extra_charges_expenses.length > 0,
         );
+
+        // 🧾 Calculate total only if extras exist
+        const newTotalAfterExtra = anyExtras
+            ? parseFloat(totalAmount) + parseFloat(totalExtraAdded || 0)
+            : 0;
 
         setContainerExpenses({
             ...current,
             containers: updatedContainers,
-            total_amount: grandTotal,
-            applied_mofa: mofaAmount,
-            applied_vat: vatAmount,
+            total_amount_after_extra_charges: newTotalAfterExtra,
         });
-        setTotalAmount(grandTotal);
+
+        setTotalAmountAfterExtraCharges(newTotalAfterExtra);
     };
-
-    const handleBLExpenseSelect = async (selectedNames) => {
-        const previous = containerExpenses.bl_expenses || [];
-
-        let selected = blExpenses
-            .filter((exp) => selectedNames.includes(exp.name))
-            .map((exp) => {
-                const old = previous.find((p) => p.name === exp.name);
-                return {
-                    name: exp.name,
-                    amount: old ? old.amount : parseFloat(exp.amount) || '',
-                };
-            });
-
-        // Prompt for missing amounts only for new selections
-        for (let e of selected.filter((x) => !x.amount)) {
-            const { value, isConfirmed } = await Swal.fire({
-                title: `Enter amount for ${e.name}`,
-                input: 'number',
-                inputPlaceholder: 'Enter custom amount (AED)',
-                showCancelButton: true,
-                confirmButtonText: 'Save',
-            });
-
-            if (isConfirmed && value && !isNaN(value)) {
-                e.amount = parseFloat(value);
-            } else if (!isConfirmed) {
-                selected = selected.filter((x) => x.name !== e.name);
-            } else {
-                e.amount = 0;
-            }
-        }
-
-        // ✅ Update both local and container states
-        setSelectedBlExpenses(selected);
-
-        const updated = { ...containerExpenses, bl_expenses: selected };
-        const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(
-            updated,
-            selected,
-            containerExpenses.ton_expenses || [],
-        );
-
-        setContainerExpenses({
-            ...updated,
-            total_amount: grandTotal,
-            applied_mofa: mofaAmount,
-            applied_vat: vatAmount,
-        });
-        setTotalAmount(grandTotal);
-    };
-
-    const handleTonExpenseSelect = async (selectedNames) => {
-        const previous = containerExpenses.ton_expenses || [];
-
-        let selected = tonExpenses
-            .filter((exp) => selectedNames.includes(exp.name))
-            .map((exp) => {
-                const old = previous.find((p) => p.name === exp.name);
-                return {
-                    name: exp.name,
-                    amount: old ? old.amount : parseFloat(exp.amount) || '',
-                };
-            });
-
-        for (let e of selected.filter((x) => !x.amount)) {
-            const { value, isConfirmed } = await Swal.fire({
-                title: `Enter amount per ton for ${e.name}`,
-                input: 'number',
-                inputPlaceholder: 'Enter custom amount (AED)',
-                showCancelButton: true,
-                confirmButtonText: 'Save',
-            });
-
-            if (isConfirmed && value && !isNaN(value)) {
-                e.amount = parseFloat(value);
-            } else if (!isConfirmed) {
-                selected = selected.filter((x) => x.name !== e.name);
-            } else {
-                e.amount = 0;
-            }
-        }
-
-        // ✅ Update both local and container states
-        setSelectedTonExpenses(selected);
-
-        const updated = { ...containerExpenses, ton_expenses: selected };
-        const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(
-            updated,
-            containerExpenses.bl_expenses || [],
-            selected,
-        );
-
-        setContainerExpenses({
-            ...updated,
-            total_amount: grandTotal,
-            applied_mofa: mofaAmount,
-            applied_vat: vatAmount,
-        });
-        setTotalAmount(grandTotal);
-    };
-
-    const recalculateTotal = (containerData, blExp = [], tonExp = []) => {
-        const containerTotal = containerData.containers.reduce(
-            (sum, c) => sum + parseFloat(c.total_amount || 0),
-            0,
-        );
-
-        const blTotal = blExp.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
-
-        const totalTonnage = parseFloat(containerData.weight_in_tons || 0);
-
-        const tonTotal = tonExp.reduce(
-            (sum, e) => sum + totalTonnage * (parseFloat(e.amount) || 0),
-            0,
-        );
-
-        const usdRate = 3.6795;
-        const usdPerTon = parseFloat(containerData.mofa_amount || 0);
-        const mofaPrice = totalTonnage * usdPerTon * usdRate;
-        const mofaAmount = mofaPrice > 10000 ? mofaPrice : 0;
-
-        const vatAmount = totalTonnage * usdPerTon * usdRate * 0.05;
-
-        const grandTotal = parseFloat(
-            (containerTotal + blTotal + tonTotal + mofaAmount + vatAmount).toFixed(2),
-        );
-
-        return { grandTotal, mofaAmount, vatAmount };
-    };
-
-    useEffect(() => {
-        if (!containerExpenses?.containers?.length) return;
-
-        const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(
-            containerExpenses,
-            containerExpenses.bl_expenses || [],
-            containerExpenses.ton_expenses || [],
-        );
-
-        if (
-            grandTotal !== containerExpenses.total_amount ||
-            mofaAmount !== containerExpenses.applied_mofa ||
-            vatAmount !== containerExpenses.applied_vat
-        ) {
-            setContainerExpenses((prev) => ({
-                ...prev,
-                total_amount: grandTotal,
-                applied_mofa: mofaAmount,
-                applied_vat: vatAmount,
-            }));
-
-            setTotalAmount(grandTotal);
-        }
-    }, [
-        containerExpenses.containers,
-        containerExpenses.bl_expenses,
-        containerExpenses.ton_expenses,
-    ]);
 
     const [submitProcessing, setSubmitProcessing] = useState(false);
     const submit = () => {
         setSubmitProcessing(true);
 
         router.post(
-            route('transactions.dubai-expense-transactions.store'),
+            route('transactions.extra-charges-expense-transactions.store'),
             {
                 data: containerExpenses,
+                bl_no: blNo,
             },
             {
                 onFinish: () => setSubmitProcessing(false),
@@ -387,13 +217,13 @@ export default function index({ expenses = {}, expense_setting }) {
     return (
         <>
             <AuthenticatedLayout>
-                <Head title="Transactions - Dubai Expense" />
+                <Head title="Transactions - Extra Charges Expense" />
 
                 <BreadCrumb
-                    header={'Transactions - Dubai Expense'}
+                    header={'Transactions - Extra Charges Expense'}
                     parent={'Dashboard'}
                     parent_link={route('dashboard')}
-                    child={'Transactions - Dubai Expense'}
+                    child={'Transactions - Extra Charges Expense'}
                 />
 
                 <Card
@@ -453,7 +283,7 @@ export default function index({ expenses = {}, expense_setting }) {
                         {/* Modal Box */}
                         <div className="relative z-10 max-h-screen w-full max-w-screen-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                             <h3 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
-                                Dubai Expense
+                                Extra Charges Expense
                             </h3>
 
                             {/* Divider */}
@@ -468,7 +298,7 @@ export default function index({ expenses = {}, expense_setting }) {
                                             B/L No
                                         </p>
                                         <p className="text-base font-semibold text-gray-900 dark:text-white">
-                                            {containerExpenses.bl_no || '—'}
+                                            {bl_results?.bl_no || '—'}
                                         </p>
                                     </div>
                                     <div>
@@ -476,7 +306,7 @@ export default function index({ expenses = {}, expense_setting }) {
                                             B/L Date
                                         </p>
                                         <p className="text-base font-semibold text-gray-900 dark:text-white">
-                                            {containerExpenses.bl_date || '—'}
+                                            {bl_results?.bl_date || '—'}
                                         </p>
                                     </div>
                                     <div>
@@ -484,7 +314,7 @@ export default function index({ expenses = {}, expense_setting }) {
                                             Containers in B/L
                                         </p>
                                         <p className="text-base font-semibold text-gray-900 dark:text-white">
-                                            {containerExpenses.containers_count || 0}
+                                            {bl_results?.containers_count || 0}
                                         </p>
                                     </div>
                                     <div>
@@ -492,37 +322,77 @@ export default function index({ expenses = {}, expense_setting }) {
                                             Total Tonnage
                                         </p>
                                         <p className="text-base font-semibold text-gray-900 dark:text-white">
-                                            {containerExpenses.weight_in_tons || 0}
+                                            {bl_results?.weight_in_tons || 0}
                                         </p>
                                     </div>
                                 </div>
 
-                                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <SelectInput
-                                        InputName="B/L Level Expenses"
-                                        Id="bl_expenses"
-                                        Multiple={false}
-                                        items={blExpenses}
-                                        itemKey="name"
-                                        valueKey="name"
-                                        Placeholder="Select BL Expenses"
-                                        Value={selectedBlExpenses?.[0]?.name}
-                                        Action={(value) => handleBLExpenseSelect(value)}
-                                    />
-                                    <SelectInput
-                                        InputName="Ton-Based Expenses"
-                                        Id="ton_expenses"
-                                        Multiple={false}
-                                        items={tonExpenses}
-                                        itemKey="name"
-                                        valueKey="name"
-                                        Placeholder="Select Ton Expenses"
-                                        Value={selectedTonExpenses?.[0]?.name}
-                                        Action={(value) => handleTonExpenseSelect(value)}
-                                    />
-                                </div>
-
                                 {/* Divider */}
+                                <div className="border-b border-gray-200 dark:border-gray-700"></div>
+
+                                {/* Expenses Summary Alert */}
+                                {(blExpenses.length > 0 || tonExpenses.length > 0) && (
+                                    <div className="mb-6 space-y-3">
+                                        {/* B/L Level Expenses */}
+                                        {blExpenses.map((exp, index) => (
+                                            <div
+                                                key={`bl-${index}`}
+                                                className="flex flex-col rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm shadow-sm dark:border-blue-800 dark:bg-blue-900/30 sm:flex-row sm:items-center sm:justify-between"
+                                            >
+                                                <div className="flex flex-col">
+                                                    <span className="font-semibold text-blue-800 dark:text-blue-400">
+                                                        {exp.name}
+                                                    </span>
+                                                    <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                        Type: Per B/L
+                                                    </span>
+                                                </div>
+
+                                                <div className="mt-1 text-right sm:mt-0">
+                                                    <span className="font-semibold text-blue-700 dark:text-blue-300">
+                                                        {parseFloat(exp.amount || 0).toLocaleString(
+                                                            'en-US',
+                                                            {
+                                                                minimumFractionDigits: 2,
+                                                            },
+                                                        )}{' '}
+                                                        AED
+                                                    </span>
+                                                    <div className="text-xs text-gray-500 dark:text-gray-400">
+                                                        (Applied as flat B/L charge)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+
+                                        {/* Ton-Based Expenses */}
+                                        {tonExpenses.map((exp, index) => {
+                                            return (
+                                                <div
+                                                    key={`ton-${index}`}
+                                                    className="flex flex-col rounded-lg border border-green-200 bg-green-50 px-4 py-2 text-sm shadow-sm dark:border-green-800 dark:bg-green-900/30 sm:flex-row sm:items-center sm:justify-between"
+                                                >
+                                                    <div className="flex flex-col">
+                                                        <span className="font-semibold text-green-800 dark:text-green-400">
+                                                            {exp.name}
+                                                        </span>
+                                                        <span className="text-xs text-gray-500 dark:text-gray-400">
+                                                            Type: Per Ton
+                                                        </span>
+                                                    </div>
+
+                                                    <div className="mt-1 text-right sm:mt-0">
+                                                        <span className="font-semibold text-green-700 dark:text-green-300">
+                                                            {exp.amount} AED × {weigthInTon} tons ={' '}
+                                                            {exp.amount * weigthInTon} AED
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+
                                 <div className="border-b border-gray-200 dark:border-gray-700"></div>
 
                                 {/* Table Section */}
@@ -567,16 +437,14 @@ export default function index({ expenses = {}, expense_setting }) {
                                                                         InputName="Container Expenses"
                                                                         Id={`expenses-${item.container_id}`}
                                                                         Multiple={true}
-                                                                        items={
-                                                                            containerExpensesList
-                                                                        }
+                                                                        items={expenses}
                                                                         itemKey="name"
                                                                         valueKey="name"
                                                                         Placeholder="Select Container Expense"
                                                                         Clearable={true}
                                                                         className="w-full"
                                                                         Value={
-                                                                            item?.container_expenses?.map(
+                                                                            item?.extra_charges_expenses?.map(
                                                                                 (exp) => exp.name,
                                                                             ) || []
                                                                         }
@@ -599,56 +467,27 @@ export default function index({ expenses = {}, expense_setting }) {
                                             </tbody>
 
                                             <tfoot className="bg-gray-50 dark:bg-gray-800">
-                                                {/* MOFA Row */}
-                                                <tr className="border-t border-gray-200 dark:border-gray-700">
+                                                <tr>
                                                     <td
                                                         colSpan="3"
                                                         className="px-6 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
                                                     >
-                                                        MOFA:
+                                                        Total (Dubai Expense):
                                                     </td>
-                                                    <td
-                                                        className={`px-6 py-3 text-right text-sm font-bold ${
-                                                            containerExpenses.applied_mofa > 0
-                                                                ? 'text-blue-600 dark:text-blue-400'
-                                                                : 'text-gray-500 dark:text-gray-400'
-                                                        }`}
-                                                    >
-                                                        {containerExpenses.applied_mofa > 0
-                                                            ? `${parseFloat(
-                                                                  containerExpenses.applied_mofa,
-                                                              )} AED`
-                                                            : 'Not Applicable'}
+                                                    <td className="px-6 py-3 text-right text-sm font-bold text-green-500 dark:text-green-400">
+                                                        {parseFloat(totalAmount)} AED
                                                     </td>
                                                 </tr>
-
-                                                <tr className="border-t border-gray-200 dark:border-gray-700">
+                                                <tr>
                                                     <td
                                                         colSpan="3"
                                                         className="px-6 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
                                                     >
-                                                        VAT (5%):
+                                                        Total (After Extra Charges):
                                                     </td>
-                                                    <td className="px-6 py-3 text-right text-sm font-bold text-yellow-600 dark:text-yellow-400">
-                                                        {parseFloat(
-                                                            containerExpenses.applied_vat || 0,
-                                                        ).toLocaleString('en-US', {
-                                                            minimumFractionDigits: 2,
-                                                        })}{' '}
+                                                    <td className="px-6 py-3 text-right text-sm font-bold text-blue-500 dark:text-blue-400">
+                                                        {parseFloat(totalAmountAfterExtraCharges)}{' '}
                                                         AED
-                                                    </td>
-                                                </tr>
-
-                                                {/* Total Row */}
-                                                <tr className="border-t border-gray-200 dark:border-gray-700">
-                                                    <td
-                                                        colSpan="3"
-                                                        className="px-6 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
-                                                    >
-                                                        Grand Total:
-                                                    </td>
-                                                    <td className="px-6 py-3 text-right text-sm font-bold text-green-600 dark:text-green-400">
-                                                        {parseFloat(totalAmount || 0)} AED
                                                     </td>
                                                 </tr>
                                             </tfoot>

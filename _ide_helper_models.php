@@ -235,7 +235,11 @@ namespace App\Models{
  * @property string $mofa_amount
  * @property string $applied_mofa
  * @property string $applied_vat
- * @property string $containers
+ * @property array<array-key, mixed> $containers
+ * @property array<array-key, mixed>|null $extra_charges_expenses
+ * @property string|null $total_amount_after_extra_charges
+ * @property array<array-key, mixed>|null $bl_expenses
+ * @property array<array-key, mixed>|null $ton_expenses
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction newModelQuery()
@@ -244,13 +248,17 @@ namespace App\Models{
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereAppliedMofa($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereAppliedVat($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereBlDate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereBlExpenses($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereBlNo($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereContainers($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereContainersCount($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereExtraChargesExpenses($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereMofaAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereTonExpenses($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereTotalAmount($value)
+ * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereTotalAmountAfterExtraCharges($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder<static>|DubaiExpenseTransaction whereWeightInTons($value)
  */
