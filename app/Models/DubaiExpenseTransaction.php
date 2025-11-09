@@ -19,8 +19,7 @@ class DubaiExpenseTransaction extends Model
         'applied_vat',
         'extra_charges_expenses',
         'total_amount_after_extra_charges',
-        'bl_expenses',
-        'ton_expenses',
+        'all_expenses',
 
     ];
 
@@ -34,7 +33,6 @@ class DubaiExpenseTransaction extends Model
     protected $casts = [
         'containers' => 'array',
         'extra_charges_expenses' => 'array',
-        'bl_expenses' => 'array',
-        'ton_expenses' => 'array',
+        'all_expenses' => 'array',
     ];
 }

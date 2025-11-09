@@ -540,3 +540,435 @@ export default function index({ expenses = [] }) {
         </>
     );
 }
+
+// NEW VERSION JUST INCASE IF  CHANGE NEEDED
+
+// import Card from '@/Components/Card';
+// import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+// import BreadCrumb from '@/Components/BreadCrumb';
+// import { Head, router, usePage } from '@inertiajs/react';
+// import Input from '@/Components/Input';
+// import PrimaryButton from '@/Components/PrimaryButton';
+// import axios from 'axios';
+// import { useEffect, useRef, useState } from 'react';
+// import Swal from 'sweetalert2';
+
+// export default function index({ expenses = [] }) {
+//     const [viewModalOpen, setViewModalOpen] = useState(false);
+//     const [blNo, setBlNo] = useState('');
+//     const [processing, setProcessing] = useState(false);
+//     const [bl_results, setBlResults] = useState({});
+
+//     const [totalAmount, setTotalAmount] = useState(0);
+//     const [totalAmountAfterExtraCharges, setTotalAmountAfterExtraCharges] = useState(0);
+
+//     const [containerExpenses, setContainerExpenses] = useState({
+//         containers: [],
+//         bl_no: '',
+//         bl_date: '',
+//         containers_count: 0,
+//         weight_in_tons: 0,
+//         total_amount: 0,
+//         total_amount_after_extra_charges: 0,
+//         all_expenses: [],
+//     });
+
+//     const findContainers = (e) => {
+//         e.preventDefault();
+//         setTotalAmountAfterExtraCharges(0);
+//         setProcessing(true);
+//         axios
+//             .post(route('transactions.extra-charges-expense-transactions.find-containers'), {
+//                 bl_no: blNo,
+//             })
+//             .then((response) => {
+//                 if (response.data.status) {
+//                     const dubai_expense_transactions_total_amount =
+//                         response?.data?.total_amount ?? 0;
+
+//                     setBlResults(response.data.data);
+//                     setTotalAmount(parseFloat(dubai_expense_transactions_total_amount) || 0);
+//                 } else {
+//                     Swal.fire({
+//                         icon: 'error',
+//                         title: 'Error',
+//                         text: 'No containers found for the provided B/L No.',
+//                     });
+//                 }
+//             })
+//             .catch((error) => {
+//                 Swal.fire({
+//                     icon: 'error',
+//                     title: 'Error',
+//                     text: 'There was an error! ' + error.response.data.error,
+//                 });
+//             })
+//             .finally(() => {
+//                 setProcessing(false);
+//             });
+//     };
+
+//     useEffect(() => {
+//         if (Object.values(bl_results).length > 0 && Array.isArray(expenses)) {
+//             const containersWithBase = bl_results.containers.map((c) => ({
+//                 ...c,
+//                 base_amount: parseFloat(c.total_amount || 0),
+//             }));
+
+//             // Initialize all expenses from expenses prop
+//             const initialAllExpenses = expenses.map((exp) => ({
+//                 id: exp.id,
+//                 name: exp.name,
+//                 type: exp.type,
+//                 amount: exp.amount ? parseFloat(exp.amount) : null,
+//                 has_preset_amount: exp.amount !== null,
+//             }));
+
+//             const initialState = {
+//                 bl_no: bl_results.bl_no,
+//                 bl_date: bl_results.bl_date,
+//                 containers_count: bl_results.containers_count,
+//                 weight_in_tons: bl_results.weight_in_tons,
+//                 containers: containersWithBase,
+//                 total_amount: parseFloat(totalAmount),
+//                 all_expenses: initialAllExpenses,
+//             };
+
+//             const { extraChargesTotal } = recalculateTotal(initialState);
+
+//             // Initial total after extra charges = Dubai expense + extra charges
+//             const initialTotalAfterExtra = parseFloat(totalAmount) + extraChargesTotal;
+
+//             setContainerExpenses({
+//                 ...initialState,
+//                 total_amount_after_extra_charges: initialTotalAfterExtra,
+//             });
+
+//             setTotalAmountAfterExtraCharges(initialTotalAfterExtra);
+//             setViewModalOpen(true);
+//         } else {
+//             setContainerExpenses({
+//                 containers: [],
+//                 bl_no: '',
+//                 bl_date: '',
+//                 containers_count: 0,
+//                 weight_in_tons: 0,
+//                 total_amount: 0,
+//                 total_amount_after_extra_charges: 0,
+//                 all_expenses: [],
+//             });
+//             setViewModalOpen(false);
+//             setTotalAmountAfterExtraCharges(0);
+//         }
+//     }, [bl_results, expenses, totalAmount]);
+
+//     // Handle expense amount change
+//     const handleExpenseAmountChange = (expenseId, value) => {
+//         setContainerExpenses((prevState) => {
+//             const updated = { ...prevState };
+//             const expenseIndex = updated.all_expenses.findIndex((e) => e.id === expenseId);
+//             if (expenseIndex !== -1) {
+//                 // Create a new array with the updated expense
+//                 updated.all_expenses = [...updated.all_expenses];
+//                 updated.all_expenses[expenseIndex] = {
+//                     ...updated.all_expenses[expenseIndex],
+//                     amount: value ? parseFloat(value) : null,
+//                 };
+
+//                 const { extraChargesTotal } = recalculateTotal(updated);
+
+//                 // Always add to the base total amount (Dubai expense)
+//                 const newTotalAfterExtraCharges = parseFloat(totalAmount) + extraChargesTotal;
+
+//                 updated.total_amount_after_extra_charges = newTotalAfterExtraCharges;
+//                 setTotalAmountAfterExtraCharges(newTotalAfterExtraCharges);
+
+//                 return updated;
+//             }
+
+//             return prevState;
+//         });
+//     };
+
+//     const recalculateTotal = (containerData) => {
+//         // Simply sum all expense amounts (no type-based logic for extra charges)
+//         const extraChargesTotal =
+//             containerData.all_expenses?.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0) ||
+//             0;
+
+//         return { extraChargesTotal: parseFloat(extraChargesTotal.toFixed(2)) };
+//     };
+
+//     const [submitProcessing, setSubmitProcessing] = useState(false);
+//     const submit = () => {
+//         setSubmitProcessing(true);
+
+//         router.post(
+//             route('transactions.extra-charges-expense-transactions.store'),
+//             {
+//                 data: containerExpenses,
+//                 bl_no: blNo,
+//             },
+//             {
+//                 onFinish: () => setSubmitProcessing(false),
+//             },
+//         );
+//     };
+
+//     return (
+//         <>
+//             <AuthenticatedLayout>
+//                 <Head title="Transactions - Extra Charges Expense" />
+
+//                 <BreadCrumb
+//                     header={'Transactions - Extra Charges Expense'}
+//                     parent={'Dashboard'}
+//                     parent_link={route('dashboard')}
+//                     child={'Transactions - Extra Charges Expense'}
+//                 />
+
+//                 <Card
+//                     Content={
+//                         <>
+//                             <form onSubmit={findContainers}>
+//                                 <div className="flex items-center gap-2 px-10 mx-auto mt-4">
+//                                     <Input
+//                                         InputName={'B/L No'}
+//                                         Id={'bl_no'}
+//                                         Name={'bl_no'}
+//                                         Type={'text'}
+//                                         Placeholder={'Enter B/L No'}
+//                                         Required={true}
+//                                         Value={blNo}
+//                                         Action={(e) => setBlNo(e.target.value)}
+//                                     />
+//                                 </div>
+//                                 <PrimaryButton
+//                                     Disabled={processing || blNo === ''}
+//                                     Spinner={processing}
+//                                     CustomClass={'mx-auto mt-0 flex items-center gap-2'}
+//                                     Text={'Find Containers'}
+//                                     Type={'submit'}
+//                                     Icon={
+//                                         <svg
+//                                             xmlns="http://www.w3.org/2000/svg"
+//                                             fill="none"
+//                                             viewBox="0 0 24 24"
+//                                             strokeWidth={1.5}
+//                                             stroke="currentColor"
+//                                             className="size-6"
+//                                         >
+//                                             <path
+//                                                 strokeLinecap="round"
+//                                                 strokeLinejoin="round"
+//                                                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+//                                             />
+//                                         </svg>
+//                                     }
+//                                 />
+//                             </form>
+//                         </>
+//                     }
+//                 />
+
+//                 {viewModalOpen && (
+//                     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 overflow-y-auto sm:p-6">
+//                         <div
+//                             className="fixed inset-0 backdrop-blur-[32px]"
+//                             onClick={() => {
+//                                 setBlResults({});
+//                             }}
+//                         ></div>
+
+//                         <div className="relative z-10 w-full max-h-screen p-6 overflow-y-auto bg-white shadow-xl max-w-screen-2xl rounded-2xl dark:bg-gray-800 sm:p-8">
+//                             <h3 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
+//                                 Extra Charges Expense
+//                             </h3>
+
+//                             <div className="mb-6 border-b border-gray-200 dark:border-gray-700"></div>
+
+//                             <div className="space-y-8">
+//                                 {/* Header Info Section */}
+//                                 <div className="grid grid-cols-1 gap-4 p-4 border border-gray-200 rounded-xl bg-gray-50 dark:border-gray-700 dark:bg-gray-900/30 sm:grid-cols-2 lg:grid-cols-4">
+//                                     <div>
+//                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+//                                             B/L No
+//                                         </p>
+//                                         <p className="text-base font-semibold text-gray-900 dark:text-white">
+//                                             {containerExpenses.bl_no || '—'}
+//                                         </p>
+//                                     </div>
+//                                     <div>
+//                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+//                                             B/L Date
+//                                         </p>
+//                                         <p className="text-base font-semibold text-gray-900 dark:text-white">
+//                                             {containerExpenses.bl_date || '—'}
+//                                         </p>
+//                                     </div>
+//                                     <div>
+//                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+//                                             Containers in B/L
+//                                         </p>
+//                                         <p className="text-base font-semibold text-gray-900 dark:text-white">
+//                                             {containerExpenses.containers_count || 0}
+//                                         </p>
+//                                     </div>
+//                                     <div>
+//                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
+//                                             Total Tonnage
+//                                         </p>
+//                                         <p className="text-base font-semibold text-gray-900 dark:text-white">
+//                                             {containerExpenses.weight_in_tons || 0}
+//                                         </p>
+//                                     </div>
+//                                 </div>
+
+//                                 {/* All Extra Charges Expenses Table */}
+//                                 <div>
+//                                     <h4 className="mb-3 text-sm font-semibold text-gray-800 dark:text-gray-200">
+//                                         All Extra Charges
+//                                     </h4>
+//                                     <div className="overflow-hidden border border-gray-200 rounded-lg dark:border-gray-700">
+//                                         <table className="min-w-full text-sm text-left text-gray-700 dark:text-gray-300">
+//                                             <thead className="bg-gray-100 dark:bg-gray-700">
+//                                                 <tr>
+//                                                     <th className="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">
+//                                                         #
+//                                                     </th>
+//                                                     <th className="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">
+//                                                         Expense Name
+//                                                     </th>
+//                                                     <th className="px-4 py-3 font-semibold text-right text-gray-900 dark:text-gray-100">
+//                                                         Amount (AED)
+//                                                     </th>
+//                                                 </tr>
+//                                             </thead>
+//                                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
+//                                                 {containerExpenses.all_expenses?.map(
+//                                                     (expense, index) => {
+//                                                         const isDisabled =
+//                                                             expense.has_preset_amount === true;
+//                                                         return (
+//                                                             <tr
+//                                                                 key={expense.id}
+//                                                                 className="transition hover:bg-gray-50 dark:hover:bg-gray-800"
+//                                                             >
+//                                                                 <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+//                                                                     {index + 1}
+//                                                                 </td>
+//                                                                 <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+//                                                                     {expense.name}
+//                                                                 </td>
+//                                                                 <td className="px-4 py-3 text-right">
+//                                                                     <input
+//                                                                         type="number"
+//                                                                         step="0.01"
+//                                                                         min="0"
+//                                                                         onKeyDown={(e) => {
+//                                                                             if (
+//                                                                                 e.key === 'e' ||
+//                                                                                 e.key === 'E' ||
+//                                                                                 e.key === '+' ||
+//                                                                                 e.key === '-'
+//                                                                             ) {
+//                                                                                 e.preventDefault();
+//                                                                             }
+//                                                                         }}
+//                                                                         placeholder="Enter amount"
+//                                                                         value={expense.amount || ''}
+//                                                                         disabled={isDisabled}
+//                                                                         onChange={(e) =>
+//                                                                             handleExpenseAmountChange(
+//                                                                                 expense.id,
+//                                                                                 e.target.value,
+//                                                                             )
+//                                                                         }
+//                                                                         className={`dark:bg-dark-900 shadow-theme-xs focus:ring-3 focus:outline-hidden mb-2 w-full max-w-[150px] rounded-lg border border-gray-300 bg-transparent px-3 py-2.5 text-right text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-300 focus:ring-1 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800 ${
+//                                                                             isDisabled
+//                                                                                 ? 'cursor-not-allowed opacity-25 dark:opacity-40'
+//                                                                                 : ''
+//                                                                         }`}
+//                                                                     />
+//                                                                 </td>
+//                                                             </tr>
+//                                                         );
+//                                                     },
+//                                                 )}
+//                                             </tbody>
+//                                             <tfoot className="bg-gray-50 dark:bg-gray-800">
+//                                                 {/* Dubai Expense Total Row */}
+//                                                 <tr className="border-t border-gray-200 dark:border-gray-700">
+//                                                     <td
+//                                                         colSpan="2"
+//                                                         className="px-4 py-3 text-sm font-semibold text-right text-gray-800 dark:text-gray-200"
+//                                                     >
+//                                                         Total (Dubai Expense):
+//                                                     </td>
+//                                                     <td className="px-4 py-3 text-sm font-bold text-right text-green-600 dark:text-green-400">
+//                                                         {parseFloat(totalAmount || 0).toFixed(2)}{' '}
+//                                                         AED
+//                                                     </td>
+//                                                 </tr>
+
+//                                                 {/* Grand Total After Extra Charges Row */}
+//                                                 <tr className="border-t-2 border-gray-300 dark:border-gray-600">
+//                                                     <td
+//                                                         colSpan="2"
+//                                                         className="px-4 py-3 text-sm font-semibold text-right text-gray-800 dark:text-gray-200"
+//                                                     >
+//                                                         Total (After Extra Charges):
+//                                                     </td>
+//                                                     <td className="px-4 py-3 text-sm font-bold text-right text-blue-600 dark:text-blue-400">
+//                                                         {parseFloat(
+//                                                             totalAmountAfterExtraCharges || 0,
+//                                                         ).toFixed(2)}{' '}
+//                                                         AED
+//                                                     </td>
+//                                                 </tr>
+//                                             </tfoot>
+//                                         </table>
+//                                     </div>
+//                                 </div>
+//                             </div>
+
+//                             <div className="flex flex-col-reverse items-center justify-end gap-4 mt-8 sm:flex-row">
+//                                 <PrimaryButton
+//                                     Action={() => setBlResults({})}
+//                                     Text="Close"
+//                                     Type="button"
+//                                     CustomClass="bg-red-500 hover:bg-red-600 w-full "
+//                                 />
+
+//                                 <PrimaryButton
+//                                     Action={() => submit()}
+//                                     Text="Save"
+//                                     Disabled={submitProcessing}
+//                                     Spinner={submitProcessing}
+//                                     Type="button"
+//                                     CustomClass="w-full "
+//                                     Icon={
+//                                         <svg
+//                                             xmlns="http://www.w3.org/2000/svg"
+//                                             fill="none"
+//                                             viewBox="0 0 24 24"
+//                                             strokeWidth={1.5}
+//                                             stroke="currentColor"
+//                                             className="size-6"
+//                                         >
+//                                             <path
+//                                                 strokeLinecap="round"
+//                                                 strokeLinejoin="round"
+//                                                 d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99"
+//                                             />
+//                                         </svg>
+//                                     }
+//                                 />
+//                             </div>
+//                         </div>
+//                     </div>
+//                 )}
+//             </AuthenticatedLayout>
+//         </>
+//     );
+// }

@@ -7,43 +7,24 @@ import PrimaryButton from '@/Components/PrimaryButton';
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import SelectInput from '@/Components/SelectInput';
 
 export default function index({ expenses = {}, expense_setting }) {
     const { props } = usePage();
-    // const {
-    //     data: data,
-    //     setData: setData,
-    //     post: post,
-    //     errors: errors,
-    //     processing: processing,
-    // } = useForm({
-    //     bl_no: '',
-    // });
 
-    const [blExpenses, setBlExpenses] = useState([]);
-    const [tonExpenses, setTonExpenses] = useState([]);
-    const [containerExpensesList, setContainerExpensesList] = useState([]);
+    const [allExpenses, setAllExpenses] = useState([]);
 
     useEffect(() => {
-        if (Object.values(expenses).length === 0) return;
-
-        const blExpenses = expenses?.filter((e) => e.type === 'bl');
-        const tonExpenses = expenses?.filter((e) => e.type === 'ton');
-        const containerExpensesList = expenses?.filter((e) => e.type === 'container');
-
-        setBlExpenses(blExpenses);
-        setTonExpenses(tonExpenses);
-        setContainerExpensesList(containerExpensesList);
+        if (Array.isArray(expenses) && expenses.length > 0) {
+            setAllExpenses(expenses);
+        } else {
+            setAllExpenses([]);
+        }
     }, [expenses]);
 
     const [viewModalOpen, setViewModalOpen] = useState(false);
     const [blNo, setBlNo] = useState('');
     const [processing, setProcessing] = useState(false);
     const [bl_results, setBlResults] = useState({});
-
-    const [selectedBlExpenses, setSelectedBlExpenses] = useState(null);
-    const [selectedTonExpenses, setSelectedTonExpenses] = useState(null);
 
     const [totalAmount, setTotalAmount] = useState(0);
     const [containerExpenses, setContainerExpenses] = useState({
@@ -56,6 +37,7 @@ export default function index({ expenses = {}, expense_setting }) {
         mofa_amount: expense_setting?.amount || 0,
         applied_mofa: 0,
         applied_vat: 0,
+        all_expenses: [],
     });
 
     const findContainers = (e) => {
@@ -93,24 +75,34 @@ export default function index({ expenses = {}, expense_setting }) {
                 base_amount: parseFloat(c.total_amount || 0),
             }));
 
-            const amount = containersWithBase.reduce((sum, item) => {
-                return sum + parseFloat(item.base_amount || 0);
-            }, 0);
+            const initialAllExpenses = allExpenses.map((exp) => ({
+                id: exp.id,
+                name: exp.name,
+                type: exp.type,
+                amount: exp.amount ? parseFloat(exp.amount) : null,
+                has_preset_amount: exp.amount !== null,
+            }));
 
-            setTotalAmount(parseFloat(amount));
-
-            setContainerExpenses({
+            const initialState = {
                 bl_no: bl_results.bl_no,
                 bl_date: bl_results.bl_date,
                 containers_count: bl_results.containers_count,
                 weight_in_tons: bl_results.weight_in_tons,
                 containers: containersWithBase,
-                total_amount: parseFloat(amount),
                 mofa_amount: expense_setting?.amount || 0,
-                applied_mofa: 0,
-                applied_vat: 0,
+                all_expenses: initialAllExpenses,
+            };
+
+            const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(initialState);
+
+            setContainerExpenses({
+                ...initialState,
+                total_amount: grandTotal,
+                applied_mofa: mofaAmount,
+                applied_vat: vatAmount,
             });
 
+            setTotalAmount(grandTotal);
             setViewModalOpen(true);
         } else {
             setContainerExpenses({
@@ -123,218 +115,90 @@ export default function index({ expenses = {}, expense_setting }) {
                 mofa_amount: expense_setting?.amount || 0,
                 applied_mofa: 0,
                 applied_vat: 0,
+                all_expenses: [],
             });
             setViewModalOpen(false);
-            setSelectedBlExpenses([]);
-            setSelectedTonExpenses([]);
+            setTotalAmount(0);
         }
-    }, [bl_results]);
+    }, [bl_results, allExpenses, expense_setting]);
 
-    const handleExpenseSelect = async (containerId, selectedExpenseNames) => {
-        const current = structuredClone(containerExpenses);
+    const handleExpenseAmountChange = (expenseId, value) => {
+        const updated = structuredClone(containerExpenses);
+        const expenseIndex = updated.all_expenses.findIndex((e) => e.id === expenseId);
 
-        if (!current?.containers?.length) return;
+        if (expenseIndex !== -1) {
+            updated.all_expenses[expenseIndex].amount = value ? parseFloat(value) : null;
 
-        const updatedContainers = await Promise.all(
-            current.containers.map(async (container) => {
-                if (container.container_id !== containerId) return container;
+            const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(updated);
 
-                const previous = container.container_expenses || [];
-                const baseAmount = parseFloat(container.base_amount || 0);
-
-                // Build list of newly selected container expenses
-                let selectedExpenseObjects = expenses
-                    .filter(
-                        (exp) =>
-                            exp.type === 'container' && selectedExpenseNames.includes(exp.name),
-                    )
-                    .map((exp) => {
-                        const old = previous.find((p) => p.name === exp.name);
-                        return {
-                            name: exp.name,
-                            amount: old ? parseFloat(old.amount) : parseFloat(exp.amount) || '',
-                        };
-                    });
-
-                // Prompt for missing ones
-                for (let exp of selectedExpenseObjects.filter((e) => e.amount === '')) {
-                    const { value, isConfirmed } = await Swal.fire({
-                        title: `Enter amount for ${exp.name}`,
-                        input: 'number',
-                        inputPlaceholder: 'Enter custom amount (AED)',
-                        showCancelButton: true,
-                        confirmButtonText: 'Save',
-                        confirmButtonColor: '#2563eb',
-                    });
-
-                    if (isConfirmed && value && !isNaN(value)) {
-                        exp.amount = parseFloat(value);
-                    } else if (!isConfirmed) {
-                        selectedExpenseObjects = selectedExpenseObjects.filter(
-                            (x) => x.name !== exp.name,
-                        );
-                    } else {
-                        exp.amount = 0;
-                    }
-                }
-
-                // Calculate total
-                const expenseTotal = selectedExpenseObjects.reduce(
-                    (sum, exp) => sum + (parseFloat(exp.amount) || 0),
-                    0,
-                );
-
-                const newTotal = baseAmount + expenseTotal;
-
-                return {
-                    ...container,
-                    container_expenses: selectedExpenseObjects,
-                    total_amount: parseFloat(newTotal),
-                };
-            }),
-        );
-
-        const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(
-            { ...current, containers: updatedContainers },
-            current.bl_expenses || [],
-            current.ton_expenses || [],
-        );
-
-        setContainerExpenses({
-            ...current,
-            containers: updatedContainers,
-            total_amount: grandTotal,
-            applied_mofa: mofaAmount,
-            applied_vat: vatAmount,
-        });
-        setTotalAmount(grandTotal);
+            setContainerExpenses({
+                ...updated,
+                total_amount: grandTotal,
+                applied_mofa: mofaAmount,
+                applied_vat: vatAmount,
+            });
+            setTotalAmount(grandTotal);
+        }
     };
 
-    const handleBLExpenseSelect = async (selectedNames) => {
-        const previous = containerExpenses.bl_expenses || [];
-
-        let selected = blExpenses
-            .filter((exp) => selectedNames.includes(exp.name))
-            .map((exp) => {
-                const old = previous.find((p) => p.name === exp.name);
-                return {
-                    name: exp.name,
-                    amount: old ? old.amount : parseFloat(exp.amount) || '',
-                };
-            });
-
-        // Prompt for missing amounts only for new selections
-        for (let e of selected.filter((x) => !x.amount)) {
-            const { value, isConfirmed } = await Swal.fire({
-                title: `Enter amount for ${e.name}`,
-                input: 'number',
-                inputPlaceholder: 'Enter custom amount (AED)',
-                showCancelButton: true,
-                confirmButtonText: 'Save',
-            });
-
-            if (isConfirmed && value && !isNaN(value)) {
-                e.amount = parseFloat(value);
-            } else if (!isConfirmed) {
-                selected = selected.filter((x) => x.name !== e.name);
-            } else {
-                e.amount = 0;
-            }
-        }
-
-        // ✅ Update both local and container states
-        setSelectedBlExpenses(selected);
-
-        const updated = { ...containerExpenses, bl_expenses: selected };
-        const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(
-            updated,
-            selected,
-            containerExpenses.ton_expenses || [],
-        );
-
-        setContainerExpenses({
-            ...updated,
-            total_amount: grandTotal,
-            applied_mofa: mofaAmount,
-            applied_vat: vatAmount,
-        });
-        setTotalAmount(grandTotal);
-    };
-
-    const handleTonExpenseSelect = async (selectedNames) => {
-        const previous = containerExpenses.ton_expenses || [];
-
-        let selected = tonExpenses
-            .filter((exp) => selectedNames.includes(exp.name))
-            .map((exp) => {
-                const old = previous.find((p) => p.name === exp.name);
-                return {
-                    name: exp.name,
-                    amount: old ? old.amount : parseFloat(exp.amount) || '',
-                };
-            });
-
-        for (let e of selected.filter((x) => !x.amount)) {
-            const { value, isConfirmed } = await Swal.fire({
-                title: `Enter amount per ton for ${e.name}`,
-                input: 'number',
-                inputPlaceholder: 'Enter custom amount (AED)',
-                showCancelButton: true,
-                confirmButtonText: 'Save',
-            });
-
-            if (isConfirmed && value && !isNaN(value)) {
-                e.amount = parseFloat(value);
-            } else if (!isConfirmed) {
-                selected = selected.filter((x) => x.name !== e.name);
-            } else {
-                e.amount = 0;
-            }
-        }
-
-        // ✅ Update both local and container states
-        setSelectedTonExpenses(selected);
-
-        const updated = { ...containerExpenses, ton_expenses: selected };
-        const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(
-            updated,
-            containerExpenses.bl_expenses || [],
-            selected,
-        );
-
-        setContainerExpenses({
-            ...updated,
-            total_amount: grandTotal,
-            applied_mofa: mofaAmount,
-            applied_vat: vatAmount,
-        });
-        setTotalAmount(grandTotal);
-    };
-
-    const recalculateTotal = (containerData, blExp = [], tonExp = []) => {
+    const recalculateTotal = (containerData) => {
+        // Container totals (base amounts only)
         const containerTotal = containerData.containers.reduce(
-            (sum, c) => sum + parseFloat(c.total_amount || 0),
+            (sum, c) => sum + parseFloat(c.base_amount || 0),
             0,
         );
 
-        const blTotal = blExp.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
-
         const totalTonnage = parseFloat(containerData.weight_in_tons || 0);
+        const containerCount = parseInt(containerData.containers_count || 0);
 
-        const tonTotal = tonExp.reduce(
+        // Separate expenses by type
+        const containerExpenses =
+            containerData.all_expenses?.filter((e) => e.type === 'container') || [];
+        const blExpenses = containerData.all_expenses?.filter((e) => e.type === 'bl') || [];
+        const tonExpenses = containerData.all_expenses?.filter((e) => e.type === 'ton') || [];
+        const nullExpenses = containerData.all_expenses?.filter((e) => e.type === null) || [];
+
+        // ✅ Container expenses: multiply amount by number of containers
+        // Example: If DP WORLD = 1414 AED and there are 2 containers → 1414 × 2 = 2828 AED
+        const containerExpenseTotal = containerExpenses.reduce(
+            (sum, e) => sum + (parseFloat(e.amount) || 0) * containerCount,
+            0,
+        );
+
+        // ✅ BL expenses: flat amounts (applied once per BL)
+        // Example: BP WORLD = 55 AED → just add 55 AED
+        const blTotal = blExpenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
+        // ✅ Ton expenses: amount per ton × total tonnage
+        // Example: CUSTOM DUTY = 100 AED per ton, tonnage = 25 → 100 × 25 = 2500 AED
+        const tonTotal = tonExpenses.reduce(
             (sum, e) => sum + totalTonnage * (parseFloat(e.amount) || 0),
             0,
         );
 
+        // ✅ Null type expenses: flat amounts
+        const nullTotal = nullExpenses.reduce((sum, e) => sum + (parseFloat(e.amount) || 0), 0);
+
+        // MOFA calculation
         const usdRate = 3.6795;
         const usdPerTon = parseFloat(containerData.mofa_amount || 0);
         const mofaPrice = totalTonnage * usdPerTon * usdRate;
         const mofaAmount = mofaPrice > 10000 ? mofaPrice : 0;
 
+        // VAT calculation
         const vatAmount = totalTonnage * usdPerTon * usdRate * 0.05;
 
+        // Grand total
         const grandTotal = parseFloat(
-            (containerTotal + blTotal + tonTotal + mofaAmount + vatAmount).toFixed(2),
+            (
+                containerTotal +
+                containerExpenseTotal +
+                blTotal +
+                tonTotal +
+                nullTotal +
+                mofaAmount +
+                vatAmount
+            ).toFixed(2),
         );
 
         return { grandTotal, mofaAmount, vatAmount };
@@ -343,11 +207,7 @@ export default function index({ expenses = {}, expense_setting }) {
     useEffect(() => {
         if (!containerExpenses?.containers?.length) return;
 
-        const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(
-            containerExpenses,
-            containerExpenses.bl_expenses || [],
-            containerExpenses.ton_expenses || [],
-        );
+        const { grandTotal, mofaAmount, vatAmount } = recalculateTotal(containerExpenses);
 
         if (
             grandTotal !== containerExpenses.total_amount ||
@@ -363,11 +223,7 @@ export default function index({ expenses = {}, expense_setting }) {
 
             setTotalAmount(grandTotal);
         }
-    }, [
-        containerExpenses.containers,
-        containerExpenses.bl_expenses,
-        containerExpenses.ton_expenses,
-    ]);
+    }, [containerExpenses.all_expenses]);
 
     const [submitProcessing, setSubmitProcessing] = useState(false);
     const submit = () => {
@@ -442,7 +298,6 @@ export default function index({ expenses = {}, expense_setting }) {
 
                 {viewModalOpen && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-4 sm:p-6">
-                        {/* Backdrop */}
                         <div
                             className="fixed inset-0 backdrop-blur-[32px]"
                             onClick={() => {
@@ -450,18 +305,14 @@ export default function index({ expenses = {}, expense_setting }) {
                             }}
                         ></div>
 
-                        {/* Modal Box */}
                         <div className="relative z-10 max-h-screen w-full max-w-screen-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl dark:bg-gray-800 sm:p-8">
                             <h3 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
                                 Dubai Expense
                             </h3>
 
-                            {/* Divider */}
                             <div className="mb-6 border-b border-gray-200 dark:border-gray-700"></div>
 
-                            {/* Main Content */}
                             <div className="space-y-8">
-                                {/* Header Info Section */}
                                 <div className="grid grid-cols-1 gap-4 rounded-xl border border-gray-200 bg-gray-50 p-4 dark:border-gray-700 dark:bg-gray-900/30 sm:grid-cols-2 lg:grid-cols-4">
                                     <div>
                                         <p className="text-xs font-medium text-gray-500 dark:text-gray-400">
@@ -497,38 +348,11 @@ export default function index({ expenses = {}, expense_setting }) {
                                     </div>
                                 </div>
 
-                                <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                    <SelectInput
-                                        InputName="B/L Level Expenses"
-                                        Id="bl_expenses"
-                                        Multiple={false}
-                                        items={blExpenses}
-                                        itemKey="name"
-                                        valueKey="name"
-                                        Placeholder="Select BL Expenses"
-                                        Value={selectedBlExpenses?.[0]?.name}
-                                        Action={(value) => handleBLExpenseSelect(value)}
-                                    />
-                                    <SelectInput
-                                        InputName="Ton-Based Expenses"
-                                        Id="ton_expenses"
-                                        Multiple={false}
-                                        items={tonExpenses}
-                                        itemKey="name"
-                                        valueKey="name"
-                                        Placeholder="Select Ton Expenses"
-                                        Value={selectedTonExpenses?.[0]?.name}
-                                        Action={(value) => handleTonExpenseSelect(value)}
-                                    />
-                                </div>
-
-                                {/* Divider */}
-                                <div className="border-b border-gray-200 dark:border-gray-700"></div>
-
-                                {/* Table Section */}
-                                {containerExpenses?.containers &&
-                                containerExpenses.containers.length > 0 ? (
-                                    <div className="relative overflow-visible rounded-lg border border-gray-200 dark:border-gray-700">
+                                <div>
+                                    <h4 className="mb-3 text-sm font-semibold text-gray-800 dark:text-gray-200">
+                                        All Expenses
+                                    </h4>
+                                    <div className="overflow-hidden rounded-lg border border-gray-200 dark:border-gray-700">
                                         <table className="min-w-full text-left text-sm text-gray-700 dark:text-gray-300">
                                             <thead className="bg-gray-100 dark:bg-gray-700">
                                                 <tr>
@@ -536,79 +360,75 @@ export default function index({ expenses = {}, expense_setting }) {
                                                         #
                                                     </th>
                                                     <th className="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">
-                                                        Container No
-                                                    </th>
-                                                    <th className="px-4 py-3 font-semibold text-gray-900 dark:text-gray-100">
-                                                        Expense Type
+                                                        Expense Name
                                                     </th>
                                                     <th className="px-4 py-3 text-right font-semibold text-gray-900 dark:text-gray-100">
-                                                        Total Amount
+                                                        Amount (AED)
                                                     </th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-200 dark:divide-gray-700">
-                                                {containerExpenses.containers.map((item, index) => {
-                                                    return (
-                                                        <tr
-                                                            key={item.container_id}
-                                                            className="transition hover:bg-gray-50 dark:hover:bg-gray-800"
-                                                        >
-                                                            <td className="px-4 py-4 text-left text-sm text-gray-900 dark:text-gray-100">
-                                                                {index + 1}
-                                                            </td>
-
-                                                            <td className="px-4 py-4 text-left font-medium text-gray-900 dark:text-gray-100">
-                                                                {item.container_no}
-                                                            </td>
-
-                                                            <td className="w-[250px] px-4 py-3">
-                                                                <div className="flex items-center justify-center">
-                                                                    <SelectInput
-                                                                        InputName="Container Expenses"
-                                                                        Id={`expenses-${item.container_id}`}
-                                                                        Multiple={true}
-                                                                        items={
-                                                                            containerExpensesList
-                                                                        }
-                                                                        itemKey="name"
-                                                                        valueKey="name"
-                                                                        Placeholder="Select Container Expense"
-                                                                        Clearable={true}
-                                                                        className="w-full"
-                                                                        Value={
-                                                                            item?.container_expenses?.map(
-                                                                                (exp) => exp.name,
-                                                                            ) || []
-                                                                        }
-                                                                        Action={(value) =>
-                                                                            handleExpenseSelect(
-                                                                                item.container_id,
-                                                                                value,
+                                                {containerExpenses.all_expenses?.map(
+                                                    (expense, index) => {
+                                                        const isDisabled =
+                                                            expense.has_preset_amount === true;
+                                                        return (
+                                                            <tr
+                                                                key={expense.id}
+                                                                className="transition hover:bg-gray-50 dark:hover:bg-gray-800"
+                                                            >
+                                                                <td className="px-4 py-3 text-gray-900 dark:text-gray-100">
+                                                                    {index + 1}
+                                                                </td>
+                                                                <td className="px-4 py-3 font-medium text-gray-900 dark:text-gray-100">
+                                                                    {expense.name}
+                                                                </td>
+                                                                <td className="px-4 py-3 text-right">
+                                                                    <input
+                                                                        type="number"
+                                                                        step="0.01"
+                                                                        min="0"
+                                                                        onKeyDown={(e) => {
+                                                                            if (
+                                                                                e.key === 'e' ||
+                                                                                e.key === 'E' ||
+                                                                                e.key === '+' ||
+                                                                                e.key === '-'
+                                                                            ) {
+                                                                                e.preventDefault();
+                                                                            }
+                                                                        }}
+                                                                        placeholder="Enter amount"
+                                                                        value={expense.amount || ''}
+                                                                        disabled={isDisabled}
+                                                                        onChange={(e) =>
+                                                                            handleExpenseAmountChange(
+                                                                                expense.id,
+                                                                                e.target.value,
                                                                             )
                                                                         }
+                                                                        className={`dark:bg-dark-900 shadow-theme-xs focus:ring-3 focus:outline-hidden mb-2 w-full max-w-[150px] rounded-lg border border-gray-300 bg-transparent px-3 py-2.5 text-right text-sm text-gray-800 placeholder:text-gray-400 focus:border-blue-300 focus:ring-1 focus:ring-blue-500/10 dark:border-gray-700 dark:bg-gray-900 dark:text-white/90 dark:placeholder:text-white/30 dark:focus:border-blue-800 ${
+                                                                            isDisabled
+                                                                                ? 'cursor-not-allowed opacity-25 dark:opacity-40'
+                                                                                : ''
+                                                                        }`}
                                                                     />
-                                                                </div>
-                                                            </td>
-
-                                                            <td className="px-4 py-4 text-right font-semibold text-green-500 dark:text-green-400">
-                                                                {parseFloat(item.total_amount || 0)}
-                                                            </td>
-                                                        </tr>
-                                                    );
-                                                })}
+                                                                </td>
+                                                            </tr>
+                                                        );
+                                                    },
+                                                )}
                                             </tbody>
-
                                             <tfoot className="bg-gray-50 dark:bg-gray-800">
-                                                {/* MOFA Row */}
                                                 <tr className="border-t border-gray-200 dark:border-gray-700">
                                                     <td
-                                                        colSpan="3"
-                                                        className="px-6 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
+                                                        colSpan="2"
+                                                        className="px-4 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
                                                     >
                                                         MOFA:
                                                     </td>
                                                     <td
-                                                        className={`px-6 py-3 text-right text-sm font-bold ${
+                                                        className={`px-4 py-3 text-right text-sm font-bold ${
                                                             containerExpenses.applied_mofa > 0
                                                                 ? 'text-blue-600 dark:text-blue-400'
                                                                 : 'text-gray-500 dark:text-gray-400'
@@ -617,57 +437,50 @@ export default function index({ expenses = {}, expense_setting }) {
                                                         {containerExpenses.applied_mofa > 0
                                                             ? `${parseFloat(
                                                                   containerExpenses.applied_mofa,
-                                                              )} AED`
+                                                              ).toFixed(2)} AED`
                                                             : 'Not Applicable'}
                                                     </td>
                                                 </tr>
 
                                                 <tr className="border-t border-gray-200 dark:border-gray-700">
                                                     <td
-                                                        colSpan="3"
-                                                        className="px-6 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
+                                                        colSpan="2"
+                                                        className="px-4 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
                                                     >
                                                         VAT (5%):
                                                     </td>
-                                                    <td className="px-6 py-3 text-right text-sm font-bold text-yellow-600 dark:text-yellow-400">
+                                                    <td className="px-4 py-3 text-right text-sm font-bold text-yellow-600 dark:text-yellow-400">
                                                         {parseFloat(
                                                             containerExpenses.applied_vat || 0,
-                                                        ).toLocaleString('en-US', {
-                                                            minimumFractionDigits: 2,
-                                                        })}{' '}
+                                                        ).toFixed(2)}{' '}
                                                         AED
                                                     </td>
                                                 </tr>
 
-                                                {/* Total Row */}
-                                                <tr className="border-t border-gray-200 dark:border-gray-700">
+                                                <tr className="border-t-2 border-gray-300 dark:border-gray-600">
                                                     <td
-                                                        colSpan="3"
-                                                        className="px-6 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
+                                                        colSpan="2"
+                                                        className="px-4 py-3 text-right text-sm font-semibold text-gray-800 dark:text-gray-200"
                                                     >
                                                         Grand Total:
                                                     </td>
-                                                    <td className="px-6 py-3 text-right text-sm font-bold text-green-600 dark:text-green-400">
-                                                        {parseFloat(totalAmount || 0)} AED
+                                                    <td className="px-4 py-3 text-right text-sm font-bold text-green-600 dark:text-green-400">
+                                                        {parseFloat(totalAmount || 0).toFixed(2)}{' '}
+                                                        AED
                                                     </td>
                                                 </tr>
                                             </tfoot>
                                         </table>
                                     </div>
-                                ) : (
-                                    <div className="p-6 text-center text-gray-500 dark:text-gray-400">
-                                        No containers found.
-                                    </div>
-                                )}
+                                </div>
                             </div>
 
-                            {/* Buttons */}
                             <div className="mt-8 flex flex-col-reverse items-center justify-end gap-4 sm:flex-row">
                                 <PrimaryButton
                                     Action={() => setBlResults({})}
                                     Text="Close"
                                     Type="button"
-                                    CustomClass="bg-red-500 hover:bg-red-600 w-full"
+                                    CustomClass="bg-red-500 hover:bg-red-600 w-full "
                                 />
 
                                 <PrimaryButton
@@ -676,6 +489,7 @@ export default function index({ expenses = {}, expense_setting }) {
                                     Disabled={submitProcessing}
                                     Spinner={submitProcessing}
                                     Type="button"
+                                    CustomClass="w-full"
                                     Icon={
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"

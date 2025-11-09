@@ -116,8 +116,8 @@ class ExtraChargesExpenseTransactionController extends Controller
             'status' => true,
             'data' => $data[0],
             'total_amount' => $dubai_expense_transaction->total_amount,
-            'bl_expenses' => $dubai_expense_transaction->bl_expenses,
-            'ton_expenses' => $dubai_expense_transaction->ton_expenses,
+            'all_expenses' => $dubai_expense_transaction->all_expenses,
+
             'weight_in_tons' => $dubai_expense_transaction->weight_in_tons,
         ]);
     }

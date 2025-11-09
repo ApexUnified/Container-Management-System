@@ -37,6 +37,7 @@ class DubaiExpenseTransactionController extends Controller
                 'data.applied_mofa' => ['required', 'numeric'],
                 'data.applied_vat' => ['required', 'numeric'],
                 'data.containers' => ['required', 'array'],
+                'data.all_expenses' => ['required', 'array'],
             ]);
 
             $validated_req['data']['bl_date'] = date('Y-m-d H:i:s', strtotime($validated_req['data']['bl_date']));
@@ -44,7 +45,7 @@ class DubaiExpenseTransactionController extends Controller
             $exists = DubaiExpenseTransaction::where('bl_no', $validated_req['data']['bl_no'])->first();
 
             if (! empty($exists)) {
-                $exists->update(array_merge($validated_req['data'], ['extra_charges_expenses' => null, 'total_amount_after_extra_charges' => null, 'bl_expenses' => $request->input('data.bl_expenses', []), 'ton_expenses' => $request->input('data.ton_expenses', [])]));
+                $exists->update(array_merge($validated_req['data'], ['extra_charges_expenses' => null, 'total_amount_after_extra_charges' => null]));
 
                 return back()->with('success', 'Dubai Expense Transaction updated successfully.');
             }
